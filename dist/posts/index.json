@@ -1,0 +1,20 @@
+[
+  {
+    "slug": "welcome",
+    "title": "Welcome to Leguan's Blog",
+    "date": "2026-02-04",
+    "tags": ["Blog", "Life"],
+    "categories": ["Essays"],
+    "cover": "",
+    "excerpt": "This is my first blog post. Digest your emotions."
+  },
+  {
+    "slug": "hello-world",
+    "title": "Hello World",
+    "date": "2026-02-04",
+    "tags": ["Hexo", "Blog"],
+    "categories": ["Tech"],
+    "cover": "",
+    "excerpt": "Welcome to Hexo! This is your very first post."
+  }
+]

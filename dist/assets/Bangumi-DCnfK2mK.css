@@ -1,0 +1,1 @@
+.animate-card[data-v-d01a8d0f]{opacity:0;transform:scale(.85);transform-origin:center center}.animate-card.animate-in[data-v-d01a8d0f]{animation:scaleIn-d01a8d0f 1.4s cubic-bezier(.22,1,.36,1) forwards}@keyframes scaleIn-d01a8d0f{0%{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
