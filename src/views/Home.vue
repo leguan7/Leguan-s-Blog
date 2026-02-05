@@ -106,7 +106,7 @@ function scrollDown() {
         @click="scrollDown"
         class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white scroll-down-btn group"
       >
-        <Icon icon="fas:angle-double-down" class="w-8 h-8 drop-shadow-lg group-hover:scale-125 transition-transform" />
+        <Icon icon="lucide:chevrons-down" class="w-8 h-8 drop-shadow-lg group-hover:scale-125 transition-transform" />
       </button>
 
       <!-- 波浪分隔 -->
@@ -131,14 +131,14 @@ function scrollDown() {
     >
       <div class="card flex items-center justify-between px-5 py-3">
         <span class="text-[#49b1f5] flex items-center">
-          <Icon icon="fas:search" class="w-4 h-4 mr-2" />
+          <Icon icon="lucide:search" class="w-4 h-4 mr-2" />
           搜索 "<strong>{{ blogStore.searchQuery }}</strong>" 找到 {{ blogStore.filteredPosts.length }} 篇文章
         </span>
         <button 
           @click="blogStore.setSearchQuery('')"
           class="text-gray-400 hover:text-[#ff7242] transition-colors"
         >
-          <Icon icon="fas:times-circle" class="w-5 h-5" />
+          <Icon icon="lucide:x-circle" class="w-5 h-5" />
         </button>
       </div>
     </div>
@@ -156,7 +156,7 @@ function scrollDown() {
 
           <!-- Empty -->
           <div v-else-if="blogStore.filteredPosts.length === 0" class="card p-16 text-center">
-            <Icon icon="fas:inbox" class="w-20 h-20 text-gray-300 mx-auto" />
+            <Icon icon="lucide:inbox" class="w-20 h-20 text-gray-400 dark:text-gray-500 mx-auto" />
             <p class="mt-4 text-gray-500">暂无文章</p>
           </div>
 
@@ -179,7 +179,7 @@ function scrollDown() {
               class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
               :class="currentPage === 1 ? '' : 'card hover:bg-[#49b1f5] hover:text-white'"
             >
-              <Icon icon="fas:angle-left" class="w-4 h-4" />
+              <Icon icon="lucide:chevron-left" class="w-4 h-4" />
             </button>
 
             <template v-for="page in totalPages" :key="page">
@@ -207,7 +207,7 @@ function scrollDown() {
               class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
               :class="currentPage === totalPages ? '' : 'card hover:bg-[#49b1f5] hover:text-white'"
             >
-              <Icon icon="fas:angle-right" class="w-4 h-4" />
+              <Icon icon="lucide:chevron-right" class="w-4 h-4" />
             </button>
           </nav>
         </div>
@@ -224,15 +224,18 @@ function scrollDown() {
 <style scoped>
 /* Hero 动画 */
 .hero-title {
-  animation: fade-in-up 0.8s ease-out;
+  animation: fade-in-up 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: center center;
 }
 
 .hero-subtitle {
-  animation: fade-in-up 0.8s ease-out 0.2s both;
+  animation: fade-in-up 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  transform-origin: center center;
 }
 
 .hero-stats {
-  animation: fade-in-up 0.8s ease-out 0.4s both;
+  animation: fade-in-up 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+  transform-origin: center center;
 }
 
 .scroll-down-btn {
@@ -242,11 +245,11 @@ function scrollDown() {
 @keyframes fade-in-up {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: scale(0.85);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
   }
 }
 

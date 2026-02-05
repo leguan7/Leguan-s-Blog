@@ -114,7 +114,7 @@ const showReward = ref(false)
   <div>
     <!-- Loading -->
     <div v-if="blogStore.isLoading" class="min-h-screen flex items-center justify-center">
-      <Icon icon="fas:spinner" class="w-12 h-12 animate-spin text-[#49b1f5]" />
+      <Icon icon="lucide:loader-2" class="w-12 h-12 animate-spin text-[#49b1f5]" />
     </div>
 
     <!-- Post Content -->
@@ -134,7 +134,7 @@ const showReward = ref(false)
               :to="{ path: '/categories', query: { category } }"
               class="px-4 py-1.5 text-sm bg-[#49b1f5]/80 rounded-full backdrop-blur-sm hover:bg-[#ff7242] transition-all duration-300 shadow-lg"
             >
-              <Icon icon="fas:folder" class="w-3.5 h-3.5 inline mr-1.5" />
+              <Icon icon="lucide:folder" class="w-3.5 h-3.5 inline mr-1.5" />
               {{ category }}
             </router-link>
           </div>
@@ -147,17 +147,17 @@ const showReward = ref(false)
           <!-- 元信息 -->
           <div class="flex flex-wrap justify-center items-center gap-x-5 gap-y-2 mt-6 text-white/90 text-sm">
             <span class="flex items-center space-x-1.5">
-              <Icon icon="fas:calendar-alt" class="w-4 h-4 text-[#49b1f5]" />
+              <Icon icon="lucide:calendar" class="w-4 h-4 text-[#49b1f5]" />
               <span>发布于 {{ formattedDate }}</span>
             </span>
             <span class="hidden sm:inline text-white/50">|</span>
             <span class="flex items-center space-x-1.5">
-              <Icon icon="fas:clock" class="w-4 h-4 text-[#49b1f5]" />
+              <Icon icon="lucide:clock" class="w-4 h-4 text-[#49b1f5]" />
               <span>{{ readingTime }} 分钟阅读</span>
             </span>
             <span class="hidden sm:inline text-white/50">|</span>
             <span class="flex items-center space-x-1.5">
-              <Icon icon="fas:book-open" class="w-4 h-4 text-[#49b1f5]" />
+              <Icon icon="lucide:book-open" class="w-4 h-4 text-[#49b1f5]" />
               <span>约 {{ wordCount }} 字</span>
             </span>
           </div>
@@ -192,7 +192,7 @@ const showReward = ref(false)
                     :to="{ path: '/tags', query: { tag } }"
                     class="tag"
                   >
-                    <Icon icon="fas:hashtag" class="w-3 h-3 inline" />{{ tag }}
+                    <Icon icon="lucide:hash" class="w-3 h-3 inline" />{{ tag }}
                   </router-link>
                 </div>
               </div>
@@ -203,7 +203,7 @@ const showReward = ref(false)
                   @click="showReward = !showReward"
                   class="inline-flex items-center px-6 py-2.5 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
                 >
-                  <Icon icon="fas:hand-holding-heart" class="w-5 h-5 mr-2" />
+                  <Icon icon="lucide:heart-handshake" class="w-5 h-5 mr-2" />
                   赞赏支持
                 </button>
                 <transition name="fade">
@@ -213,7 +213,7 @@ const showReward = ref(false)
                       <div class="text-center">
                         <div class="w-28 h-28 bg-white rounded-lg p-1 shadow-md">
                           <div class="w-full h-full bg-gray-200 dark:bg-gray-600 rounded flex items-center justify-center text-gray-400">
-                            <Icon icon="fas:qrcode" class="w-8 h-8" />
+                            <Icon icon="lucide:qr-code" class="w-8 h-8" />
                           </div>
                         </div>
                         <span class="text-xs text-gray-500 mt-1 block">微信</span>
@@ -221,7 +221,7 @@ const showReward = ref(false)
                       <div class="text-center">
                         <div class="w-28 h-28 bg-white rounded-lg p-1 shadow-md">
                           <div class="w-full h-full bg-gray-200 dark:bg-gray-600 rounded flex items-center justify-center text-gray-400">
-                            <Icon icon="fas:qrcode" class="w-8 h-8" />
+                            <Icon icon="lucide:qr-code" class="w-8 h-8" />
                           </div>
                         </div>
                         <span class="text-xs text-gray-500 mt-1 block">支付宝</span>
@@ -234,20 +234,20 @@ const showReward = ref(false)
               <!-- 版权声明 -->
               <div class="mt-8 p-5 rounded-xl bg-gradient-to-r from-[#49b1f5]/5 to-[#0abcf9]/5 border border-[#49b1f5]/20">
                 <h4 class="font-bold text-gray-800 dark:text-white mb-3 flex items-center text-sm">
-                  <Icon icon="fas:copyright" class="w-4 h-4 mr-2 text-[#49b1f5]" />
+                  <Icon icon="lucide:copyright" class="w-4 h-4 mr-2 text-[#49b1f5]" />
                   版权声明
                 </h4>
                 <div class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
                   <p class="flex items-start">
-                    <Icon icon="fas:user" class="w-3.5 h-3.5 mr-2 mt-0.5 text-gray-400 shrink-0" />
+                    <Icon icon="lucide:user" class="w-3.5 h-3.5 mr-2 mt-0.5 text-gray-500 shrink-0" />
                     <span><strong class="text-gray-700 dark:text-gray-300">本文作者：</strong>Leguan</span>
                   </p>
                   <p class="flex items-start">
-                    <Icon icon="fas:link" class="w-3.5 h-3.5 mr-2 mt-0.5 text-gray-400 shrink-0" />
+                    <Icon icon="lucide:link" class="w-3.5 h-3.5 mr-2 mt-0.5 text-gray-500 shrink-0" />
                     <span class="break-all"><strong class="text-gray-700 dark:text-gray-300">本文链接：</strong><span class="text-[#49b1f5]">{{ `${window?.location?.origin || ''}/post/${post.slug}` }}</span></span>
                   </p>
                   <p class="flex items-start">
-                    <Icon icon="fas:balance-scale" class="w-3.5 h-3.5 mr-2 mt-0.5 text-gray-400 shrink-0" />
+                    <Icon icon="lucide:scale" class="w-3.5 h-3.5 mr-2 mt-0.5 text-gray-500 shrink-0" />
                     <span><strong class="text-gray-700 dark:text-gray-300">版权声明：</strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="text-[#49b1f5] hover:text-[#ff7242]">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源！</span>
                   </p>
                 </div>
@@ -266,10 +266,10 @@ const showReward = ref(false)
                 </div>
                 <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors"></div>
                 <div class="relative p-5 flex items-center space-x-3 text-white min-h-[100px]">
-                  <Icon icon="fas:chevron-left" class="w-6 h-6 shrink-0 group-hover:-translate-x-1 transition-transform" />
+                  <Icon icon="lucide:chevron-left" class="w-6 h-6 shrink-0 group-hover:-translate-x-1 transition-transform" />
                   <div class="min-w-0">
                     <div class="text-xs text-white/70 mb-1.5 flex items-center">
-                      <Icon icon="fas:arrow-left" class="w-3 h-3 mr-1" />
+                      <Icon icon="lucide:arrow-left" class="w-3 h-3 mr-1" />
                       上一篇
                     </div>
                     <h4 class="font-medium line-clamp-2 group-hover:text-[#49b1f5] transition-colors">
@@ -293,13 +293,13 @@ const showReward = ref(false)
                   <div class="min-w-0">
                     <div class="text-xs text-white/70 mb-1.5 flex items-center justify-end">
                       下一篇
-                      <Icon icon="fas:arrow-right" class="w-3 h-3 ml-1" />
+                      <Icon icon="lucide:arrow-right" class="w-3 h-3 ml-1" />
                     </div>
                     <h4 class="font-medium line-clamp-2 group-hover:text-[#49b1f5] transition-colors">
                       {{ nextPost.title }}
                     </h4>
                   </div>
-                  <Icon icon="fas:chevron-right" class="w-6 h-6 shrink-0 group-hover:translate-x-1 transition-transform" />
+                  <Icon icon="lucide:chevron-right" class="w-6 h-6 shrink-0 group-hover:translate-x-1 transition-transform" />
                 </div>
               </router-link>
             </div>
@@ -307,7 +307,7 @@ const showReward = ref(false)
             <!-- 相关推荐 - Kyle's Blog 风格 -->
             <div v-if="relatedPosts.length > 0" class="card p-6 mt-6">
               <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-5 flex items-center">
-                <Icon icon="fas:thumbs-up" class="w-5 h-5 mr-2 text-[#49b1f5]" />
+                <Icon icon="lucide:thumbs-up" class="w-5 h-5 mr-2 text-[#49b1f5]" />
                 相关推荐
               </h3>
               <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -345,7 +345,7 @@ const showReward = ref(false)
             <div v-if="toc.length > 0" class="card p-5 mb-5 sticky top-20">
               <div class="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-700">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-r from-[#49b1f5] to-[#0abcf9] flex items-center justify-center">
-                  <Icon icon="fas:list-ul" class="w-4 h-4 text-white" />
+                  <Icon icon="lucide:list" class="w-4 h-4 text-white" />
                 </div>
                 <h4 class="font-bold text-gray-800 dark:text-white">目录</h4>
                 <span class="ml-auto text-xs text-gray-400">{{ toc.length }} 章节</span>

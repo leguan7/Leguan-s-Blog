@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useBlogStore } from '@/stores/blog'
@@ -7,14 +7,54 @@ import { IMAGES, COVER_IMAGES } from '@/utils/assets'
 
 const router = useRouter()
 const blogStore = useBlogStore()
-const isVisible = ref(false)
+
+// 为每个侧边栏卡片使用独立的可见状态
+const visibleCards = ref<Set<number>>(new Set())
+const cardRefs = ref<(HTMLElement | null)[]>([])
+let observer: IntersectionObserver | null = null
+
+const setCardRef = (el: any, index: number) => {
+  if (el) {
+    cardRefs.value[index] = el
+    if (observer) {
+      ;(el as any).__cardIndex = index
+      observer.observe(el)
+    }
+  }
+}
 
 onMounted(() => {
-  // 延迟显示动画
-  setTimeout(() => {
-    isVisible.value = true
-  }, 100)
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const index = (entry.target as any).__cardIndex as number
+        if (entry.isIntersecting && !visibleCards.value.has(index)) {
+          // 根据卡片索引添加延迟
+          setTimeout(() => {
+            visibleCards.value.add(index)
+            visibleCards.value = new Set(visibleCards.value)
+          }, index * 120)
+          observer?.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
+  )
+
+  // 观察已有的元素
+  cardRefs.value.forEach((el, index) => {
+    if (el) {
+      ;(el as any).__cardIndex = index
+      observer?.observe(el)
+    }
+  })
 })
+
+onUnmounted(() => {
+  observer?.disconnect()
+})
+
+const isCardVisible = (index: number) => visibleCards.value.has(index)
 
 const stats = computed(() => ({
   posts: blogStore.posts.length,
@@ -52,9 +92,9 @@ function getTagColor(index: number) {
   <aside class="space-y-5 lg:sticky lg:top-20">
     <!-- 博主信息卡片 -->
     <div 
+      :ref="(el) => setCardRef(el, 0)"
       class="card overflow-hidden sidebar-card"
-      :class="{ 'animate-in': isVisible }"
-      :style="{ animationDelay: '0ms' }"
+      :class="{ 'animate-in': isCardVisible(0) }"
     >
       <!-- 封面背景 -->
       <div 
@@ -77,7 +117,7 @@ function getTagColor(index: number) {
           />
         </div>
         <h3 class="text-xl font-bold text-gray-800 dark:text-white">Leguan</h3>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 italic">A person who wants to see the world</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 italic">A person who wants to see the world</p>
         
         <!-- 统计 -->
         <div class="flex justify-around mt-5 py-4 border-t border-b border-gray-100 dark:border-gray-700/50">
@@ -85,8 +125,8 @@ function getTagColor(index: number) {
             <div class="text-2xl font-bold text-gray-800 dark:text-white group-hover:text-[#49b1f5] transition-all duration-300 group-hover:scale-110">
               {{ stats.posts }}
             </div>
-            <div class="text-xs text-gray-500 mt-0.5 flex items-center justify-center">
-              <Icon icon="fas:file-alt" class="w-3 h-3 mr-1 opacity-50" />
+            <div class="text-xs text-gray-600 dark:text-gray-400 mt-0.5 flex items-center justify-center">
+              <Icon icon="lucide:file-text" class="w-3 h-3 mr-1" />
               文章
             </div>
           </router-link>
@@ -95,8 +135,8 @@ function getTagColor(index: number) {
             <div class="text-2xl font-bold text-gray-800 dark:text-white group-hover:text-[#49b1f5] transition-all duration-300 group-hover:scale-110">
               {{ stats.tags }}
             </div>
-            <div class="text-xs text-gray-500 mt-0.5 flex items-center justify-center">
-              <Icon icon="fas:tags" class="w-3 h-3 mr-1 opacity-50" />
+            <div class="text-xs text-gray-600 dark:text-gray-400 mt-0.5 flex items-center justify-center">
+              <Icon icon="lucide:tags" class="w-3 h-3 mr-1" />
               标签
             </div>
           </router-link>
@@ -105,8 +145,8 @@ function getTagColor(index: number) {
             <div class="text-2xl font-bold text-gray-800 dark:text-white group-hover:text-[#49b1f5] transition-all duration-300 group-hover:scale-110">
               {{ stats.categories }}
             </div>
-            <div class="text-xs text-gray-500 mt-0.5 flex items-center justify-center">
-              <Icon icon="fas:folder" class="w-3 h-3 mr-1 opacity-50" />
+            <div class="text-xs text-gray-600 dark:text-gray-400 mt-0.5 flex items-center justify-center">
+              <Icon icon="lucide:folder" class="w-3 h-3 mr-1" />
               分类
             </div>
           </router-link>
@@ -120,44 +160,51 @@ function getTagColor(index: number) {
             class="w-10 h-10 rounded-xl bg-gray-800 text-white flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all duration-300"
             title="GitHub"
           >
-            <Icon icon="fab:github" class="w-5 h-5" />
+            <Icon icon="ri:github-fill" class="w-5 h-5" />
+          </a>
+          <a 
+            href="#"
+            class="w-10 h-10 rounded-xl bg-[#12B7F5] text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-[#12B7F5]/30 transition-all duration-300"
+            title="QQ"
+          >
+            <Icon icon="ri:qq-fill" class="w-5 h-5" />
+          </a>
+          <a 
+            href="#"
+            class="w-10 h-10 rounded-xl bg-[#07C160] text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-[#07C160]/30 transition-all duration-300"
+            title="WeChat"
+          >
+            <Icon icon="ri:wechat-fill" class="w-5 h-5" />
           </a>
           <a 
             href="mailto:leguan@example.com"
             class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#49b1f5] to-[#0abcf9] text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-[#49b1f5]/30 transition-all duration-300"
             title="Email"
           >
-            <Icon icon="fas:envelope" class="w-5 h-5" />
+            <Icon icon="lucide:mail" class="w-5 h-5" />
           </a>
-          <router-link 
-            to="/messageboard"
-            class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-300"
-            title="留言板"
-          >
-            <Icon icon="fas:comment-dots" class="w-5 h-5" />
-          </router-link>
         </div>
       </div>
     </div>
 
     <!-- 公告栏 -->
     <div 
+      :ref="(el) => setCardRef(el, 1)"
       class="card p-5 sidebar-card"
-      :class="{ 'animate-in': isVisible }"
-      :style="{ animationDelay: '100ms' }"
+      :class="{ 'animate-in': isCardVisible(1) }"
     >
       <div class="flex items-center space-x-2 mb-3 pb-3 border-b border-gray-100 dark:border-gray-700/50">
         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center">
-          <Icon icon="fas:bullhorn" class="w-4 h-4 text-white" />
+          <Icon icon="lucide:megaphone" class="w-4 h-4 text-white" />
         </div>
         <h4 class="font-bold text-gray-800 dark:text-white">公告栏</h4>
       </div>
       <div class="p-3 rounded-xl bg-gradient-to-br from-[#49b1f5]/5 to-[#0abcf9]/5 border border-[#49b1f5]/10">
-        <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
           欢迎来到 <span class="text-[#49b1f5] font-medium">Leguan's Blog</span>！
         </p>
         <p class="text-sm text-[#49b1f5] mt-2 italic flex items-center">
-          <Icon icon="fas:quote-left" class="w-3 h-3 mr-1 opacity-50" />
+          <Icon icon="lucide:quote" class="w-3 h-3 mr-1 text-[#49b1f5]/60" />
           Digest your emotions.
         </p>
       </div>
@@ -165,13 +212,13 @@ function getTagColor(index: number) {
 
     <!-- 最新文章 -->
     <div 
+      :ref="(el) => setCardRef(el, 2)"
       class="card p-5 sidebar-card"
-      :class="{ 'animate-in': isVisible }"
-      :style="{ animationDelay: '200ms' }"
+      :class="{ 'animate-in': isCardVisible(2) }"
     >
       <div class="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-700/50">
         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
-          <Icon icon="fas:clock" class="w-4 h-4 text-white" />
+          <Icon icon="lucide:clock" class="w-4 h-4 text-white" />
         </div>
         <h4 class="font-bold text-gray-800 dark:text-white">最新文章</h4>
       </div>
@@ -194,8 +241,8 @@ function getTagColor(index: number) {
             <h5 class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-[#49b1f5] transition-colors line-clamp-2 leading-tight font-medium">
               {{ post.title }}
             </h5>
-            <p class="text-xs text-gray-400 mt-1 flex items-center">
-              <Icon icon="fas:calendar" class="w-3 h-3 mr-1" />
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center">
+              <Icon icon="lucide:calendar" class="w-3 h-3 mr-1" />
               {{ post.date }}
             </p>
           </div>
@@ -205,18 +252,18 @@ function getTagColor(index: number) {
 
     <!-- 标签云 -->
     <div 
+      :ref="(el) => setCardRef(el, 3)"
       class="card p-5 sidebar-card"
-      :class="{ 'animate-in': isVisible }"
-      :style="{ animationDelay: '300ms' }"
+      :class="{ 'animate-in': isCardVisible(3) }"
     >
       <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100 dark:border-gray-700/50">
         <div class="flex items-center space-x-2">
           <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-400 to-violet-500 flex items-center justify-center">
-            <Icon icon="fas:tags" class="w-4 h-4 text-white" />
+            <Icon icon="lucide:tags" class="w-4 h-4 text-white" />
           </div>
           <h4 class="font-bold text-gray-800 dark:text-white">标签云</h4>
         </div>
-        <span class="text-xs text-gray-400">{{ blogStore.allTags.length }} 个</span>
+        <span class="text-xs text-gray-500 dark:text-gray-400">{{ blogStore.allTags.length }} 个</span>
       </div>
       <div class="flex flex-wrap gap-2">
         <button
@@ -226,7 +273,7 @@ function getTagColor(index: number) {
           class="px-3 py-1.5 text-xs rounded-full bg-gradient-to-r transition-all duration-300 hover:scale-105 hover:shadow-md font-medium"
           :class="getTagColor(index)"
         >
-          <Icon icon="fas:hashtag" class="w-3 h-3 inline mr-0.5 opacity-70" />
+          <Icon icon="lucide:hash" class="w-3 h-3 inline mr-0.5" />
           {{ tag.name }}
         </button>
       </div>
@@ -236,19 +283,19 @@ function getTagColor(index: number) {
         class="flex items-center justify-center mt-4 py-2 text-xs text-[#49b1f5] hover:text-[#ff7242] transition-colors rounded-lg hover:bg-[#49b1f5]/5"
       >
         查看全部
-        <Icon icon="fas:arrow-right" class="w-3 h-3 ml-1" />
+        <Icon icon="lucide:arrow-right" class="w-3 h-3 ml-1" />
       </router-link>
     </div>
 
     <!-- 分类 -->
     <div 
+      :ref="(el) => setCardRef(el, 4)"
       class="card p-5 sidebar-card"
-      :class="{ 'animate-in': isVisible }"
-      :style="{ animationDelay: '400ms' }"
+      :class="{ 'animate-in': isCardVisible(4) }"
     >
       <div class="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-700/50">
         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
-          <Icon icon="fas:folder-open" class="w-4 h-4 text-white" />
+          <Icon icon="lucide:folder-open" class="w-4 h-4 text-white" />
         </div>
         <h4 class="font-bold text-gray-800 dark:text-white">分类</h4>
       </div>
@@ -260,7 +307,7 @@ function getTagColor(index: number) {
           class="flex items-center justify-between py-2.5 px-3 -mx-1 rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:bg-gradient-to-r hover:from-[#49b1f5]/10 hover:to-[#0abcf9]/10 hover:text-[#49b1f5] transition-all duration-300 group"
         >
           <span class="flex items-center">
-            <Icon icon="fas:folder" class="w-4 h-4 mr-2 text-[#49b1f5] group-hover:scale-110 transition-transform" />
+            <Icon icon="lucide:folder" class="w-4 h-4 mr-2 text-[#49b1f5] group-hover:scale-110 transition-transform" />
             {{ category.name }}
           </span>
           <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700/50 group-hover:bg-[#49b1f5] group-hover:text-white transition-colors">
@@ -272,34 +319,34 @@ function getTagColor(index: number) {
 
     <!-- 网站资讯 -->
     <div 
+      :ref="(el) => setCardRef(el, 5)"
       class="card p-5 sidebar-card"
-      :class="{ 'animate-in': isVisible }"
-      :style="{ animationDelay: '500ms' }"
+      :class="{ 'animate-in': isCardVisible(5) }"
     >
       <div class="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-700/50">
         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-          <Icon icon="fas:chart-line" class="w-4 h-4 text-white" />
+          <Icon icon="lucide:bar-chart-2" class="w-4 h-4 text-white" />
         </div>
         <h4 class="font-bold text-gray-800 dark:text-white">小站资讯</h4>
       </div>
       <div class="space-y-3">
         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-          <span class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-            <Icon icon="fas:file-alt" class="w-4 h-4 mr-2 text-blue-500" />
+          <span class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+            <Icon icon="lucide:file-text" class="w-4 h-4 mr-2 text-blue-500" />
             文章数目
           </span>
           <span class="text-[#49b1f5] font-bold">{{ stats.posts }}</span>
         </div>
         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-          <span class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-            <Icon icon="fas:font" class="w-4 h-4 mr-2 text-green-500" />
+          <span class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+            <Icon icon="lucide:type" class="w-4 h-4 mr-2 text-green-500" />
             本站总字数
           </span>
           <span class="text-[#49b1f5] font-bold">10k+</span>
         </div>
         <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-          <span class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-            <Icon icon="fas:sync-alt" class="w-4 h-4 mr-2 text-purple-500" />
+          <span class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+            <Icon icon="lucide:refresh-cw" class="w-4 h-4 mr-2 text-purple-500" />
             最后更新
           </span>
           <span class="text-[#49b1f5] font-bold text-sm">{{ new Date().toLocaleDateString('zh-CN') }}</span>
@@ -312,21 +359,22 @@ function getTagColor(index: number) {
 <style scoped>
 .sidebar-card {
   opacity: 0;
-  transform: translateX(20px);
+  transform: scale(0.85);
+  transform-origin: center center;
 }
 
 .sidebar-card.animate-in {
-  animation: slideInRight 0.5s ease-out forwards;
+  animation: sidebarScaleIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-@keyframes slideInRight {
-  from {
+@keyframes sidebarScaleIn {
+  0% {
     opacity: 0;
-    transform: translateX(20px);
+    transform: scale(0.85);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateX(0);
+    transform: scale(1);
   }
 }
 </style>

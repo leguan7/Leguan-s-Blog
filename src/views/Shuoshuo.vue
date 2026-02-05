@@ -1,6 +1,48 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import { IMAGES, COVER_IMAGES } from '@/utils/assets'
+
+// Intersection Observer for animations
+const visibleCards = ref<Set<number>>(new Set())
+const cardElements = ref<Map<number, HTMLElement>>(new Map())
+let observer: IntersectionObserver | null = null
+
+const setCardRef = (el: any, index: number) => {
+  if (el) {
+    cardElements.value.set(index, el)
+  }
+}
+
+const isCardVisible = (index: number) => visibleCards.value.has(index)
+
+onMounted(() => {
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const index = (entry.target as any).__cardIndex as number
+        if (entry.isIntersecting && !visibleCards.value.has(index)) {
+          setTimeout(() => {
+            visibleCards.value.add(index)
+            visibleCards.value = new Set(visibleCards.value)
+          }, index * 100)
+          observer?.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
+  )
+
+  // Observe all stored elements
+  cardElements.value.forEach((el, index) => {
+    ;(el as any).__cardIndex = index
+    observer?.observe(el)
+  })
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
+})
 
 const shuoshuoList = [
   {
@@ -47,13 +89,13 @@ const shuoshuoList = [
 
 function getMoodIcon(mood: string) {
   const moods: Record<string, string> = {
-    happy: 'fas:smile-beam',
-    proud: 'fas:grin-stars',
-    thoughtful: 'fas:lightbulb',
-    excited: 'fas:heart',
-    sad: 'fas:sad-tear',
+    happy: 'lucide:smile',
+    proud: 'lucide:sparkles',
+    thoughtful: 'lucide:lightbulb',
+    excited: 'lucide:heart',
+    sad: 'lucide:frown',
   }
-  return moods[mood] || 'fas:meh'
+  return moods[mood] || 'lucide:meh'
 }
 
 function getMoodColor(mood: string) {
@@ -75,7 +117,7 @@ function getMoodColor(mood: string) {
       <div class="absolute inset-0 bg-black/30"></div>
       
       <div class="relative text-center text-white z-10">
-        <Icon icon="fas:feather-alt" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
+        <Icon icon="lucide:feather" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
         <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">说说</h1>
         <p class="mt-3 text-white/80 text-lg">记录生活的点点滴滴</p>
       </div>
@@ -91,9 +133,11 @@ function getMoodColor(mood: string) {
       <!-- 说说列表 -->
       <div class="space-y-5">
         <div 
-          v-for="shuoshuo in shuoshuoList"
+          v-for="(shuoshuo, index) in shuoshuoList"
           :key="shuoshuo.id"
-          class="card p-5"
+          :ref="(el) => setCardRef(el, index)"
+          class="card p-5 animate-card"
+          :class="{ 'animate-in': isCardVisible(index) }"
         >
           <!-- 头部 -->
           <div class="flex items-center mb-4">
@@ -107,7 +151,7 @@ function getMoodColor(mood: string) {
             <div class="ml-3">
               <div class="font-bold text-gray-800 dark:text-white">乐官</div>
               <div class="text-xs text-gray-500 flex items-center">
-                <Icon icon="fas:clock" class="w-3 h-3 mr-1" />
+                <Icon icon="lucide:clock" class="w-3 h-3 mr-1" />
                 {{ shuoshuo.time }}
               </div>
             </div>
@@ -146,15 +190,15 @@ function getMoodColor(mood: string) {
           <!-- 底部操作 -->
           <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-gray-700/50">
             <button class="flex items-center text-gray-500 hover:text-pink-500 transition-colors text-sm group">
-              <Icon icon="fas:heart" class="w-4 h-4 mr-1.5 group-hover:scale-110 transition-transform" />
+              <Icon icon="lucide:heart" class="w-4 h-4 mr-1.5 group-hover:scale-110 transition-transform" />
               <span>{{ shuoshuo.likes }}</span>
             </button>
             <button class="flex items-center text-gray-500 hover:text-[#49b1f5] transition-colors text-sm">
-              <Icon icon="fas:comment" class="w-4 h-4 mr-1.5" />
+              <Icon icon="lucide:message-circle" class="w-4 h-4 mr-1.5" />
               <span>评论</span>
             </button>
             <button class="flex items-center text-gray-500 hover:text-green-500 transition-colors text-sm">
-              <Icon icon="fas:share" class="w-4 h-4 mr-1.5" />
+              <Icon icon="lucide:share-2" class="w-4 h-4 mr-1.5" />
               <span>分享</span>
             </button>
           </div>
@@ -164,10 +208,33 @@ function getMoodColor(mood: string) {
       <!-- 加载更多 -->
       <div class="text-center mt-8">
         <button class="btn border border-[#49b1f5] text-[#49b1f5] hover:bg-[#49b1f5] hover:text-white">
-          <Icon icon="fas:plus" class="w-4 h-4 mr-2" />
+          <Icon icon="lucide:plus" class="w-4 h-4 mr-2" />
           加载更多
         </button>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.animate-card {
+  opacity: 0;
+  transform: scale(0.85);
+  transform-origin: center center;
+}
+
+.animate-card.animate-in {
+  animation: scaleIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+</style>

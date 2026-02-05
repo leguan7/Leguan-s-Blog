@@ -1,8 +1,51 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import { IMAGES } from '@/utils/assets'
 
 const avatar = IMAGES.avatar
+
+// Intersection Observer for animations
+const visibleCards = ref<Set<number>>(new Set())
+const cardRefs = ref<(HTMLElement | null)[]>([])
+let observer: IntersectionObserver | null = null
+
+const setCardRef = (el: any, index: number) => {
+  if (el) {
+    cardRefs.value[index] = el
+  }
+}
+
+const isCardVisible = (index: number) => visibleCards.value.has(index)
+
+onMounted(() => {
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const index = (entry.target as any).__cardIndex as number
+        if (entry.isIntersecting && !visibleCards.value.has(index)) {
+          setTimeout(() => {
+            visibleCards.value.add(index)
+            visibleCards.value = new Set(visibleCards.value)
+          }, index * 150)
+          observer?.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
+  )
+
+  cardRefs.value.forEach((el, index) => {
+    if (el) {
+      ;(el as any).__cardIndex = index
+      observer?.observe(el)
+    }
+  })
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
+})
 
 const skills = [
   { name: 'Vue.js', icon: 'fab:vuejs', color: '#42b883' },
@@ -14,9 +57,9 @@ const skills = [
 ]
 
 const timeline = [
-  { year: '2026', event: '开始写博客，分享技术与生活', icon: 'fas:pen' },
-  { year: '2025', event: '探索新技术，不断学习成长', icon: 'fas:rocket' },
-  { year: '2024', event: '在编程的道路上持续前行', icon: 'fas:code' },
+  { year: '2026', event: '开始写博客，分享技术与生活', icon: 'lucide:pen-line' },
+  { year: '2025', event: '探索新技术，不断学习成长', icon: 'lucide:rocket' },
+  { year: '2024', event: '在编程的道路上持续前行', icon: 'lucide:code-2' },
 ]
 </script>
 
@@ -48,9 +91,13 @@ const timeline = [
 
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <!-- 个人介绍 -->
-      <div class="card p-6 md:p-8 mb-6">
+      <div 
+        :ref="(el) => setCardRef(el, 0)"
+        class="card p-6 md:p-8 mb-6 animate-card"
+        :class="{ 'animate-in': isCardVisible(0) }"
+      >
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-5 flex items-center">
-          <Icon icon="fas:user" class="w-6 h-6 mr-2 text-[#49b1f5]" />
+          <Icon icon="lucide:user" class="w-6 h-6 mr-2 text-[#49b1f5]" />
           个人简介
         </h2>
         <div class="text-gray-600 dark:text-gray-400 space-y-4 leading-relaxed">
@@ -64,19 +111,19 @@ const timeline = [
           <p>这个博客是我记录生活、分享技术、沉淀思考的地方。</p>
           <ul class="space-y-2">
             <li class="flex items-center">
-              <Icon icon="fas:check-circle" class="w-5 h-5 text-green-500 mr-2" />
+              <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-500 mr-2" />
               技术分享与学习笔记
             </li>
             <li class="flex items-center">
-              <Icon icon="fas:check-circle" class="w-5 h-5 text-green-500 mr-2" />
+              <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-500 mr-2" />
               生活随笔与感悟
             </li>
             <li class="flex items-center">
-              <Icon icon="fas:check-circle" class="w-5 h-5 text-green-500 mr-2" />
+              <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-500 mr-2" />
               追番记录与动漫推荐
             </li>
             <li class="flex items-center">
-              <Icon icon="fas:check-circle" class="w-5 h-5 text-green-500 mr-2" />
+              <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-500 mr-2" />
               健身日志与自我提升
             </li>
           </ul>
@@ -84,9 +131,13 @@ const timeline = [
       </div>
 
       <!-- 技术栈 -->
-      <div class="card p-6 md:p-8 mb-6">
+      <div 
+        :ref="(el) => setCardRef(el, 1)"
+        class="card p-6 md:p-8 mb-6 animate-card"
+        :class="{ 'animate-in': isCardVisible(1) }"
+      >
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
-          <Icon icon="fas:code" class="w-6 h-6 mr-2 text-[#49b1f5]" />
+          <Icon icon="lucide:code-2" class="w-6 h-6 mr-2 text-[#49b1f5]" />
           技术栈
         </h2>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -102,9 +153,13 @@ const timeline = [
       </div>
 
       <!-- 时间线 -->
-      <div class="card p-6 md:p-8 mb-6">
+      <div 
+        :ref="(el) => setCardRef(el, 2)"
+        class="card p-6 md:p-8 mb-6 animate-card"
+        :class="{ 'animate-in': isCardVisible(2) }"
+      >
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
-          <Icon icon="fas:history" class="w-6 h-6 mr-2 text-[#49b1f5]" />
+          <Icon icon="lucide:history" class="w-6 h-6 mr-2 text-[#49b1f5]" />
           时间线
         </h2>
         <div class="relative pl-8">
@@ -129,9 +184,13 @@ const timeline = [
       </div>
 
       <!-- 联系方式 -->
-      <div class="card p-6 md:p-8">
+      <div 
+        :ref="(el) => setCardRef(el, 3)"
+        class="card p-6 md:p-8 animate-card"
+        :class="{ 'animate-in': isCardVisible(3) }"
+      >
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
-          <Icon icon="fas:envelope" class="w-6 h-6 mr-2 text-[#49b1f5]" />
+          <Icon icon="lucide:mail" class="w-6 h-6 mr-2 text-[#49b1f5]" />
           联系我
         </h2>
         <div class="flex flex-wrap gap-3">
@@ -140,18 +199,32 @@ const timeline = [
             target="_blank"
             class="btn bg-gray-800 text-white hover:bg-gray-900"
           >
-            <Icon icon="fab:github" class="w-5 h-5 mr-2" />
+            <Icon icon="ri:github-fill" class="w-5 h-5 mr-2" />
             GitHub
+          </a>
+          <a 
+            href="#"
+            class="btn bg-[#12B7F5] text-white hover:bg-[#0aa3e0]"
+          >
+            <Icon icon="ri:qq-fill" class="w-5 h-5 mr-2" />
+            QQ
+          </a>
+          <a 
+            href="#"
+            class="btn bg-[#07C160] text-white hover:bg-[#06a850]"
+          >
+            <Icon icon="ri:wechat-fill" class="w-5 h-5 mr-2" />
+            WeChat
           </a>
           <a 
             href="mailto:leguan@example.com"
             class="btn bg-red-500 text-white hover:bg-red-600"
           >
-            <Icon icon="fas:envelope" class="w-5 h-5 mr-2" />
+            <Icon icon="lucide:mail" class="w-5 h-5 mr-2" />
             Email
           </a>
           <router-link to="/messageboard" class="btn btn-primary">
-            <Icon icon="fas:comment-dots" class="w-5 h-5 mr-2" />
+            <Icon icon="lucide:message-circle" class="w-5 h-5 mr-2" />
             留言板
           </router-link>
         </div>
@@ -159,3 +232,26 @@ const timeline = [
     </div>
   </div>
 </template>
+
+<style scoped>
+.animate-card {
+  opacity: 0;
+  transform: scale(0.85);
+  transform-origin: center center;
+}
+
+.animate-card.animate-in {
+  animation: scaleIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+</style>

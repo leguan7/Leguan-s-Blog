@@ -5,35 +5,38 @@ import { Icon } from '@iconify/vue'
 const currentYear = new Date().getFullYear()
 const isVisible = ref(false)
 
+const footerRef = ref<HTMLElement | null>(null)
+
 onMounted(() => {
   // 观察 footer 进入视图
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && !isVisible.value) {
           isVisible.value = true
+          observer.unobserve(entry.target)
         }
       })
     },
-    { threshold: 0.2 }
+    { threshold: 0.15, rootMargin: '0px 0px -50px 0px' }
   )
   
-  const footer = document.querySelector('footer')
-  if (footer) {
-    observer.observe(footer)
+  if (footerRef.value) {
+    observer.observe(footerRef.value)
   }
 })
 
 const socialLinks = [
-  { icon: 'fab:github', href: 'https://github.com/leguan7', label: 'GitHub', color: 'hover:bg-[#333]' },
-  { icon: 'fas:envelope', href: 'mailto:leguan@example.com', label: 'Email', color: 'hover:bg-gradient-to-br hover:from-orange-500 hover:to-pink-500' },
-  { icon: 'fab:qq', href: '#', label: 'QQ', color: 'hover:bg-[#12B7F5]' },
-  { icon: 'fas:comment-dots', href: '/messageboard', label: '留言板', isRouter: true, color: 'hover:bg-[#49b1f5]' },
+  { icon: 'ri:github-fill', href: 'https://github.com/leguan7', label: 'GitHub', color: 'hover:bg-[#333]' },
+  { icon: 'lucide:mail', href: 'mailto:leguan@example.com', label: 'Email', color: 'hover:bg-gradient-to-br hover:from-orange-500 hover:to-pink-500' },
+  { icon: 'ri:qq-fill', href: '#', label: 'QQ', color: 'hover:bg-[#12B7F5]' },
+  { icon: 'ri:wechat-fill', href: '#', label: 'WeChat', color: 'hover:bg-[#07C160]' },
+  { icon: 'lucide:message-circle', href: '/messageboard', label: '留言板', isRouter: true, color: 'hover:bg-[#49b1f5]' },
 ]
 </script>
 
 <template>
-  <footer class="relative mt-8">
+  <footer ref="footerRef" class="relative mt-8">
     <!-- 半透明遮罩 -->
     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/40 backdrop-blur-sm"></div>
     
@@ -48,14 +51,14 @@ const socialLinks = [
           <div class="flex items-center justify-center mb-4">
             <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#49b1f5] to-[#0abcf9] p-[2px] shadow-lg shadow-[#49b1f5]/30">
               <div class="w-full h-full rounded-2xl bg-black/50 backdrop-blur flex items-center justify-center">
-                <Icon icon="fas:leaf" class="w-8 h-8 text-white" />
+                <Icon icon="lucide:leaf" class="w-8 h-8 text-white" />
               </div>
             </div>
           </div>
           <h3 class="text-2xl font-bold mb-3 bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
             Leguan's Blog
           </h3>
-          <p class="text-white/50 italic text-sm leading-relaxed max-w-md">
+          <p class="text-white/60 italic text-sm leading-relaxed max-w-md">
             "The furthest distance in the world<br/>
             is not between life and death<br/>
             But when I stand in front of you<br/>
@@ -95,36 +98,36 @@ const socialLinks = [
           :class="{ 'animate-in': isVisible }"
           :style="{ animationDelay: '200ms' }"
         >
-          <router-link to="/" class="text-white/60 hover:text-[#49b1f5] transition-colors flex items-center">
-            <Icon icon="fas:home" class="w-3.5 h-3.5 mr-1.5" />
+          <router-link to="/" class="text-white/70 hover:text-[#49b1f5] transition-colors flex items-center">
+            <Icon icon="lucide:home" class="w-3.5 h-3.5 mr-1.5" />
             首页
           </router-link>
-          <router-link to="/archives" class="text-white/60 hover:text-[#49b1f5] transition-colors flex items-center">
-            <Icon icon="fas:archive" class="w-3.5 h-3.5 mr-1.5" />
+          <router-link to="/archives" class="text-white/70 hover:text-[#49b1f5] transition-colors flex items-center">
+            <Icon icon="lucide:archive" class="w-3.5 h-3.5 mr-1.5" />
             归档
           </router-link>
-          <router-link to="/tags" class="text-white/60 hover:text-[#49b1f5] transition-colors flex items-center">
-            <Icon icon="fas:tags" class="w-3.5 h-3.5 mr-1.5" />
+          <router-link to="/tags" class="text-white/70 hover:text-[#49b1f5] transition-colors flex items-center">
+            <Icon icon="lucide:tags" class="w-3.5 h-3.5 mr-1.5" />
             标签
           </router-link>
-          <router-link to="/categories" class="text-white/60 hover:text-[#49b1f5] transition-colors flex items-center">
-            <Icon icon="fas:folder" class="w-3.5 h-3.5 mr-1.5" />
+          <router-link to="/categories" class="text-white/70 hover:text-[#49b1f5] transition-colors flex items-center">
+            <Icon icon="lucide:folder" class="w-3.5 h-3.5 mr-1.5" />
             分类
           </router-link>
-          <router-link to="/about" class="text-white/60 hover:text-[#49b1f5] transition-colors flex items-center">
-            <Icon icon="fas:user" class="w-3.5 h-3.5 mr-1.5" />
+          <router-link to="/about" class="text-white/70 hover:text-[#49b1f5] transition-colors flex items-center">
+            <Icon icon="lucide:user" class="w-3.5 h-3.5 mr-1.5" />
             关于
           </router-link>
         </div>
 
         <!-- Copyright -->
         <div 
-          class="text-center text-sm text-white/40 space-y-2 pt-6 border-t border-white/10 w-full footer-item"
+          class="text-center text-sm text-white/50 space-y-2 pt-6 border-t border-white/10 w-full footer-item"
           :class="{ 'animate-in': isVisible }"
           :style="{ animationDelay: '300ms' }"
         >
           <p class="flex items-center justify-center">
-            <Icon icon="fas:copyright" class="w-3.5 h-3.5 mr-1.5" />
+            <Icon icon="lucide:copyright" class="w-3.5 h-3.5 mr-1.5" />
             2025 - {{ currentYear }} By 
             <span class="text-[#49b1f5] ml-1 font-medium">Leguan</span>
           </p>
@@ -140,8 +143,8 @@ const socialLinks = [
               Vite
             </a>
           </p>
-          <p class="flex items-center justify-center text-xs text-white/30 mt-2">
-            <Icon icon="fas:heart" class="w-3 h-3 mr-1 text-red-500 animate-pulse" />
+          <p class="flex items-center justify-center text-xs text-white/40 mt-2">
+            <Icon icon="lucide:heart" class="w-3 h-3 mr-1 text-red-500 animate-pulse" />
             感谢访问
           </p>
         </div>
@@ -153,21 +156,22 @@ const socialLinks = [
 <style scoped>
 .footer-item {
   opacity: 0;
-  transform: translateY(20px);
+  transform: scale(0.85);
+  transform-origin: center center;
 }
 
 .footer-item.animate-in {
-  animation: fadeInUp 0.6s ease-out forwards;
+  animation: scaleIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-@keyframes fadeInUp {
-  from {
+@keyframes scaleIn {
+  0% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: scale(0.85);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
   }
 }
 </style>

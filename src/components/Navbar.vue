@@ -17,39 +17,39 @@ const searchInputRef = ref<HTMLInputElement | null>(null)
 
 // 导航菜单 - Kyle's Blog 一致的结构
 const navItems = [
-  { name: '首页', path: '/', icon: 'fas:home' },
+  { name: '首页', path: '/', icon: 'lucide:home' },
   { 
     name: '文章', 
-    icon: 'fas:book',
+    icon: 'lucide:book-open',
     children: [
-      { name: '归档', path: '/archives', icon: 'fas:archive' },
-      { name: '标签', path: '/tags', icon: 'fas:tags' },
-      { name: '分类', path: '/categories', icon: 'fas:folder-open' }
+      { name: '归档', path: '/archives', icon: 'lucide:archive' },
+      { name: '标签', path: '/tags', icon: 'lucide:tags' },
+      { name: '分类', path: '/categories', icon: 'lucide:folder-open' }
     ]
   },
   { 
     name: '休闲', 
-    icon: 'fas:coffee',
+    icon: 'lucide:coffee',
     children: [
-      { name: '健身日寄', path: '/fitness', icon: 'fas:dumbbell' },
-      { name: '番剧', path: '/bangumi', icon: 'fas:video' },
-      { name: '记忆胶囊', path: '/memory', icon: 'fas:camera-retro' }
+      { name: '健身日寄', path: '/fitness', icon: 'lucide:dumbbell' },
+      { name: '番剧', path: '/bangumi', icon: 'lucide:clapperboard' },
+      { name: '记忆胶囊', path: '/memory', icon: 'lucide:camera' }
     ]
   },
   { 
     name: '社交', 
-    icon: 'fas:users',
+    icon: 'lucide:users',
     children: [
-      { name: '留言板', path: '/messageboard', icon: 'fas:comment-dots' },
-      { name: '友人帐', path: '/links', icon: 'fas:user-friends' }
+      { name: '留言板', path: '/messageboard', icon: 'lucide:message-circle' },
+      { name: '友人帐', path: '/links', icon: 'lucide:user-plus' }
     ]
   },
   { 
     name: '个人', 
-    icon: 'fas:user',
+    icon: 'lucide:user',
     children: [
-      { name: '闲言碎语', path: '/shuoshuo', icon: 'fas:comment' },
-      { name: '关于我', path: '/about', icon: 'fas:heart' }
+      { name: '闲言碎语', path: '/shuoshuo', icon: 'lucide:message-square' },
+      { name: '关于我', path: '/about', icon: 'lucide:heart' }
     ]
   }
 ]
@@ -154,7 +154,7 @@ onUnmounted(() => {
               >
                 <Icon :icon="item.icon" class="w-4 h-4 transition-transform group-hover/btn:scale-110" />
                 <span>{{ item.name }}</span>
-                <Icon icon="fas:chevron-down" class="w-3 h-3 transition-transform duration-300 group-hover:rotate-180" />
+                <Icon icon="lucide:chevron-down" class="w-3 h-3 transition-transform duration-300 group-hover:rotate-180" />
               </button>
               
               <!-- 下拉菜单 - 优化样式 -->
@@ -203,7 +203,7 @@ onUnmounted(() => {
               : 'text-white/90 hover:text-white'"
             title="搜索 (Ctrl+K)"
           >
-            <Icon icon="fas:search" class="w-4 h-4 transition-transform group-hover/search:scale-110" />
+            <Icon icon="lucide:search" class="w-4 h-4 transition-transform group-hover/search:scale-110" />
             <kbd class="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] rounded bg-white/20 text-current">
               <span class="text-[8px]">⌘</span>K
             </kbd>
@@ -217,7 +217,7 @@ onUnmounted(() => {
             class="p-2 rounded-full transition-colors"
             :class="isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'"
           >
-            <Icon icon="fas:search" class="w-5 h-5" />
+            <Icon icon="lucide:search" class="w-5 h-5" />
           </button>
           <button 
             @click="isMenuOpen = !isMenuOpen"
@@ -225,7 +225,7 @@ onUnmounted(() => {
             :class="isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'"
           >
             <Icon 
-              :icon="isMenuOpen ? 'fas:times' : 'fas:bars'" 
+              :icon="isMenuOpen ? 'lucide:x' : 'lucide:menu'" 
               class="w-5 h-5 transition-transform duration-300"
               :class="{ 'rotate-90': isMenuOpen }"
             />
@@ -250,7 +250,7 @@ onUnmounted(() => {
             <!-- 搜索框 -->
             <div class="px-4 mb-4">
               <div class="relative">
-                <Icon icon="fas:search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Icon icon="lucide:search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input 
                   v-model="searchInput"
                   type="text"
@@ -274,8 +274,8 @@ onUnmounted(() => {
                     <span class="font-medium">{{ item.name }}</span>
                   </div>
                   <Icon 
-                    icon="fas:chevron-down" 
-                    class="w-4 h-4 transition-transform duration-300 text-gray-400"
+                    icon="lucide:chevron-down" 
+                    class="w-4 h-4 transition-transform duration-300 text-gray-500"
                     :class="{ 'rotate-180 text-[#49b1f5]': activeDropdown === item.name }"
                   />
                 </button>
@@ -319,7 +319,7 @@ onUnmounted(() => {
                   <Icon :icon="item.icon" class="w-4 h-4" />
                 </div>
                 <span class="font-medium">{{ item.name }}</span>
-                <Icon v-if="isActive(item.path!)" icon="fas:check" class="w-4 h-4 ml-auto text-[#49b1f5]" />
+                <Icon v-if="isActive(item.path!)" icon="lucide:check" class="w-4 h-4 ml-auto text-[#49b1f5]" />
               </router-link>
             </template>
           </div>
@@ -358,7 +358,7 @@ onUnmounted(() => {
                 <!-- 搜索头部 -->
                 <div class="flex items-center px-6 py-5 border-b border-gray-200/50 dark:border-gray-700/50">
                   <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#49b1f5] to-[#0abcf9] flex items-center justify-center mr-4">
-                    <Icon icon="fas:search" class="w-5 h-5 text-white" />
+                    <Icon icon="lucide:search" class="w-5 h-5 text-white" />
                   </div>
                   <input 
                     ref="searchInputRef"
@@ -372,14 +372,14 @@ onUnmounted(() => {
                     @click="isSearchOpen = false" 
                     class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
                   >
-                    <Icon icon="fas:times" class="w-5 h-5" />
+                    <Icon icon="lucide:x" class="w-5 h-5" />
                   </button>
                 </div>
                 
                 <!-- 搜索提示 -->
                 <div class="p-8 text-center">
                   <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#49b1f5]/10 to-[#0abcf9]/10 flex items-center justify-center">
-                    <Icon icon="fas:lightbulb" class="w-10 h-10 text-[#49b1f5] animate-pulse" />
+                    <Icon icon="lucide:lightbulb" class="w-10 h-10 text-[#49b1f5] animate-pulse" />
                   </div>
                   <p class="text-gray-500 dark:text-gray-400 mb-2">输入关键词后按 Enter 搜索</p>
                   <div class="flex items-center justify-center space-x-2 text-xs text-gray-400">

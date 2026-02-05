@@ -1,6 +1,46 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import { COVER_IMAGES } from '@/utils/assets'
+
+// Intersection Observer for animations
+const visibleCards = ref<Set<string>>(new Set())
+const cardElements = ref<Map<string, HTMLElement>>(new Map())
+let observer: IntersectionObserver | null = null
+
+const setCardRef = (el: any, key: string) => {
+  if (el) {
+    cardElements.value.set(key, el)
+  }
+}
+
+const isCardVisible = (key: string) => visibleCards.value.has(key)
+
+onMounted(() => {
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const key = (entry.target as any).__cardKey as string
+        if (entry.isIntersecting && !visibleCards.value.has(key)) {
+          visibleCards.value.add(key)
+          visibleCards.value = new Set(visibleCards.value)
+          observer?.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
+  )
+
+  // Observe all stored elements
+  cardElements.value.forEach((el, key) => {
+    ;(el as any).__cardKey = key
+    observer?.observe(el)
+  })
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
+})
 
 const memories = [
   {
@@ -36,7 +76,7 @@ const memories = [
       <div class="absolute inset-0 bg-black/40"></div>
       
       <div class="relative text-center text-white z-10">
-        <Icon icon="fas:images" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
+        <Icon icon="lucide:images" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
         <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">相册</h1>
         <p class="mt-3 text-white/80 text-lg">时光机器，记录美好瞬间</p>
       </div>
@@ -50,7 +90,13 @@ const memories = [
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <!-- 年份分组 -->
-      <div v-for="group in memories" :key="group.year" class="mb-12 last:mb-0">
+      <div 
+        v-for="(group, groupIndex) in memories" 
+        :key="group.year" 
+        :ref="(el) => setCardRef(el, `group-${groupIndex}`)"
+        class="mb-12 last:mb-0 animate-card"
+        :class="{ 'animate-in': isCardVisible(`group-${groupIndex}`) }"
+      >
         <!-- 年份标题 -->
         <div class="flex items-center mb-6">
           <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#49b1f5] to-[#0abcf9] flex items-center justify-center text-white font-bold text-lg shadow-lg">
@@ -64,7 +110,10 @@ const memories = [
           <div 
             v-for="(item, index) in group.items"
             :key="index"
-            class="card overflow-hidden group cursor-pointer"
+            :ref="(el) => setCardRef(el, `item-${groupIndex}-${index}`)"
+            class="card overflow-hidden group cursor-pointer animate-card"
+            :class="{ 'animate-in': isCardVisible(`item-${groupIndex}-${index}`) }"
+            :style="{ animationDelay: `${index * 100}ms` }"
           >
             <div class="aspect-[4/3] relative overflow-hidden">
               <img 
@@ -80,7 +129,7 @@ const memories = [
               </div>
               <!-- 角落图标 -->
               <div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                <Icon icon="fas:expand" class="w-4 h-4" />
+                <Icon icon="lucide:expand" class="w-4 h-4" />
               </div>
             </div>
           </div>
@@ -88,24 +137,28 @@ const memories = [
       </div>
 
       <!-- 底部统计 -->
-      <div class="card p-6 text-center mt-8 bg-gradient-to-r from-purple-500/10 to-pink-500/10">
+      <div 
+        :ref="(el) => setCardRef(el, 'stats')"
+        class="card p-6 text-center mt-8 bg-gradient-to-r from-purple-500/10 to-pink-500/10 animate-card"
+        :class="{ 'animate-in': isCardVisible('stats') }"
+      >
         <div class="flex justify-around">
           <div>
-            <Icon icon="fas:images" class="w-8 h-8 text-purple-500 mx-auto mb-1" />
+            <Icon icon="lucide:images" class="w-8 h-8 text-purple-500 mx-auto mb-1" />
             <div class="text-2xl font-bold text-gray-800 dark:text-white">
               {{ memories.reduce((acc, g) => acc + g.items.length, 0) }}
             </div>
             <div class="text-sm text-gray-500">照片数量</div>
           </div>
           <div>
-            <Icon icon="fas:calendar-alt" class="w-8 h-8 text-pink-500 mx-auto mb-1" />
+            <Icon icon="lucide:calendar" class="w-8 h-8 text-pink-500 mx-auto mb-1" />
             <div class="text-2xl font-bold text-gray-800 dark:text-white">
               {{ memories.length }}
             </div>
             <div class="text-sm text-gray-500">记录年份</div>
           </div>
           <div>
-            <Icon icon="fas:heart" class="w-8 h-8 text-red-500 mx-auto mb-1" />
+            <Icon icon="lucide:heart" class="w-8 h-8 text-red-500 mx-auto mb-1" />
             <div class="text-2xl font-bold text-gray-800 dark:text-white">∞</div>
             <div class="text-sm text-gray-500">美好回忆</div>
           </div>
@@ -114,3 +167,26 @@ const memories = [
     </div>
   </div>
 </template>
+
+<style scoped>
+.animate-card {
+  opacity: 0;
+  transform: scale(0.85);
+  transform-origin: center center;
+}
+
+.animate-card.animate-in {
+  animation: scaleIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+</style>

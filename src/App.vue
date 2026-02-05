@@ -140,7 +140,7 @@ function scrollToTop() {
         class="group"
       >
         <Icon 
-          :icon="blogStore.isDark ? 'fas:sun' : 'fas:moon'" 
+          :icon="blogStore.isDark ? 'lucide:sun' : 'lucide:moon'" 
           class="w-5 h-5 transition-transform group-hover:rotate-180 duration-500" 
         />
       </button>
@@ -153,7 +153,7 @@ function scrollToTop() {
           title="返回顶部"
           class="relative group"
         >
-          <Icon icon="fas:arrow-up" class="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+          <Icon icon="lucide:arrow-up" class="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
           <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 text-[10px] font-bold">
             {{ scrollPercent }}%
           </span>

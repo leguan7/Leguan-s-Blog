@@ -1,6 +1,48 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import { COVER_IMAGES } from '@/utils/assets'
+
+// Intersection Observer for animations
+const visibleCards = ref<Set<number>>(new Set())
+const cardElements = ref<Map<number, HTMLElement>>(new Map())
+let observer: IntersectionObserver | null = null
+
+const setCardRef = (el: any, index: number) => {
+  if (el) {
+    cardElements.value.set(index, el)
+  }
+}
+
+const isCardVisible = (index: number) => visibleCards.value.has(index)
+
+onMounted(() => {
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const index = (entry.target as any).__cardIndex as number
+        if (entry.isIntersecting && !visibleCards.value.has(index)) {
+          setTimeout(() => {
+            visibleCards.value.add(index)
+            visibleCards.value = new Set(visibleCards.value)
+          }, index * 100)
+          observer?.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
+  )
+
+  // Observe all stored elements
+  cardElements.value.forEach((el, index) => {
+    ;(el as any).__cardIndex = index
+    observer?.observe(el)
+  })
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
+})
 
 const bangumiList = [
   { name: '孤独摇滚', status: '已看完', rating: '9.5', cover: COVER_IMAGES[0], tags: ['日常', '音乐', '治愈'] },
@@ -28,7 +70,7 @@ function getStatusColor(status: string) {
       <div class="absolute inset-0 bg-black/40"></div>
       
       <div class="relative text-center text-white z-10">
-        <Icon icon="fas:video" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
+        <Icon icon="lucide:clapperboard" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
         <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">番剧</h1>
         <p class="mt-3 text-white/80 text-lg">二次元，是精神的故乡</p>
       </div>
@@ -44,9 +86,11 @@ function getStatusColor(status: string) {
       <!-- 番剧网格 -->
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <div 
-          v-for="bangumi in bangumiList"
+          v-for="(bangumi, index) in bangumiList"
           :key="bangumi.name"
-          class="card overflow-hidden group"
+          :ref="(el) => setCardRef(el, index)"
+          class="card overflow-hidden group animate-card"
+          :class="{ 'animate-in': isCardVisible(index) }"
         >
           <!-- 封面 -->
           <div class="aspect-[16/9] relative overflow-hidden">
@@ -65,7 +109,7 @@ function getStatusColor(status: string) {
             </span>
             <!-- 评分 -->
             <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center text-yellow-400 text-sm">
-              <Icon icon="fas:star" class="w-3.5 h-3.5 mr-1" />
+              <Icon icon="lucide:star" class="w-3.5 h-3.5 mr-1" />
               {{ bangumi.rating }}
             </div>
             <!-- 遮罩 -->
@@ -91,7 +135,11 @@ function getStatusColor(status: string) {
       </div>
 
       <!-- 统计 -->
-      <div class="card p-6 mt-8">
+      <div 
+        :ref="(el) => setCardRef(el, bangumiList.length)"
+        class="card p-6 mt-8 animate-card"
+        :class="{ 'animate-in': isCardVisible(bangumiList.length) }"
+      >
         <div class="flex justify-around text-center">
           <div>
             <div class="text-3xl font-bold text-[#49b1f5]">{{ bangumiList.length }}</div>
@@ -110,3 +158,26 @@ function getStatusColor(status: string) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.animate-card {
+  opacity: 0;
+  transform: scale(0.85);
+  transform-origin: center center;
+}
+
+.animate-card.animate-in {
+  animation: scaleIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+</style>

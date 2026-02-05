@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import type { Post } from '@/types'
 import { formatDate, estimateReadingTime } from '@/utils/markdown'
@@ -11,14 +11,34 @@ const props = defineProps<{
   index?: number
 }>()
 
+const cardRef = ref<HTMLElement | null>(null)
 const isVisible = ref(false)
+let observer: IntersectionObserver | null = null
 
 onMounted(() => {
-  // 延迟显示动画
-  const delay = (props.index || 0) * 100
-  setTimeout(() => {
-    isVisible.value = true
-  }, delay)
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !isVisible.value) {
+          // 根据 index 添加延迟，实现错落动画
+          const delay = (props.index || 0) * 150
+          setTimeout(() => {
+            isVisible.value = true
+          }, delay)
+          observer?.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
+  )
+
+  if (cardRef.value) {
+    observer.observe(cardRef.value)
+  }
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
 })
 
 const readingTime = computed(() => estimateReadingTime(props.post.content))
@@ -47,12 +67,12 @@ const categoryGradient = computed(() => {
 
 <template>
   <article 
+    ref="cardRef"
     class="card overflow-hidden group post-card"
     :class="[
       layout === 'right' ? 'md:flex md:flex-row-reverse' : 'md:flex',
       { 'animate-in': isVisible }
     ]"
-    :style="{ animationDelay: `${(index || 0) * 100}ms` }"
   >
     <!-- 封面图 -->
     <router-link 
@@ -84,14 +104,14 @@ const categoryGradient = computed(() => {
           v-if="post.sticky"
           class="absolute top-4 right-4 bg-gradient-to-br from-orange-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg flex items-center"
         >
-          <Icon icon="fas:thumbtack" class="w-3 h-3 mr-1" />
+          <Icon icon="lucide:pin" class="w-3 h-3 mr-1" />
           置顶
         </div>
 
         <!-- 悬浮显示阅读按钮 -->
         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
           <span class="px-4 py-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full text-sm font-medium text-gray-800 dark:text-white shadow-lg flex items-center">
-            <Icon icon="fas:book-open" class="w-4 h-4 mr-2 text-[#49b1f5]" />
+            <Icon icon="lucide:book-open" class="w-4 h-4 mr-2 text-[#49b1f5]" />
             阅读全文
           </span>
         </div>
@@ -109,7 +129,7 @@ const categoryGradient = computed(() => {
           class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-gradient-to-r text-white shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300"
           :class="categoryGradient"
         >
-          <Icon icon="fas:folder" class="w-3 h-3 mr-1" />
+          <Icon icon="lucide:folder" class="w-3 h-3 mr-1" />
           {{ category }}
         </router-link>
       </div>
@@ -122,7 +142,7 @@ const categoryGradient = computed(() => {
       </router-link>
 
       <!-- 摘要 -->
-      <p class="mt-3 text-gray-600 dark:text-gray-400 line-clamp-3 leading-relaxed text-sm md:text-base">
+      <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3 leading-relaxed text-sm md:text-base">
         {{ post.excerpt }}
       </p>
 
@@ -134,20 +154,20 @@ const categoryGradient = computed(() => {
             v-for="tag in post.tags.slice(0, 3)"
             :key="tag"
             :to="{ path: '/tags', query: { tag } }"
-            class="text-xs px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 hover:bg-[#49b1f5] hover:text-white transition-all duration-300 flex items-center"
+            class="text-xs px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 hover:bg-[#49b1f5] hover:text-white transition-all duration-300 flex items-center"
           >
-            <Icon icon="fas:hashtag" class="w-2.5 h-2.5 mr-0.5 opacity-70" />
+            <Icon icon="lucide:hash" class="w-2.5 h-2.5 mr-0.5" />
             {{ tag }}
           </router-link>
-          <span v-if="post.tags.length > 3" class="text-xs text-gray-400 self-center">
+          <span v-if="post.tags.length > 3" class="text-xs text-gray-500 dark:text-gray-400 self-center">
             +{{ post.tags.length - 3 }}
           </span>
         </div>
 
         <!-- 阅读信息 -->
-        <div class="flex items-center space-x-3 text-xs text-gray-400">
+        <div class="flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400">
           <span class="flex items-center">
-            <Icon icon="fas:clock" class="w-3.5 h-3.5 mr-1 text-[#49b1f5]" />
+            <Icon icon="lucide:clock" class="w-3.5 h-3.5 mr-1 text-[#49b1f5]" />
             {{ readingTime }} 分钟
           </span>
         </div>
@@ -165,21 +185,22 @@ const categoryGradient = computed(() => {
 <style scoped>
 .post-card {
   opacity: 0;
-  transform: translateY(30px);
+  transform: scale(0.85);
+  transform-origin: center center;
 }
 
 .post-card.animate-in {
-  animation: slideUp 0.6s ease-out forwards;
+  animation: cardScaleIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-@keyframes slideUp {
-  from {
+@keyframes cardScaleIn {
+  0% {
     opacity: 0;
-    transform: translateY(30px);
+    transform: scale(0.85);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
   }
 }
 </style>
