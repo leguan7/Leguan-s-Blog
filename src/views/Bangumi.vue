@@ -1,129 +1,111 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
+import { COVER_IMAGES } from '@/utils/assets'
 
-const bangumis = ref([
-  {
-    id: 1,
-    name: '葬送的芙莉莲',
-    cover: 'https://placehold.co/300x400/49b1f5/white?text=葬送的芙莉莲',
-    status: 'watching',
-    progress: '28/28',
-    rating: 5,
-    comment: '神作，强烈推荐'
-  },
-  {
-    id: 2,
-    name: '咒术回战',
-    cover: 'https://placehold.co/300x400/f59e0b/white?text=咒术回战',
-    status: 'watching',
-    progress: '23/??',
-    rating: 4,
-    comment: '打斗场面炸裂'
-  },
-])
+const bangumiList = [
+  { name: '孤独摇滚', status: '已看完', rating: '9.5', cover: COVER_IMAGES[0], tags: ['日常', '音乐', '治愈'] },
+  { name: '葬送的芙莉莲', status: '追番中', rating: '9.8', cover: COVER_IMAGES[1], tags: ['奇幻', '冒险', '治愈'] },
+  { name: '间谍过家家', status: '已看完', rating: '9.2', cover: COVER_IMAGES[2], tags: ['喜剧', '动作', '家庭'] },
+  { name: '鬼灭之刃', status: '追番中', rating: '9.0', cover: COVER_IMAGES[3], tags: ['战斗', '热血', '超自然'] },
+  { name: '咒术回战', status: '已看完', rating: '8.8', cover: COVER_IMAGES[4], tags: ['战斗', '超自然', '热血'] },
+  { name: '进击的巨人', status: '已看完', rating: '9.9', cover: COVER_IMAGES[5], tags: ['战斗', '剧情', '史诗'] },
+]
 
-const statusMap = {
-  watching: { label: '在看', color: 'bg-green-500' },
-  completed: { label: '已看', color: 'bg-blue-500' },
-  planned: { label: '想看', color: 'bg-yellow-500' },
-  dropped: { label: '弃坑', color: 'bg-red-500' },
+function getStatusColor(status: string) {
+  switch (status) {
+    case '追番中': return 'bg-green-500'
+    case '已看完': return 'bg-blue-500'
+    case '想看': return 'bg-yellow-500'
+    default: return 'bg-gray-500'
+  }
 }
 </script>
 
 <template>
   <div>
     <!-- Banner -->
-    <header class="relative h-[40vh] min-h-[300px] flex items-center justify-center">
-      <div 
-        class="absolute inset-0 bg-cover bg-center bg-fixed"
-        style="background-image: url('/img/default-cover.jpg');"
-      >
-        <div class="absolute inset-0 bg-black/40"></div>
-      </div>
+    <header class="relative h-[45vh] min-h-[320px] flex items-center justify-center overflow-hidden">
+      <div class="absolute inset-0 bg-black/40"></div>
       
-      <div class="relative text-center text-white">
-        <Icon icon="fas:video" class="w-16 h-16 mx-auto mb-4 opacity-80" />
-        <h1 class="text-4xl font-bold">番剧</h1>
-        <p class="mt-2 text-white/80">我的追番记录</p>
+      <div class="relative text-center text-white z-10">
+        <Icon icon="fas:video" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">番剧</h1>
+        <p class="mt-3 text-white/80 text-lg">二次元，是精神的故乡</p>
       </div>
 
-      <div class="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 100" fill="none" class="w-full">
-          <path d="M0 50L48 45.7C96 41.3 192 32.7 288 30.2C384 27.7 480 31.3 576 38.3C672 45.3 768 55.7 864 58.2C960 60.7 1056 55.3 1152 48.3C1248 41.3 1344 32.7 1392 28.3L1440 24V100H1392C1344 100 1248 100 1152 100C1056 100 960 100 864 100C768 100 672 100 576 100C480 100 384 100 288 100C192 100 96 100 48 100H0V50Z" fill="rgba(255,255,255,0.1)"/>
+      <div class="wave-divider">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+          <path d="M0,50 C150,100 350,0 600,50 C850,100 1050,0 1200,50 C1350,100 1440,50 1440,50 L1440,100 L0,100 Z" fill="rgba(255,255,255,0.1)"/>
         </svg>
       </div>
     </header>
 
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Stats -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div class="card p-5 text-center">
-          <div class="text-3xl font-bold text-[#49b1f5]">{{ bangumis.length }}</div>
-          <div class="text-sm text-gray-500">总计</div>
-        </div>
-        <div class="card p-5 text-center">
-          <div class="text-3xl font-bold text-green-500">{{ bangumis.filter(b => b.status === 'watching').length }}</div>
-          <div class="text-sm text-gray-500">在看</div>
-        </div>
-        <div class="card p-5 text-center">
-          <div class="text-3xl font-bold text-blue-500">{{ bangumis.filter(b => b.status === 'completed').length }}</div>
-          <div class="text-sm text-gray-500">已看</div>
-        </div>
-        <div class="card p-5 text-center">
-          <div class="text-3xl font-bold text-yellow-500">{{ bangumis.filter(b => b.status === 'planned').length }}</div>
-          <div class="text-sm text-gray-500">想看</div>
-        </div>
-      </div>
-
-      <!-- Bangumi Grid -->
-      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <!-- 番剧网格 -->
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <div 
-          v-for="bangumi in bangumis"
-          :key="bangumi.id"
+          v-for="bangumi in bangumiList"
+          :key="bangumi.name"
           class="card overflow-hidden group"
         >
-          <div class="relative aspect-[3/4] overflow-hidden">
+          <!-- 封面 -->
+          <div class="aspect-[16/9] relative overflow-hidden">
             <img 
-              :src="bangumi.cover"
+              :src="bangumi.cover" 
               :alt="bangumi.name"
-              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              loading="lazy"
             />
-            <div 
-              class="absolute top-3 left-3 px-2 py-1 text-xs font-medium text-white rounded-full"
-              :class="statusMap[bangumi.status as keyof typeof statusMap].color"
+            <!-- 状态角标 -->
+            <span 
+              class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-white text-xs font-medium"
+              :class="getStatusColor(bangumi.status)"
             >
-              {{ statusMap[bangumi.status as keyof typeof statusMap].label }}
+              {{ bangumi.status }}
+            </span>
+            <!-- 评分 -->
+            <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center text-yellow-400 text-sm">
+              <Icon icon="fas:star" class="w-3.5 h-3.5 mr-1" />
+              {{ bangumi.rating }}
             </div>
+            <!-- 遮罩 -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </div>
 
+          <!-- 信息 -->
           <div class="p-4">
-            <h3 class="font-bold text-gray-800 dark:text-white line-clamp-1">{{ bangumi.name }}</h3>
-            
-            <div class="flex items-center space-x-0.5 mt-2">
-              <Icon 
-                v-for="i in 5"
-                :key="i"
-                :icon="i <= bangumi.rating ? 'fas:star' : 'far:star'"
-                :class="i <= bangumi.rating ? 'text-yellow-500' : 'text-gray-300'"
-                class="w-4 h-4"
-              />
+            <h3 class="font-bold text-lg text-gray-800 dark:text-white group-hover:text-[#49b1f5] transition-colors">
+              {{ bangumi.name }}
+            </h3>
+            <div class="flex flex-wrap gap-1.5 mt-2">
+              <span 
+                v-for="tag in bangumi.tags"
+                :key="tag"
+                class="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400"
+              >
+                {{ tag }}
+              </span>
             </div>
-
-            <div class="flex items-center space-x-2 mt-2 text-sm text-gray-500">
-              <Icon icon="fas:play-circle" class="w-4 h-4" />
-              <span>{{ bangumi.progress }}</span>
-            </div>
-
-            <p class="mt-2 text-sm text-gray-500 line-clamp-2">{{ bangumi.comment }}</p>
           </div>
         </div>
       </div>
 
-      <!-- Empty -->
-      <div v-if="bangumis.length === 0" class="card p-12 text-center">
-        <Icon icon="fas:tv" class="w-16 h-16 mx-auto text-gray-300 mb-4" />
-        <p class="text-gray-500">还没有追番记录</p>
+      <!-- 统计 -->
+      <div class="card p-6 mt-8">
+        <div class="flex justify-around text-center">
+          <div>
+            <div class="text-3xl font-bold text-[#49b1f5]">{{ bangumiList.length }}</div>
+            <div class="text-sm text-gray-500 mt-1">总番剧</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-green-500">{{ bangumiList.filter(b => b.status === '追番中').length }}</div>
+            <div class="text-sm text-gray-500 mt-1">追番中</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-blue-500">{{ bangumiList.filter(b => b.status === '已看完').length }}</div>
+            <div class="text-sm text-gray-500 mt-1">已看完</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

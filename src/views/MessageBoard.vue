@@ -2,125 +2,109 @@
 import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
 
-const messages = ref([
-  {
-    id: 1,
-    name: '访客',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=guest1',
-    content: '博客很棒！期待更多内容~',
-    date: '2026-02-04 14:30'
-  }
-])
+const comment = ref('')
+const nickname = ref('')
+const email = ref('')
 
-const newMessage = ref({ name: '', content: '' })
-const isSubmitting = ref(false)
-
-function submitMessage() {
-  if (!newMessage.value.name.trim() || !newMessage.value.content.trim()) return
-
-  isSubmitting.value = true
-  setTimeout(() => {
-    messages.value.unshift({
-      id: Date.now(),
-      name: newMessage.value.name,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${newMessage.value.name}`,
-      content: newMessage.value.content,
-      date: new Date().toLocaleString('zh-CN')
-    })
-    newMessage.value = { name: '', content: '' }
-    isSubmitting.value = false
-  }, 500)
+function submitComment() {
+  alert('评论功能正在开发中...')
 }
 </script>
 
 <template>
   <div>
     <!-- Banner -->
-    <header class="relative h-[40vh] min-h-[300px] flex items-center justify-center">
-      <div 
-        class="absolute inset-0 bg-cover bg-center bg-fixed"
-        style="background-image: url('/img/default-cover.jpg');"
-      >
-        <div class="absolute inset-0 bg-black/40"></div>
-      </div>
+    <header class="relative h-[45vh] min-h-[320px] flex items-center justify-center overflow-hidden">
+      <div class="absolute inset-0 bg-black/30"></div>
       
-      <div class="relative text-center text-white">
-        <Icon icon="fas:comment-dots" class="w-16 h-16 mx-auto mb-4 opacity-80" />
-        <h1 class="text-4xl font-bold">留言板</h1>
-        <p class="mt-2 text-white/80">欢迎留下你的足迹</p>
+      <div class="relative text-center text-white z-10">
+        <Icon icon="fas:comment-dots" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">留言板</h1>
+        <p class="mt-3 text-white/80 text-lg">有什么想说的？留下你的足迹吧！</p>
       </div>
 
-      <div class="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 100" fill="none" class="w-full">
-          <path d="M0 50L48 45.7C96 41.3 192 32.7 288 30.2C384 27.7 480 31.3 576 38.3C672 45.3 768 55.7 864 58.2C960 60.7 1056 55.3 1152 48.3C1248 41.3 1344 32.7 1392 28.3L1440 24V100H1392C1344 100 1248 100 1152 100C1056 100 960 100 864 100C768 100 672 100 576 100C480 100 384 100 288 100C192 100 96 100 48 100H0V50Z" fill="rgba(255,255,255,0.1)"/>
+      <div class="wave-divider">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+          <path d="M0,50 C150,100 350,0 600,50 C850,100 1050,0 1200,50 C1350,100 1440,50 1440,50 L1440,100 L0,100 Z" fill="rgba(255,255,255,0.1)"/>
         </svg>
       </div>
     </header>
 
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Message Form -->
-      <div class="card p-6 mb-8">
-        <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <!-- 留言表单 -->
+      <div class="card p-6 md:p-8 mb-8">
+        <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-5 flex items-center">
           <Icon icon="fas:pen" class="w-5 h-5 mr-2 text-[#49b1f5]" />
-          写留言
-        </h3>
-        <form @submit.prevent="submitMessage" class="space-y-4">
-          <div>
-            <input 
-              v-model="newMessage.name"
-              type="text"
-              placeholder="你的名字"
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-[#49b1f5] focus:border-transparent outline-none transition-all"
-              required
-            />
+          发表留言
+        </h2>
+        
+        <form @submit.prevent="submitComment" class="space-y-4">
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                <Icon icon="fas:user" class="w-3.5 h-3.5 inline mr-1" />
+                昵称
+              </label>
+              <input 
+                v-model="nickname"
+                type="text" 
+                required
+                placeholder="你的昵称"
+                class="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:border-[#49b1f5] focus:ring-2 focus:ring-[#49b1f5]/20 transition-all outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                <Icon icon="fas:envelope" class="w-3.5 h-3.5 inline mr-1" />
+                邮箱
+              </label>
+              <input 
+                v-model="email"
+                type="email" 
+                placeholder="选填，用于获取头像"
+                class="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:border-[#49b1f5] focus:ring-2 focus:ring-[#49b1f5]/20 transition-all outline-none"
+              />
+            </div>
           </div>
+          
           <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              <Icon icon="fas:comment" class="w-3.5 h-3.5 inline mr-1" />
+              留言内容
+            </label>
             <textarea 
-              v-model="newMessage.content"
+              v-model="comment"
               rows="4"
-              placeholder="说点什么吧..."
-              class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-[#49b1f5] focus:border-transparent outline-none transition-all resize-none"
               required
+              placeholder="说点什么吧..."
+              class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:border-[#49b1f5] focus:ring-2 focus:ring-[#49b1f5]/20 transition-all outline-none resize-none"
             ></textarea>
           </div>
-          <button 
-            type="submit"
-            :disabled="isSubmitting"
-            class="btn btn-primary"
-          >
-            <Icon v-if="isSubmitting" icon="fas:spinner" class="w-4 h-4 mr-2 animate-spin" />
-            <Icon v-else icon="fas:paper-plane" class="w-4 h-4 mr-2" />
-            {{ isSubmitting ? '发送中...' : '发送留言' }}
+
+          <button type="submit" class="btn btn-primary w-full md:w-auto">
+            <Icon icon="fas:paper-plane" class="w-4 h-4 mr-2" />
+            发表留言
           </button>
         </form>
       </div>
 
-      <!-- Messages List -->
-      <div class="space-y-4">
-        <div 
-          v-for="message in messages"
-          :key="message.id"
-          class="card p-5 flex space-x-4"
-        >
-          <img 
-            :src="message.avatar"
-            :alt="message.name"
-            class="w-12 h-12 rounded-full"
-          />
-          <div class="flex-1">
-            <div class="flex items-center space-x-2">
-              <span class="font-bold text-gray-800 dark:text-white">{{ message.name }}</span>
-              <span class="text-xs text-gray-400">{{ message.date }}</span>
-            </div>
-            <p class="mt-2 text-gray-600 dark:text-gray-400">{{ message.content }}</p>
-          </div>
+      <!-- 提示信息 -->
+      <div class="card p-6 text-center">
+        <Icon icon="fas:heart" class="w-12 h-12 text-pink-400 mx-auto mb-3" />
+        <p class="text-gray-600 dark:text-gray-400">
+          评论功能正在开发中，敬请期待！<br/>
+          <span class="text-sm text-gray-400">你也可以通过邮件或 GitHub 联系我</span>
+        </p>
+        <div class="flex justify-center space-x-3 mt-4">
+          <a href="https://github.com/leguan7" target="_blank" class="btn bg-gray-800 text-white hover:bg-gray-900 text-sm">
+            <Icon icon="fab:github" class="w-4 h-4 mr-1.5" />
+            GitHub
+          </a>
+          <a href="mailto:leguan@example.com" class="btn bg-red-500 text-white hover:bg-red-600 text-sm">
+            <Icon icon="fas:envelope" class="w-4 h-4 mr-1.5" />
+            Email
+          </a>
         </div>
-      </div>
-
-      <!-- Empty -->
-      <div v-if="messages.length === 0" class="card p-12 text-center">
-        <Icon icon="fas:comments" class="w-16 h-16 mx-auto text-gray-300 mb-4" />
-        <p class="text-gray-500">还没有留言，来做第一个吧！</p>
       </div>
     </div>
   </div>

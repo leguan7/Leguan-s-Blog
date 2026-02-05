@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useBlogStore } from '@/stores/blog'
+import { IMAGES } from '@/utils/assets'
 
 const router = useRouter()
 const route = useRoute()
@@ -13,7 +14,7 @@ const isSearchOpen = ref(false)
 const searchInput = ref('')
 const isScrolled = ref(false)
 
-// 导航菜单 - Butterfly 风格
+// 导航菜单 - Kyle's Blog 一致的结构
 const navItems = [
   { name: '首页', path: '/', icon: 'fas:home' },
   { 
@@ -54,20 +55,6 @@ const navItems = [
 
 const activeDropdown = ref<string | null>(null)
 
-function toggleDropdown(name: string) {
-  activeDropdown.value = activeDropdown.value === name ? null : name
-}
-
-function closeDropdown() {
-  activeDropdown.value = null
-}
-
-function navigateTo(path: string) {
-  router.push(path)
-  closeDropdown()
-  isMenuOpen.value = false
-}
-
 function isActive(path: string): boolean {
   return route.path === path
 }
@@ -81,7 +68,6 @@ function handleSearch() {
   }
 }
 
-// 滚动监听
 function handleScroll() {
   isScrolled.value = window.scrollY > 50
 }
@@ -97,56 +83,56 @@ onUnmounted(() => {
 
 <template>
   <header 
-    class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+    class="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
     :class="isScrolled 
-      ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg' 
-      : 'bg-transparent'"
+      ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg py-0' 
+      : 'bg-transparent py-2'"
   >
     <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
+      <div class="flex justify-between items-center h-14">
         <!-- Logo -->
-        <router-link to="/" class="flex items-center space-x-2 group">
-          <img 
-            src="/img/avatar.jpg" 
-            alt="Logo" 
-            class="w-10 h-10 rounded-full border-2 border-white shadow-md"
-            onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Leguan'"
-          />
+        <router-link to="/" class="flex items-center space-x-3 group">
+          <div class="avatar-ring">
+            <img 
+              :src="IMAGES.avatar" 
+              alt="Logo" 
+              class="w-10 h-10 rounded-full border-2 border-white shadow-md transition-transform group-hover:scale-110"
+              onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Leguan'"
+            />
+          </div>
           <span 
-            class="text-xl font-bold transition-colors"
-            :class="isScrolled 
-              ? 'text-gray-800 dark:text-white' 
-              : 'text-white drop-shadow-lg'"
+            class="text-lg font-bold transition-colors hidden sm:block"
+            :class="isScrolled ? 'text-gray-800 dark:text-white' : 'text-white drop-shadow-lg'"
           >
             Leguan's Blog
           </span>
         </router-link>
 
-        <!-- Desktop Navigation - Butterfly 风格 -->
+        <!-- Desktop Navigation -->
         <div class="hidden md:flex items-center space-x-1">
           <template v-for="item in navItems" :key="item.name">
             <!-- 有子菜单 -->
             <div v-if="item.children" class="relative group">
               <button 
-                class="flex items-center space-x-1.5 px-4 py-2 rounded-full font-medium transition-all duration-300"
+                class="nav-item flex items-center space-x-1.5"
                 :class="isScrolled 
-                  ? 'text-gray-700 dark:text-gray-200 hover:bg-[#49b1f5] hover:text-white' 
-                  : 'text-white/90 hover:text-white hover:bg-white/20'"
+                  ? 'text-gray-700 dark:text-gray-200 hover:text-[#49b1f5]' 
+                  : 'text-white/90 hover:text-white'"
               >
                 <Icon :icon="item.icon" class="w-4 h-4" />
                 <span>{{ item.name }}</span>
-                <Icon icon="fas:chevron-down" class="w-3 h-3" />
+                <Icon icon="fas:chevron-down" class="w-3 h-3 transition-transform group-hover:rotate-180" />
               </button>
               
               <!-- 下拉菜单 -->
-              <div class="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                <div class="w-44 py-2 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden"
-                     style="background: var(--card-bg); backdrop-filter: blur(10px);">
+              <div class="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2">
+                <div class="w-44 py-2 rounded-xl shadow-2xl overflow-hidden"
+                     style="background: var(--card-bg); backdrop-filter: saturate(180%) blur(20px);">
                   <router-link
                     v-for="child in item.children"
                     :key="child.name"
                     :to="child.path!"
-                    class="flex items-center space-x-2 px-4 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-[#49b1f5] hover:text-white transition-colors"
+                    class="flex items-center space-x-2.5 px-4 py-2.5 text-gray-600 dark:text-gray-300 hover:bg-[#49b1f5] hover:text-white transition-all duration-200"
                     :class="{ 'bg-[#49b1f5]/10 text-[#49b1f5]': isActive(child.path!) }"
                   >
                     <Icon :icon="child.icon!" class="w-4 h-4" />
@@ -160,12 +146,12 @@ onUnmounted(() => {
             <router-link 
               v-else
               :to="item.path!"
-              class="flex items-center space-x-1.5 px-4 py-2 rounded-full font-medium transition-all duration-300"
+              class="nav-item flex items-center space-x-1.5"
               :class="[
                 isScrolled 
-                  ? 'text-gray-700 dark:text-gray-200 hover:bg-[#49b1f5] hover:text-white' 
-                  : 'text-white/90 hover:text-white hover:bg-white/20',
-                isActive(item.path!) ? 'bg-[#49b1f5] text-white' : ''
+                  ? 'text-gray-700 dark:text-gray-200 hover:text-[#49b1f5]' 
+                  : 'text-white/90 hover:text-white',
+                isActive(item.path!) ? '!text-[#49b1f5]' : ''
               ]"
             >
               <Icon :icon="item.icon" class="w-4 h-4" />
@@ -176,10 +162,10 @@ onUnmounted(() => {
           <!-- 搜索按钮 -->
           <button 
             @click="isSearchOpen = !isSearchOpen"
-            class="p-2 rounded-full transition-all duration-300"
+            class="nav-item"
             :class="isScrolled 
-              ? 'text-gray-700 dark:text-gray-200 hover:bg-[#49b1f5] hover:text-white' 
-              : 'text-white/90 hover:text-white hover:bg-white/20'"
+              ? 'text-gray-700 dark:text-gray-200 hover:text-[#49b1f5]' 
+              : 'text-white/90 hover:text-white'"
           >
             <Icon icon="fas:search" class="w-4 h-4" />
           </button>
@@ -188,10 +174,8 @@ onUnmounted(() => {
         <!-- Mobile Menu Toggle -->
         <button 
           @click="isMenuOpen = !isMenuOpen"
-          class="md:hidden p-2 rounded-full transition-colors"
-          :class="isScrolled 
-            ? 'text-gray-700 dark:text-gray-200' 
-            : 'text-white'"
+          class="md:hidden p-2 rounded-full"
+          :class="isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'"
         >
           <Icon :icon="isMenuOpen ? 'fas:times' : 'fas:bars'" class="w-5 h-5" />
         </button>
@@ -208,15 +192,14 @@ onUnmounted(() => {
       >
         <div 
           v-if="isMenuOpen" 
-          class="md:hidden absolute left-4 right-4 top-full mt-2 rounded-2xl shadow-xl overflow-hidden"
-          style="background: var(--card-bg); backdrop-filter: blur(10px);"
+          class="md:hidden absolute left-4 right-4 top-full mt-2 rounded-2xl shadow-2xl overflow-hidden"
+          style="background: var(--card-bg); backdrop-filter: saturate(180%) blur(20px);"
         >
-          <div class="py-2">
+          <div class="py-3 max-h-[70vh] overflow-y-auto">
             <template v-for="item in navItems" :key="item.name">
-              <!-- 有子菜单 -->
               <div v-if="item.children">
                 <button 
-                  @click="toggleDropdown(item.name)"
+                  @click="activeDropdown = activeDropdown === item.name ? null : item.name"
                   class="w-full flex items-center justify-between px-5 py-3 text-gray-700 dark:text-gray-200"
                 >
                   <div class="flex items-center space-x-2">
@@ -230,31 +213,21 @@ onUnmounted(() => {
                   />
                 </button>
                 
-                <transition
-                  enter-active-class="transition ease-out duration-200"
-                  enter-from-class="opacity-0 max-h-0"
-                  enter-to-class="opacity-100 max-h-96"
-                  leave-active-class="transition ease-in duration-150"
-                  leave-from-class="opacity-100 max-h-96"
-                  leave-to-class="opacity-0 max-h-0"
-                >
-                  <div v-if="activeDropdown === item.name" class="overflow-hidden bg-gray-50 dark:bg-gray-800/50">
-                    <router-link
-                      v-for="child in item.children"
-                      :key="child.name"
-                      :to="child.path!"
-                      @click="isMenuOpen = false"
-                      class="flex items-center space-x-2 px-10 py-2.5 text-gray-600 dark:text-gray-300 hover:text-[#49b1f5]"
-                      :class="{ 'text-[#49b1f5]': isActive(child.path!) }"
-                    >
-                      <Icon :icon="child.icon!" class="w-4 h-4" />
-                      <span>{{ child.name }}</span>
-                    </router-link>
-                  </div>
-                </transition>
+                <div v-if="activeDropdown === item.name" class="bg-gray-50 dark:bg-gray-800/50">
+                  <router-link
+                    v-for="child in item.children"
+                    :key="child.name"
+                    :to="child.path!"
+                    @click="isMenuOpen = false"
+                    class="flex items-center space-x-2 px-10 py-2.5 text-gray-600 dark:text-gray-300 hover:text-[#49b1f5]"
+                    :class="{ 'text-[#49b1f5]': isActive(child.path!) }"
+                  >
+                    <Icon :icon="child.icon!" class="w-4 h-4" />
+                    <span>{{ child.name }}</span>
+                  </router-link>
+                </div>
               </div>
 
-              <!-- 无子菜单 -->
               <router-link 
                 v-else
                 :to="item.path!"
@@ -271,7 +244,7 @@ onUnmounted(() => {
       </transition>
     </nav>
 
-    <!-- Search Modal -->
+    <!-- Search Modal - Kyle's Blog 风格 -->
     <transition
       enter-active-class="transition ease-out duration-200"
       enter-from-class="opacity-0"
@@ -280,25 +253,26 @@ onUnmounted(() => {
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div v-if="isSearchOpen" class="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4" @click.self="isSearchOpen = false">
-        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
-        <div class="relative w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden" style="background: var(--card-bg);">
-          <div class="flex items-center px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+      <div v-if="isSearchOpen" class="fixed inset-0 z-[60] flex items-start justify-center pt-24 px-4" @click.self="isSearchOpen = false">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden" style="background: var(--card-bg);">
+          <div class="flex items-center px-6 py-5 border-b border-gray-200 dark:border-gray-700">
             <Icon icon="fas:search" class="w-5 h-5 text-[#49b1f5]" />
             <input 
               v-model="searchInput"
               type="text"
               placeholder="搜索文章..."
-              class="flex-1 ml-3 bg-transparent border-none outline-none text-gray-800 dark:text-gray-100 placeholder-gray-400"
+              class="flex-1 ml-4 bg-transparent border-none outline-none text-lg text-gray-800 dark:text-gray-100 placeholder-gray-400"
               @keyup.enter="handleSearch"
               autofocus
             />
-            <button @click="isSearchOpen = false" class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <button @click="isSearchOpen = false" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
               <Icon icon="fas:times" class="w-5 h-5" />
             </button>
           </div>
-          <div class="p-4 text-center text-gray-500 dark:text-gray-400 text-sm">
-            输入关键词搜索文章
+          <div class="p-6 text-center text-gray-400 text-sm">
+            <Icon icon="fas:keyboard" class="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <p>输入关键词后按 Enter 搜索</p>
           </div>
         </div>
       </div>

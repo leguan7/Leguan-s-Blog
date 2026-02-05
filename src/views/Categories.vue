@@ -13,9 +13,7 @@ const selectedCategory = ref<string | null>(null)
 
 watch(
   () => route.query.category,
-  (category) => {
-    selectedCategory.value = category as string | null
-  },
+  (category) => { selectedCategory.value = category as string | null },
   { immediate: true }
 )
 
@@ -34,67 +32,56 @@ function selectCategory(category: string) {
   }
 }
 
-// 分类图标和颜色
-const categoryStyles: Record<string, { icon: string, color: string }> = {
-  '技术': { icon: 'fas:code', color: 'from-blue-500 to-cyan-500' },
-  '生活': { icon: 'fas:heart', color: 'from-pink-500 to-rose-500' },
-  '随笔': { icon: 'fas:pen-fancy', color: 'from-purple-500 to-violet-500' },
-  '学习': { icon: 'fas:graduation-cap', color: 'from-green-500 to-emerald-500' },
+const categoryStyles: Record<string, { icon: string, gradient: string }> = {
+  '技术': { icon: 'fas:code', gradient: 'from-blue-500 to-cyan-500' },
+  '生活': { icon: 'fas:heart', gradient: 'from-pink-500 to-rose-500' },
+  '随笔': { icon: 'fas:pen-fancy', gradient: 'from-purple-500 to-violet-500' },
+  '学习': { icon: 'fas:graduation-cap', gradient: 'from-green-500 to-emerald-500' },
 }
 
 function getCategoryStyle(name: string) {
-  return categoryStyles[name] || { icon: 'fas:folder', color: 'from-[#49b1f5] to-[#0abcf9]' }
+  return categoryStyles[name] || { icon: 'fas:folder', gradient: 'from-[#49b1f5] to-[#0abcf9]' }
 }
 </script>
 
 <template>
   <div>
     <!-- Banner -->
-    <header class="relative h-[40vh] min-h-[300px] flex items-center justify-center">
-      <div 
-        class="absolute inset-0 bg-cover bg-center bg-fixed"
-        style="background-image: url('/img/default-cover.jpg');"
-      >
-        <div class="absolute inset-0 bg-black/40"></div>
-      </div>
+    <header class="relative h-[45vh] min-h-[320px] flex items-center justify-center overflow-hidden">
+      <div class="absolute inset-0 bg-black/30"></div>
       
-      <div class="relative text-center text-white">
-        <Icon icon="fas:folder-open" class="w-16 h-16 mx-auto mb-4 opacity-80" />
-        <h1 class="text-4xl font-bold">分类</h1>
-        <p class="mt-2 text-white/80">共 {{ blogStore.allCategories.length }} 个分类</p>
+      <div class="relative text-center text-white z-10">
+        <Icon icon="fas:folder-open" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">分类</h1>
+        <p class="mt-3 text-white/80 text-lg">共 {{ blogStore.allCategories.length }} 个分类</p>
       </div>
 
-      <!-- 波浪装饰 -->
-      <div class="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 100" fill="none" class="w-full">
-          <path 
-            d="M0 50L48 45.7C96 41.3 192 32.7 288 30.2C384 27.7 480 31.3 576 38.3C672 45.3 768 55.7 864 58.2C960 60.7 1056 55.3 1152 48.3C1248 41.3 1344 32.7 1392 28.3L1440 24V100H1392C1344 100 1248 100 1152 100C1056 100 960 100 864 100C768 100 672 100 576 100C480 100 384 100 288 100C192 100 96 100 48 100H0V50Z" 
-            fill="rgba(255,255,255,0.1)"
-          />
+      <div class="wave-divider">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+          <path d="M0,50 C150,100 350,0 600,50 C850,100 1050,0 1200,50 C1350,100 1440,50 1440,50 L1440,100 L0,100 Z" fill="rgba(255,255,255,0.1)"/>
         </svg>
       </div>
     </header>
 
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Loading -->
-      <div v-if="blogStore.isLoading" class="card p-12 text-center">
-        <Icon icon="fas:spinner" class="w-12 h-12 animate-spin text-[#49b1f5] mx-auto" />
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div v-if="blogStore.isLoading" class="card p-16 text-center">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#49b1f5] border-t-transparent"></div>
       </div>
 
       <div v-else>
-        <!-- Category Cards - Butterfly 风格 -->
+        <!-- Category Cards -->
         <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
           <button
             v-for="category in blogStore.allCategories"
             :key="category.name"
             @click="selectCategory(category.name)"
             class="card p-5 text-left transition-all duration-300 hover:shadow-xl group"
-            :class="selectedCategory === category.name ? 'ring-2 ring-[#49b1f5]' : ''"
+            :class="selectedCategory === category.name ? 'ring-2 ring-[#49b1f5] shadow-xl' : ''"
           >
             <div class="flex items-center space-x-4">
               <div 
-                class="w-14 h-14 rounded-xl flex items-center justify-center text-white bg-gradient-to-br shadow-lg"
-                :class="getCategoryStyle(category.name).color"
+                class="w-14 h-14 rounded-xl flex items-center justify-center text-white shadow-lg bg-gradient-to-br transition-transform group-hover:scale-110"
+                :class="getCategoryStyle(category.name).gradient"
               >
                 <Icon :icon="getCategoryStyle(category.name).icon" class="w-7 h-7" />
               </div>
@@ -111,17 +98,17 @@ function getCategoryStyle(name: string) {
         <!-- Selected Category Posts -->
         <div v-if="selectedCategory">
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-bold text-gray-800 dark:text-white">
-              <Icon icon="fas:folder-open" class="w-5 h-5 inline text-[#49b1f5]" />
+            <h2 class="text-xl font-bold text-gray-800 dark:text-white flex items-center">
+              <Icon icon="fas:folder-open" class="w-5 h-5 mr-2 text-[#49b1f5]" />
               {{ selectedCategory }}
-              <span class="text-base font-normal text-gray-500 ml-2">({{ filteredPosts.length }} 篇)</span>
+              <span class="text-base font-normal text-gray-400 ml-2">({{ filteredPosts.length }} 篇)</span>
             </h2>
             <button 
               @click="selectCategory(selectedCategory!)"
-              class="text-sm text-gray-500 hover:text-[#49b1f5]"
+              class="text-sm text-gray-400 hover:text-[#ff7242] transition-colors flex items-center"
             >
-              <Icon icon="fas:times" class="w-4 h-4 inline mr-1" />
-              清除筛选
+              <Icon icon="fas:times" class="w-4 h-4 mr-1" />
+              清除
             </button>
           </div>
 
@@ -135,10 +122,9 @@ function getCategoryStyle(name: string) {
           </div>
         </div>
 
-        <!-- No Selection Hint -->
-        <div v-else class="card p-12 text-center">
-          <Icon icon="fas:mouse-pointer" class="w-16 h-16 mx-auto text-gray-300 mb-4" />
-          <p class="text-gray-500">点击上方分类查看相关文章</p>
+        <div v-else class="card p-16 text-center">
+          <Icon icon="fas:hand-pointer" class="w-20 h-20 mx-auto text-gray-200 dark:text-gray-700 mb-4" />
+          <p class="text-gray-400">点击上方分类查看相关文章</p>
         </div>
       </div>
     </div>

@@ -1,78 +1,115 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
+import { COVER_IMAGES } from '@/utils/assets'
 
-const memories = ref([
+const memories = [
   {
-    id: 1,
-    title: '2025 年度回顾',
-    date: '2025-12-31',
-    cover: 'https://placehold.co/600x400/49b1f5/white?text=2025',
-    content: '这一年经历了很多，成长了很多...'
+    year: '2025',
+    items: [
+      { image: COVER_IMAGES[0], title: '秋日旅行', desc: '去了一趟云南，风景如画' },
+      { image: COVER_IMAGES[1], title: '毕业季', desc: '告别校园，开启新旅程' },
+      { image: COVER_IMAGES[2], title: '第一份工作', desc: '成为一名前端开发工程师' },
+    ]
   },
-])
+  {
+    year: '2024',
+    items: [
+      { image: COVER_IMAGES[3], title: '学会Vue', desc: '深入学习Vue3生态系统' },
+      { image: COVER_IMAGES[4], title: '寒假旅行', desc: '和朋友一起去了北海道' },
+      { image: COVER_IMAGES[5], title: '参加黑客马拉松', desc: '48小时不眠不休，收获满满' },
+    ]
+  },
+  {
+    year: '2023',
+    items: [
+      { image: COVER_IMAGES[6], title: '开始写博客', desc: '记录学习和生活的点滴' },
+      { image: COVER_IMAGES[0], title: '养了一只猫', desc: '给它取名叫"代码"' },
+    ]
+  }
+]
 </script>
 
 <template>
   <div>
     <!-- Banner -->
-    <header class="relative h-[40vh] min-h-[300px] flex items-center justify-center">
-      <div 
-        class="absolute inset-0 bg-cover bg-center bg-fixed"
-        style="background-image: url('/img/default-cover.jpg');"
-      >
-        <div class="absolute inset-0 bg-black/40"></div>
-      </div>
+    <header class="relative h-[45vh] min-h-[320px] flex items-center justify-center overflow-hidden">
+      <div class="absolute inset-0 bg-black/40"></div>
       
-      <div class="relative text-center text-white">
-        <Icon icon="fas:camera-retro" class="w-16 h-16 mx-auto mb-4 opacity-80" />
-        <h1 class="text-4xl font-bold">记忆胶囊</h1>
-        <p class="mt-2 text-white/80">封存那些珍贵的回忆</p>
+      <div class="relative text-center text-white z-10">
+        <Icon icon="fas:images" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">相册</h1>
+        <p class="mt-3 text-white/80 text-lg">时光机器，记录美好瞬间</p>
       </div>
 
-      <div class="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 100" fill="none" class="w-full">
-          <path d="M0 50L48 45.7C96 41.3 192 32.7 288 30.2C384 27.7 480 31.3 576 38.3C672 45.3 768 55.7 864 58.2C960 60.7 1056 55.3 1152 48.3C1248 41.3 1344 32.7 1392 28.3L1440 24V100H1392C1344 100 1248 100 1152 100C1056 100 960 100 864 100C768 100 672 100 576 100C480 100 384 100 288 100C192 100 96 100 48 100H0V50Z" fill="rgba(255,255,255,0.1)"/>
+      <div class="wave-divider">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+          <path d="M0,50 C150,100 350,0 600,50 C850,100 1050,0 1200,50 C1350,100 1440,50 1440,50 L1440,100 L0,100 Z" fill="rgba(255,255,255,0.1)"/>
         </svg>
       </div>
     </header>
 
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Memory Grid -->
-      <div class="grid gap-6 md:grid-cols-2">
-        <div 
-          v-for="memory in memories"
-          :key="memory.id"
-          class="card overflow-hidden group cursor-pointer"
-        >
-          <div class="relative aspect-video overflow-hidden">
-            <img 
-              :src="memory.cover"
-              :alt="memory.title"
-              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-            <div class="absolute bottom-4 left-4 right-4 text-white">
-              <span class="text-sm text-white/80">{{ memory.date }}</span>
-              <h3 class="text-xl font-bold">{{ memory.title }}</h3>
-            </div>
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <!-- 年份分组 -->
+      <div v-for="group in memories" :key="group.year" class="mb-12 last:mb-0">
+        <!-- 年份标题 -->
+        <div class="flex items-center mb-6">
+          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#49b1f5] to-[#0abcf9] flex items-center justify-center text-white font-bold text-lg shadow-lg">
+            {{ group.year }}
           </div>
+          <div class="h-0.5 flex-1 ml-4 bg-gradient-to-r from-[#49b1f5]/50 to-transparent"></div>
+        </div>
 
-          <div class="p-5">
-            <p class="text-gray-600 dark:text-gray-400 line-clamp-2">{{ memory.content }}</p>
-            <button class="mt-3 text-[#49b1f5] font-medium flex items-center hover:underline">
-              打开胶囊
-              <Icon icon="fas:arrow-right" class="w-4 h-4 ml-1" />
-            </button>
+        <!-- 照片网格 -->
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div 
+            v-for="(item, index) in group.items"
+            :key="index"
+            class="card overflow-hidden group cursor-pointer"
+          >
+            <div class="aspect-[4/3] relative overflow-hidden">
+              <img 
+                :src="item.image"
+                :alt="item.title"
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                loading="lazy"
+              />
+              <!-- 悬浮遮罩 -->
+              <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
+                <h3 class="font-bold text-lg">{{ item.title }}</h3>
+                <p class="text-sm text-white/80 mt-1">{{ item.desc }}</p>
+              </div>
+              <!-- 角落图标 -->
+              <div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                <Icon icon="fas:expand" class="w-4 h-4" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Empty -->
-      <div v-if="memories.length === 0" class="card p-12 text-center">
-        <Icon icon="fas:box-open" class="w-16 h-16 mx-auto text-gray-300 mb-4" />
-        <p class="text-gray-500">还没有记忆胶囊</p>
-        <p class="text-sm text-gray-400 mt-2">等待那些值得珍藏的瞬间...</p>
+      <!-- 底部统计 -->
+      <div class="card p-6 text-center mt-8 bg-gradient-to-r from-purple-500/10 to-pink-500/10">
+        <div class="flex justify-around">
+          <div>
+            <Icon icon="fas:images" class="w-8 h-8 text-purple-500 mx-auto mb-1" />
+            <div class="text-2xl font-bold text-gray-800 dark:text-white">
+              {{ memories.reduce((acc, g) => acc + g.items.length, 0) }}
+            </div>
+            <div class="text-sm text-gray-500">照片数量</div>
+          </div>
+          <div>
+            <Icon icon="fas:calendar-alt" class="w-8 h-8 text-pink-500 mx-auto mb-1" />
+            <div class="text-2xl font-bold text-gray-800 dark:text-white">
+              {{ memories.length }}
+            </div>
+            <div class="text-sm text-gray-500">记录年份</div>
+          </div>
+          <div>
+            <Icon icon="fas:heart" class="w-8 h-8 text-red-500 mx-auto mb-1" />
+            <div class="text-2xl font-bold text-gray-800 dark:text-white">∞</div>
+            <div class="text-sm text-gray-500">美好回忆</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

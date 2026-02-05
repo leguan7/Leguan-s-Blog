@@ -5,6 +5,7 @@ import { Icon } from '@iconify/vue'
 import { useBlogStore } from '@/stores/blog'
 import { formatDate, estimateReadingTime } from '@/utils/markdown'
 import Sidebar from '@/components/Sidebar.vue'
+import { COVER_IMAGES, getCoverImage } from '@/utils/assets'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,10 +18,11 @@ const readingTime = computed(() => post.value ? estimateReadingTime(post.value.c
 const formattedDate = computed(() => post.value ? formatDate(post.value.date) : '')
 const wordCount = computed(() => post.value ? post.value.content.length : 0)
 
-// 封面图
+// 封面图 - 确定性选择
 const coverImage = computed(() => {
   if (post.value?.cover) return post.value.cover
-  return '/img/default-cover.jpg'
+  if (!post.value) return COVER_IMAGES[0]
+  return getCoverImage(post.value.slug)
 })
 
 // 相关文章
@@ -50,6 +52,7 @@ const nextPost = computed(() => {
 
 // TOC
 const toc = ref<Array<{ id: string, text: string, level: number }>>([])
+const activeTocId = ref('')
 
 function generateToc() {
   if (!post.value) return
@@ -66,9 +69,30 @@ function generateToc() {
   })
 }
 
+// 更新文章中的标题ID
+onMounted(() => {
+  nextTick(() => {
+    const articleContent = document.querySelector('.article-content')
+    if (articleContent) {
+      const headings = articleContent.querySelectorAll('h1, h2, h3')
+      headings.forEach((heading, index) => {
+        heading.id = `heading-${index}`
+      })
+    }
+  })
+})
+
 watch(post, () => {
   nextTick(() => {
     generateToc()
+    // 为文章中的标题添加ID
+    const articleContent = document.querySelector('.article-content')
+    if (articleContent) {
+      const headings = articleContent.querySelectorAll('h1, h2, h3')
+      headings.forEach((heading, index) => {
+        heading.id = `heading-${index}`
+      })
+    }
   })
 }, { immediate: true })
 
@@ -81,6 +105,9 @@ watch(
     }
   }
 )
+
+// 打赏功能
+const showReward = ref(false)
 </script>
 
 <template>
@@ -92,60 +119,54 @@ watch(
 
     <!-- Post Content -->
     <article v-else-if="post">
-      <!-- Banner - Butterfly 风格 -->
-      <header class="relative h-[60vh] min-h-[400px] flex items-center justify-center">
-        <!-- 背景图 -->
-        <div 
-          class="absolute inset-0 bg-cover bg-center bg-fixed"
-          :style="{ backgroundImage: `url(${coverImage})` }"
-        >
-          <div class="absolute inset-0 bg-black/40"></div>
-        </div>
+      <!-- Banner - Kyle's Blog 风格 -->
+      <header class="relative h-[55vh] min-h-[380px] flex items-center justify-center overflow-hidden">
+        <!-- 半透明遮罩 -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/20"></div>
         
         <!-- 标题信息 -->
-        <div class="relative text-center text-white px-4 max-w-4xl mx-auto">
+        <div class="relative text-center text-white px-4 max-w-4xl mx-auto z-10">
           <!-- 分类 -->
-          <div class="flex justify-center gap-2 mb-4">
+          <div class="flex justify-center gap-2 mb-5 flex-wrap">
             <router-link
               v-for="category in post.categories"
               :key="category"
               :to="{ path: '/categories', query: { category } }"
-              class="px-3 py-1 text-sm bg-white/20 rounded-full backdrop-blur-sm hover:bg-[#49b1f5] transition-colors"
+              class="px-4 py-1.5 text-sm bg-[#49b1f5]/80 rounded-full backdrop-blur-sm hover:bg-[#ff7242] transition-all duration-300 shadow-lg"
             >
-              <Icon icon="fas:folder" class="w-3 h-3 inline mr-1" />
+              <Icon icon="fas:folder" class="w-3.5 h-3.5 inline mr-1.5" />
               {{ category }}
             </router-link>
           </div>
 
           <!-- 标题 -->
-          <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight drop-shadow-lg">
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight drop-shadow-2xl">
             {{ post.title }}
           </h1>
 
           <!-- 元信息 -->
-          <div class="flex flex-wrap justify-center gap-4 mt-6 text-white/80 text-sm">
-            <span class="flex items-center space-x-1">
-              <Icon icon="fas:calendar-alt" class="w-4 h-4" />
+          <div class="flex flex-wrap justify-center items-center gap-x-5 gap-y-2 mt-6 text-white/90 text-sm">
+            <span class="flex items-center space-x-1.5">
+              <Icon icon="fas:calendar-alt" class="w-4 h-4 text-[#49b1f5]" />
               <span>发布于 {{ formattedDate }}</span>
             </span>
-            <span class="flex items-center space-x-1">
-              <Icon icon="fas:clock" class="w-4 h-4" />
-              <span>{{ readingTime }} 分钟</span>
+            <span class="hidden sm:inline text-white/50">|</span>
+            <span class="flex items-center space-x-1.5">
+              <Icon icon="fas:clock" class="w-4 h-4 text-[#49b1f5]" />
+              <span>{{ readingTime }} 分钟阅读</span>
             </span>
-            <span class="flex items-center space-x-1">
-              <Icon icon="fas:book-open" class="w-4 h-4" />
-              <span>{{ wordCount }} 字</span>
+            <span class="hidden sm:inline text-white/50">|</span>
+            <span class="flex items-center space-x-1.5">
+              <Icon icon="fas:book-open" class="w-4 h-4 text-[#49b1f5]" />
+              <span>约 {{ wordCount }} 字</span>
             </span>
           </div>
         </div>
 
         <!-- 波浪装饰 -->
-        <div class="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full">
-            <path 
-              d="M0 50L48 45.7C96 41.3 192 32.7 288 30.2C384 27.7 480 31.3 576 38.3C672 45.3 768 55.7 864 58.2C960 60.7 1056 55.3 1152 48.3C1248 41.3 1344 32.7 1392 28.3L1440 24V100H1392C1344 100 1248 100 1152 100C1056 100 960 100 864 100C768 100 672 100 576 100C480 100 384 100 288 100C192 100 96 100 48 100H0V50Z" 
-              fill="rgba(255,255,255,0.1)"
-            />
+        <div class="wave-divider">
+          <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+            <path d="M0,50 C150,100 350,0 600,50 C850,100 1050,0 1200,50 C1350,100 1440,50 1440,50 L1440,100 L0,100 Z" fill="rgba(255,255,255,0.1)"/>
           </svg>
         </div>
       </header>
@@ -176,29 +197,85 @@ watch(
                 </div>
               </div>
 
+              <!-- 打赏按钮 -->
+              <div class="mt-8 text-center">
+                <button 
+                  @click="showReward = !showReward"
+                  class="inline-flex items-center px-6 py-2.5 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <Icon icon="fas:hand-holding-heart" class="w-5 h-5 mr-2" />
+                  赞赏支持
+                </button>
+                <transition name="fade">
+                  <div v-if="showReward" class="mt-4 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 inline-block">
+                    <p class="text-sm text-gray-500 mb-3">感谢你的支持，我会继续努力！</p>
+                    <div class="flex justify-center gap-4">
+                      <div class="text-center">
+                        <div class="w-28 h-28 bg-white rounded-lg p-1 shadow-md">
+                          <div class="w-full h-full bg-gray-200 dark:bg-gray-600 rounded flex items-center justify-center text-gray-400">
+                            <Icon icon="fas:qrcode" class="w-8 h-8" />
+                          </div>
+                        </div>
+                        <span class="text-xs text-gray-500 mt-1 block">微信</span>
+                      </div>
+                      <div class="text-center">
+                        <div class="w-28 h-28 bg-white rounded-lg p-1 shadow-md">
+                          <div class="w-full h-full bg-gray-200 dark:bg-gray-600 rounded flex items-center justify-center text-gray-400">
+                            <Icon icon="fas:qrcode" class="w-8 h-8" />
+                          </div>
+                        </div>
+                        <span class="text-xs text-gray-500 mt-1 block">支付宝</span>
+                      </div>
+                    </div>
+                  </div>
+                </transition>
+              </div>
+
               <!-- 版权声明 -->
-              <div class="mt-6 p-4 rounded-lg bg-[#49b1f5]/5 border border-[#49b1f5]/20">
-                <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                  <p><strong>本文作者：</strong>Leguan</p>
-                  <p><strong>本文链接：</strong>{{ window?.location?.href || '' }}</p>
-                  <p><strong>版权声明：</strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="text-[#49b1f5]">CC BY-NC-SA 4.0</a> 许可协议。</p>
+              <div class="mt-8 p-5 rounded-xl bg-gradient-to-r from-[#49b1f5]/5 to-[#0abcf9]/5 border border-[#49b1f5]/20">
+                <h4 class="font-bold text-gray-800 dark:text-white mb-3 flex items-center text-sm">
+                  <Icon icon="fas:copyright" class="w-4 h-4 mr-2 text-[#49b1f5]" />
+                  版权声明
+                </h4>
+                <div class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                  <p class="flex items-start">
+                    <Icon icon="fas:user" class="w-3.5 h-3.5 mr-2 mt-0.5 text-gray-400 shrink-0" />
+                    <span><strong class="text-gray-700 dark:text-gray-300">本文作者：</strong>Leguan</span>
+                  </p>
+                  <p class="flex items-start">
+                    <Icon icon="fas:link" class="w-3.5 h-3.5 mr-2 mt-0.5 text-gray-400 shrink-0" />
+                    <span class="break-all"><strong class="text-gray-700 dark:text-gray-300">本文链接：</strong><span class="text-[#49b1f5]">{{ `${window?.location?.origin || ''}/post/${post.slug}` }}</span></span>
+                  </p>
+                  <p class="flex items-start">
+                    <Icon icon="fas:balance-scale" class="w-3.5 h-3.5 mr-2 mt-0.5 text-gray-400 shrink-0" />
+                    <span><strong class="text-gray-700 dark:text-gray-300">版权声明：</strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="text-[#49b1f5] hover:text-[#ff7242]">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源！</span>
+                  </p>
                 </div>
               </div>
             </div>
 
-            <!-- 文章导航 -->
+            <!-- 文章导航 - Kyle's Blog 风格 -->
             <div class="grid md:grid-cols-2 gap-4 mt-6">
               <router-link 
                 v-if="prevPost"
                 :to="`/post/${prevPost.slug}`"
-                class="card p-4 group flex items-center space-x-3"
+                class="card overflow-hidden group relative"
               >
-                <Icon icon="fas:chevron-left" class="w-8 h-8 text-gray-300 group-hover:text-[#49b1f5] transition-colors" />
-                <div class="min-w-0">
-                  <div class="text-xs text-gray-400 mb-1">上一篇</div>
-                  <h4 class="font-medium text-gray-800 dark:text-white group-hover:text-[#49b1f5] transition-colors line-clamp-1">
-                    {{ prevPost.title }}
-                  </h4>
+                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" 
+                     :style="{ backgroundImage: `url(${prevPost.cover || getCoverImage(prevPost.slug)})` }">
+                </div>
+                <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors"></div>
+                <div class="relative p-5 flex items-center space-x-3 text-white min-h-[100px]">
+                  <Icon icon="fas:chevron-left" class="w-6 h-6 shrink-0 group-hover:-translate-x-1 transition-transform" />
+                  <div class="min-w-0">
+                    <div class="text-xs text-white/70 mb-1.5 flex items-center">
+                      <Icon icon="fas:arrow-left" class="w-3 h-3 mr-1" />
+                      上一篇
+                    </div>
+                    <h4 class="font-medium line-clamp-2 group-hover:text-[#49b1f5] transition-colors">
+                      {{ prevPost.title }}
+                    </h4>
+                  </div>
                 </div>
               </router-link>
               <div v-else></div>
@@ -206,39 +283,55 @@ watch(
               <router-link 
                 v-if="nextPost"
                 :to="`/post/${nextPost.slug}`"
-                class="card p-4 group flex items-center justify-end space-x-3 text-right"
+                class="card overflow-hidden group relative"
               >
-                <div class="min-w-0">
-                  <div class="text-xs text-gray-400 mb-1">下一篇</div>
-                  <h4 class="font-medium text-gray-800 dark:text-white group-hover:text-[#49b1f5] transition-colors line-clamp-1">
-                    {{ nextPost.title }}
-                  </h4>
+                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                     :style="{ backgroundImage: `url(${nextPost.cover || getCoverImage(nextPost.slug)})` }">
                 </div>
-                <Icon icon="fas:chevron-right" class="w-8 h-8 text-gray-300 group-hover:text-[#49b1f5] transition-colors" />
+                <div class="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors"></div>
+                <div class="relative p-5 flex items-center justify-end space-x-3 text-white text-right min-h-[100px]">
+                  <div class="min-w-0">
+                    <div class="text-xs text-white/70 mb-1.5 flex items-center justify-end">
+                      下一篇
+                      <Icon icon="fas:arrow-right" class="w-3 h-3 ml-1" />
+                    </div>
+                    <h4 class="font-medium line-clamp-2 group-hover:text-[#49b1f5] transition-colors">
+                      {{ nextPost.title }}
+                    </h4>
+                  </div>
+                  <Icon icon="fas:chevron-right" class="w-6 h-6 shrink-0 group-hover:translate-x-1 transition-transform" />
+                </div>
               </router-link>
             </div>
 
-            <!-- 相关推荐 -->
+            <!-- 相关推荐 - Kyle's Blog 风格 -->
             <div v-if="relatedPosts.length > 0" class="card p-6 mt-6">
-              <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center">
+              <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-5 flex items-center">
                 <Icon icon="fas:thumbs-up" class="w-5 h-5 mr-2 text-[#49b1f5]" />
                 相关推荐
               </h3>
-              <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <router-link 
                   v-for="related in relatedPosts"
                   :key="related.slug"
                   :to="`/post/${related.slug}`"
-                  class="group"
+                  class="group block"
                 >
-                  <div class="aspect-video rounded-lg overflow-hidden mb-2">
+                  <div class="aspect-video rounded-xl overflow-hidden mb-3 relative shadow-md">
                     <img 
-                      :src="related.cover || '/img/default-cover.jpg'"
+                      :src="related.cover || getCoverImage(related.slug)"
                       :alt="related.title"
-                      class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
                     />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="absolute bottom-2 left-2 right-2 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <span class="bg-[#49b1f5]/80 px-2 py-0.5 rounded">
+                        {{ related.categories[0] || '未分类' }}
+                      </span>
+                    </div>
                   </div>
-                  <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-[#49b1f5] transition-colors line-clamp-2">
+                  <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-[#49b1f5] transition-colors line-clamp-2 leading-relaxed">
                     {{ related.title }}
                   </h4>
                 </router-link>
@@ -248,25 +341,33 @@ watch(
 
           <!-- Sidebar -->
           <div class="lg:w-1/3 mt-8 lg:mt-0">
-            <!-- TOC 目录 -->
-            <div v-if="toc.length > 0" class="card p-4 mb-5 sticky top-20">
-              <div class="flex items-center space-x-2 mb-3 pb-2 border-b border-gray-100 dark:border-gray-700">
-                <Icon icon="fas:list-ul" class="w-4 h-4 text-[#49b1f5]" />
+            <!-- TOC 目录 - Kyle's Blog 风格 -->
+            <div v-if="toc.length > 0" class="card p-5 mb-5 sticky top-20">
+              <div class="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-700">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-r from-[#49b1f5] to-[#0abcf9] flex items-center justify-center">
+                  <Icon icon="fas:list-ul" class="w-4 h-4 text-white" />
+                </div>
                 <h4 class="font-bold text-gray-800 dark:text-white">目录</h4>
+                <span class="ml-auto text-xs text-gray-400">{{ toc.length }} 章节</span>
               </div>
-              <nav class="space-y-1.5 max-h-[50vh] overflow-y-auto text-sm">
+              <nav class="space-y-1 max-h-[55vh] overflow-y-auto toc-scrollbar pr-1">
                 <a 
                   v-for="item in toc"
                   :key="item.id"
                   :href="`#${item.id}`"
-                  class="block text-gray-600 dark:text-gray-400 hover:text-[#49b1f5] transition-colors"
-                  :class="{ 
-                    'pl-0': item.level === 1,
-                    'pl-4': item.level === 2,
-                    'pl-8': item.level === 3
-                  }"
+                  class="toc-item block py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-[#49b1f5] transition-all duration-200 border-l-2 border-transparent hover:border-[#49b1f5] hover:pl-1"
+                  :class="[
+                    item.level === 1 ? 'pl-3 font-medium' : '',
+                    item.level === 2 ? 'pl-6' : '',
+                    item.level === 3 ? 'pl-9 text-xs' : '',
+                    activeTocId === item.id ? 'text-[#49b1f5] border-[#49b1f5] bg-[#49b1f5]/5' : ''
+                  ]"
                 >
-                  {{ item.text }}
+                  <span class="flex items-center">
+                    <span v-if="item.level === 1" class="w-1.5 h-1.5 rounded-full bg-[#49b1f5] mr-2"></span>
+                    <span v-else-if="item.level === 2" class="w-1 h-1 rounded-full bg-gray-400 mr-2"></span>
+                    <span class="line-clamp-1">{{ item.text }}</span>
+                  </span>
                 </a>
               </nav>
             </div>
@@ -293,5 +394,31 @@ watch(
   margin: 1rem 0;
   border-radius: 0.5rem;
   overflow: hidden;
+}
+
+/* TOC 滚动条样式 */
+.toc-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.toc-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.toc-scrollbar::-webkit-scrollbar-thumb {
+  background: #49b1f5;
+  border-radius: 2px;
+}
+
+/* 过渡动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 </style>
