@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useBlogStore } from '@/stores/blog'
-import { IMAGES, COVER_IMAGES, getCoverImage } from '@/utils/assets'
+import { IMAGES, COVER_IMAGES } from '@/utils/assets'
 
 const router = useRouter()
 const blogStore = useBlogStore()
+const isVisible = ref(false)
+
+onMounted(() => {
+  // 延迟显示动画
+  setTimeout(() => {
+    isVisible.value = true
+  }, 100)
+})
 
 const stats = computed(() => ({
   posts: blogStore.posts.length,
@@ -24,168 +32,301 @@ function getPostCover(post: any, index: number) {
 function navigateToTag(tag: string) {
   router.push({ path: '/tags', query: { tag } })
 }
+
+// 标签颜色
+const tagColors = [
+  'from-pink-500/20 to-rose-500/20 text-rose-600 dark:text-rose-400',
+  'from-blue-500/20 to-cyan-500/20 text-blue-600 dark:text-blue-400',
+  'from-green-500/20 to-emerald-500/20 text-emerald-600 dark:text-emerald-400',
+  'from-purple-500/20 to-violet-500/20 text-violet-600 dark:text-violet-400',
+  'from-orange-500/20 to-amber-500/20 text-orange-600 dark:text-orange-400',
+  'from-cyan-500/20 to-teal-500/20 text-teal-600 dark:text-teal-400',
+]
+
+function getTagColor(index: number) {
+  return tagColors[index % tagColors.length]
+}
 </script>
 
 <template>
   <aside class="space-y-5 lg:sticky lg:top-20">
-    <!-- 博主信息卡片 - Kyle's Blog 风格 -->
-    <div class="card overflow-hidden">
+    <!-- 博主信息卡片 -->
+    <div 
+      class="card overflow-hidden sidebar-card"
+      :class="{ 'animate-in': isVisible }"
+      :style="{ animationDelay: '0ms' }"
+    >
       <!-- 封面背景 -->
       <div 
-        class="h-28 bg-cover bg-center relative"
+        class="h-32 bg-cover bg-center relative overflow-hidden group"
         :style="{ backgroundImage: `url(${IMAGES.fantasyMagicLandscape})` }"
       >
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/30"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50"></div>
+        <!-- 悬浮动效 -->
+        <div class="absolute inset-0 bg-[#49b1f5]/0 group-hover:bg-[#49b1f5]/10 transition-colors duration-500"></div>
       </div>
       
       <!-- 头像和信息 -->
-      <div class="px-5 pb-5 -mt-14 text-center relative">
-        <div class="avatar-ring inline-block mb-3">
+      <div class="px-5 pb-5 -mt-16 text-center relative">
+        <div class="avatar-ring inline-block mb-3 group cursor-pointer">
           <img 
             :src="IMAGES.avatar" 
             alt="Leguan" 
-            class="w-24 h-24 rounded-full border-4 border-white dark:border-gray-800 shadow-xl"
+            class="w-28 h-28 rounded-full border-4 border-white dark:border-gray-800 shadow-xl transition-transform duration-500 group-hover:scale-105"
             onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Leguan'"
           />
         </div>
         <h3 class="text-xl font-bold text-gray-800 dark:text-white">Leguan</h3>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 italic">A person who wants to see the world</p>
         
-        <!-- 统计 - Kyle's Blog 风格 -->
+        <!-- 统计 -->
         <div class="flex justify-around mt-5 py-4 border-t border-b border-gray-100 dark:border-gray-700/50">
-          <router-link to="/archives" class="text-center group cursor-pointer">
-            <div class="text-xl font-bold text-gray-800 dark:text-white group-hover:text-[#49b1f5] transition-colors">{{ stats.posts }}</div>
-            <div class="text-xs text-gray-500 mt-0.5">文章</div>
+          <router-link to="/archives" class="text-center group cursor-pointer flex-1">
+            <div class="text-2xl font-bold text-gray-800 dark:text-white group-hover:text-[#49b1f5] transition-all duration-300 group-hover:scale-110">
+              {{ stats.posts }}
+            </div>
+            <div class="text-xs text-gray-500 mt-0.5 flex items-center justify-center">
+              <Icon icon="fas:file-alt" class="w-3 h-3 mr-1 opacity-50" />
+              文章
+            </div>
           </router-link>
-          <router-link to="/tags" class="text-center group cursor-pointer">
-            <div class="text-xl font-bold text-gray-800 dark:text-white group-hover:text-[#49b1f5] transition-colors">{{ stats.tags }}</div>
-            <div class="text-xs text-gray-500 mt-0.5">标签</div>
+          <div class="w-px bg-gray-100 dark:bg-gray-700/50"></div>
+          <router-link to="/tags" class="text-center group cursor-pointer flex-1">
+            <div class="text-2xl font-bold text-gray-800 dark:text-white group-hover:text-[#49b1f5] transition-all duration-300 group-hover:scale-110">
+              {{ stats.tags }}
+            </div>
+            <div class="text-xs text-gray-500 mt-0.5 flex items-center justify-center">
+              <Icon icon="fas:tags" class="w-3 h-3 mr-1 opacity-50" />
+              标签
+            </div>
           </router-link>
-          <router-link to="/categories" class="text-center group cursor-pointer">
-            <div class="text-xl font-bold text-gray-800 dark:text-white group-hover:text-[#49b1f5] transition-colors">{{ stats.categories }}</div>
-            <div class="text-xs text-gray-500 mt-0.5">分类</div>
+          <div class="w-px bg-gray-100 dark:bg-gray-700/50"></div>
+          <router-link to="/categories" class="text-center group cursor-pointer flex-1">
+            <div class="text-2xl font-bold text-gray-800 dark:text-white group-hover:text-[#49b1f5] transition-all duration-300 group-hover:scale-110">
+              {{ stats.categories }}
+            </div>
+            <div class="text-xs text-gray-500 mt-0.5 flex items-center justify-center">
+              <Icon icon="fas:folder" class="w-3 h-3 mr-1 opacity-50" />
+              分类
+            </div>
           </router-link>
         </div>
 
-        <!-- 关注按钮 -->
-        <a 
-          href="https://github.com/leguan7" 
-          target="_blank"
-          class="mt-4 w-full btn btn-primary text-sm"
-        >
-          <Icon icon="fab:github" class="w-4 h-4 mr-2" />
-          Follow Me
-        </a>
+        <!-- 社交按钮 -->
+        <div class="flex justify-center space-x-3 mt-4">
+          <a 
+            href="https://github.com/leguan7" 
+            target="_blank"
+            class="w-10 h-10 rounded-xl bg-gray-800 text-white flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all duration-300"
+            title="GitHub"
+          >
+            <Icon icon="fab:github" class="w-5 h-5" />
+          </a>
+          <a 
+            href="mailto:leguan@example.com"
+            class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#49b1f5] to-[#0abcf9] text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-[#49b1f5]/30 transition-all duration-300"
+            title="Email"
+          >
+            <Icon icon="fas:envelope" class="w-5 h-5" />
+          </a>
+          <router-link 
+            to="/messageboard"
+            class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-300"
+            title="留言板"
+          >
+            <Icon icon="fas:comment-dots" class="w-5 h-5" />
+          </router-link>
+        </div>
       </div>
     </div>
 
-    <!-- 公告栏 - Kyle's Blog 风格 -->
-    <div class="card p-4">
-      <div class="flex items-center space-x-2 mb-3 pb-2 border-b border-gray-100 dark:border-gray-700/50">
-        <Icon icon="fas:bullhorn" class="w-4 h-4 text-[#49b1f5]" />
-        <h4 class="font-bold text-gray-800 dark:text-white text-sm">公告栏</h4>
+    <!-- 公告栏 -->
+    <div 
+      class="card p-5 sidebar-card"
+      :class="{ 'animate-in': isVisible }"
+      :style="{ animationDelay: '100ms' }"
+    >
+      <div class="flex items-center space-x-2 mb-3 pb-3 border-b border-gray-100 dark:border-gray-700/50">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center">
+          <Icon icon="fas:bullhorn" class="w-4 h-4 text-white" />
+        </div>
+        <h4 class="font-bold text-gray-800 dark:text-white">公告栏</h4>
       </div>
-      <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-        欢迎来到 Leguan's Blog！<br/>
-        <span class="text-[#49b1f5]">Digest your emotions.</span>
-      </p>
+      <div class="p-3 rounded-xl bg-gradient-to-br from-[#49b1f5]/5 to-[#0abcf9]/5 border border-[#49b1f5]/10">
+        <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+          欢迎来到 <span class="text-[#49b1f5] font-medium">Leguan's Blog</span>！
+        </p>
+        <p class="text-sm text-[#49b1f5] mt-2 italic flex items-center">
+          <Icon icon="fas:quote-left" class="w-3 h-3 mr-1 opacity-50" />
+          Digest your emotions.
+        </p>
+      </div>
     </div>
 
     <!-- 最新文章 -->
-    <div class="card p-4">
-      <div class="flex items-center space-x-2 mb-3 pb-2 border-b border-gray-100 dark:border-gray-700/50">
-        <Icon icon="fas:history" class="w-4 h-4 text-[#49b1f5]" />
-        <h4 class="font-bold text-gray-800 dark:text-white text-sm">最新文章</h4>
+    <div 
+      class="card p-5 sidebar-card"
+      :class="{ 'animate-in': isVisible }"
+      :style="{ animationDelay: '200ms' }"
+    >
+      <div class="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-700/50">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+          <Icon icon="fas:clock" class="w-4 h-4 text-white" />
+        </div>
+        <h4 class="font-bold text-gray-800 dark:text-white">最新文章</h4>
       </div>
       <div class="space-y-3">
         <router-link 
           v-for="(post, index) in recentPosts"
           :key="post.slug"
           :to="`/post/${post.slug}`"
-          class="flex items-center space-x-3 group"
+          class="flex items-center space-x-3 group p-2 -mx-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
         >
-          <img 
-            :src="getPostCover(post, index)"
-            :alt="post.title"
-            class="w-16 h-12 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow"
-          />
+          <div class="relative overflow-hidden rounded-lg flex-shrink-0">
+            <img 
+              :src="getPostCover(post, index)"
+              :alt="post.title"
+              class="w-16 h-12 object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+          </div>
           <div class="flex-1 min-w-0">
-            <h5 class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-[#49b1f5] transition-colors line-clamp-2 leading-tight">
+            <h5 class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-[#49b1f5] transition-colors line-clamp-2 leading-tight font-medium">
               {{ post.title }}
             </h5>
-            <p class="text-xs text-gray-400 mt-1">{{ post.date }}</p>
+            <p class="text-xs text-gray-400 mt-1 flex items-center">
+              <Icon icon="fas:calendar" class="w-3 h-3 mr-1" />
+              {{ post.date }}
+            </p>
           </div>
         </router-link>
       </div>
     </div>
 
-    <!-- 标签云 - Kyle's Blog 风格 -->
-    <div class="card p-4">
-      <div class="flex items-center space-x-2 mb-3 pb-2 border-b border-gray-100 dark:border-gray-700/50">
-        <Icon icon="fas:tags" class="w-4 h-4 text-[#49b1f5]" />
-        <h4 class="font-bold text-gray-800 dark:text-white text-sm">标签</h4>
+    <!-- 标签云 -->
+    <div 
+      class="card p-5 sidebar-card"
+      :class="{ 'animate-in': isVisible }"
+      :style="{ animationDelay: '300ms' }"
+    >
+      <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100 dark:border-gray-700/50">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-400 to-violet-500 flex items-center justify-center">
+            <Icon icon="fas:tags" class="w-4 h-4 text-white" />
+          </div>
+          <h4 class="font-bold text-gray-800 dark:text-white">标签云</h4>
+        </div>
+        <span class="text-xs text-gray-400">{{ blogStore.allTags.length }} 个</span>
       </div>
       <div class="flex flex-wrap gap-2">
         <button
-          v-for="tag in topTags"
+          v-for="(tag, index) in topTags"
           :key="tag.name"
           @click="navigateToTag(tag.name)"
-          class="tag text-xs"
+          class="px-3 py-1.5 text-xs rounded-full bg-gradient-to-r transition-all duration-300 hover:scale-105 hover:shadow-md font-medium"
+          :class="getTagColor(index)"
         >
+          <Icon icon="fas:hashtag" class="w-3 h-3 inline mr-0.5 opacity-70" />
           {{ tag.name }}
         </button>
       </div>
       <router-link 
         v-if="blogStore.allTags.length > 20"
         to="/tags" 
-        class="block mt-3 text-xs text-[#49b1f5] hover:text-[#ff7242] transition-colors text-center"
+        class="flex items-center justify-center mt-4 py-2 text-xs text-[#49b1f5] hover:text-[#ff7242] transition-colors rounded-lg hover:bg-[#49b1f5]/5"
       >
-        查看全部 <Icon icon="fas:angle-right" class="w-3 h-3 inline" />
+        查看全部
+        <Icon icon="fas:arrow-right" class="w-3 h-3 ml-1" />
       </router-link>
     </div>
 
     <!-- 分类 -->
-    <div class="card p-4">
-      <div class="flex items-center space-x-2 mb-3 pb-2 border-b border-gray-100 dark:border-gray-700/50">
-        <Icon icon="fas:folder-open" class="w-4 h-4 text-[#49b1f5]" />
-        <h4 class="font-bold text-gray-800 dark:text-white text-sm">分类</h4>
+    <div 
+      class="card p-5 sidebar-card"
+      :class="{ 'animate-in': isVisible }"
+      :style="{ animationDelay: '400ms' }"
+    >
+      <div class="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-700/50">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
+          <Icon icon="fas:folder-open" class="w-4 h-4 text-white" />
+        </div>
+        <h4 class="font-bold text-gray-800 dark:text-white">分类</h4>
       </div>
-      <div class="space-y-1.5">
+      <div class="space-y-1">
         <router-link 
           v-for="category in blogStore.allCategories.slice(0, 8)"
           :key="category.name"
           :to="{ path: '/categories', query: { category: category.name } }"
-          class="flex items-center justify-between py-1.5 px-2 -mx-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-[#49b1f5]/10 hover:text-[#49b1f5] transition-all duration-300"
+          class="flex items-center justify-between py-2.5 px-3 -mx-1 rounded-xl text-sm text-gray-600 dark:text-gray-400 hover:bg-gradient-to-r hover:from-[#49b1f5]/10 hover:to-[#0abcf9]/10 hover:text-[#49b1f5] transition-all duration-300 group"
         >
           <span class="flex items-center">
-            <Icon icon="fas:caret-right" class="w-3 h-3 mr-1.5 text-[#49b1f5]" />
+            <Icon icon="fas:folder" class="w-4 h-4 mr-2 text-[#49b1f5] group-hover:scale-110 transition-transform" />
             {{ category.name }}
           </span>
-          <span class="text-xs text-gray-400 bg-gray-100 dark:bg-gray-700/50 px-2 py-0.5 rounded-full">{{ category.count }}</span>
+          <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700/50 group-hover:bg-[#49b1f5] group-hover:text-white transition-colors">
+            {{ category.count }}
+          </span>
         </router-link>
       </div>
     </div>
 
     <!-- 网站资讯 -->
-    <div class="card p-4">
-      <div class="flex items-center space-x-2 mb-3 pb-2 border-b border-gray-100 dark:border-gray-700/50">
-        <Icon icon="fas:chart-line" class="w-4 h-4 text-[#49b1f5]" />
-        <h4 class="font-bold text-gray-800 dark:text-white text-sm">小站资讯</h4>
+    <div 
+      class="card p-5 sidebar-card"
+      :class="{ 'animate-in': isVisible }"
+      :style="{ animationDelay: '500ms' }"
+    >
+      <div class="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-700/50">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+          <Icon icon="fas:chart-line" class="w-4 h-4 text-white" />
+        </div>
+        <h4 class="font-bold text-gray-800 dark:text-white">小站资讯</h4>
       </div>
-      <div class="space-y-2 text-sm">
-        <div class="flex justify-between text-gray-600 dark:text-gray-400">
-          <span>文章数目</span>
-          <span class="text-[#49b1f5] font-medium">{{ stats.posts }}</span>
+      <div class="space-y-3">
+        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+          <span class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+            <Icon icon="fas:file-alt" class="w-4 h-4 mr-2 text-blue-500" />
+            文章数目
+          </span>
+          <span class="text-[#49b1f5] font-bold">{{ stats.posts }}</span>
         </div>
-        <div class="flex justify-between text-gray-600 dark:text-gray-400">
-          <span>本站总字数</span>
-          <span class="text-[#49b1f5] font-medium">10k+</span>
+        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+          <span class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+            <Icon icon="fas:font" class="w-4 h-4 mr-2 text-green-500" />
+            本站总字数
+          </span>
+          <span class="text-[#49b1f5] font-bold">10k+</span>
         </div>
-        <div class="flex justify-between text-gray-600 dark:text-gray-400">
-          <span>最后更新</span>
-          <span class="text-[#49b1f5] font-medium">{{ new Date().toLocaleDateString('zh-CN') }}</span>
+        <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+          <span class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+            <Icon icon="fas:sync-alt" class="w-4 h-4 mr-2 text-purple-500" />
+            最后更新
+          </span>
+          <span class="text-[#49b1f5] font-bold text-sm">{{ new Date().toLocaleDateString('zh-CN') }}</span>
         </div>
       </div>
     </div>
   </aside>
 </template>
+
+<style scoped>
+.sidebar-card {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.sidebar-card.animate-in {
+  animation: slideInRight 0.5s ease-out forwards;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+</style>

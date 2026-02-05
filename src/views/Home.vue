@@ -4,9 +4,6 @@ import { Icon } from '@iconify/vue'
 import { useBlogStore } from '@/stores/blog'
 import PostCard from '@/components/PostCard.vue'
 import Sidebar from '@/components/Sidebar.vue'
-import { IMAGES } from '@/utils/assets'
-
-const avatar = IMAGES.avatar
 
 const blogStore = useBlogStore()
 
@@ -67,25 +64,13 @@ function scrollDown() {
       <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40"></div>
       
       <!-- 内容 -->
-      <div class="relative text-center text-white z-10 px-4">
-        <!-- 头像 -->
-        <div class="mb-6">
-          <div class="avatar-ring inline-block">
-            <img 
-              :src="avatar" 
-              alt="Leguan" 
-              class="w-28 h-28 rounded-full border-4 border-white/80 shadow-2xl"
-              onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Leguan'"
-            />
-          </div>
-        </div>
-
-        <h1 class="text-5xl md:text-7xl font-bold mb-4 drop-shadow-2xl">
+      <div class="relative text-center text-white z-10 px-4 hero-content">
+        <h1 class="text-5xl md:text-7xl font-bold mb-4 drop-shadow-2xl hero-title">
           Leguan's Blog
         </h1>
         
         <!-- 打字机效果 -->
-        <p class="text-xl md:text-2xl text-white/90 mb-2 drop-shadow-lg">
+        <p class="text-xl md:text-2xl text-white/90 mb-2 drop-shadow-lg hero-subtitle">
           <span>{{ typedText }}</span>
           <span 
             class="typewriter-cursor"
@@ -94,25 +79,34 @@ function scrollDown() {
         </p>
         
         <!-- 统计信息 - Kyle's Blog 风格 -->
-        <div class="flex justify-center items-center space-x-2 mt-6 text-sm">
-          <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm">
+        <div class="flex justify-center items-center space-x-2 mt-6 text-sm hero-stats">
+          <router-link 
+            to="/archives"
+            class="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-sm hover:bg-[#49b1f5] transition-all duration-300 cursor-pointer"
+          >
             文章 <strong>{{ blogStore.posts.length }}</strong>
-          </span>
-          <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm">
+          </router-link>
+          <router-link 
+            to="/tags"
+            class="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-sm hover:bg-[#49b1f5] transition-all duration-300 cursor-pointer"
+          >
             标签 <strong>{{ blogStore.allTags.length }}</strong>
-          </span>
-          <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm">
+          </router-link>
+          <router-link 
+            to="/categories"
+            class="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-sm hover:bg-[#49b1f5] transition-all duration-300 cursor-pointer"
+          >
             分类 <strong>{{ blogStore.allCategories.length }}</strong>
-          </span>
+          </router-link>
         </div>
       </div>
 
       <!-- 向下滚动箭头 -->
       <button 
         @click="scrollDown"
-        class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white animate-bounce"
+        class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white scroll-down-btn group"
       >
-        <Icon icon="fas:angle-double-down" class="w-8 h-8 drop-shadow-lg" />
+        <Icon icon="fas:angle-double-down" class="w-8 h-8 drop-shadow-lg group-hover:scale-125 transition-transform" />
       </button>
 
       <!-- 波浪分隔 -->
@@ -173,6 +167,7 @@ function scrollDown() {
               :key="post.slug" 
               :post="post" 
               :layout="index % 2 === 0 ? 'left' : 'right'"
+              :index="index"
             />
           </template>
 
@@ -225,3 +220,42 @@ function scrollDown() {
     </section>
   </div>
 </template>
+
+<style scoped>
+/* Hero 动画 */
+.hero-title {
+  animation: fade-in-up 0.8s ease-out;
+}
+
+.hero-subtitle {
+  animation: fade-in-up 0.8s ease-out 0.2s both;
+}
+
+.hero-stats {
+  animation: fade-in-up 0.8s ease-out 0.4s both;
+}
+
+.scroll-down-btn {
+  animation: bounce-gentle 2s infinite;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce-gentle {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+</style>
