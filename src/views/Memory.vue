@@ -46,24 +46,24 @@ const memories = [
   {
     year: '2025',
     items: [
-      { image: COVER_IMAGES[0], title: '秋日旅行', desc: '去了一趟云南，风景如画' },
-      { image: COVER_IMAGES[1], title: '毕业季', desc: '告别校园，开启新旅程' },
-      { image: COVER_IMAGES[2], title: '第一份工作', desc: '成为一名前端开发工程师' },
+      { image: COVER_IMAGES[0], title: 'Autumn Trip', desc: 'Visited Yunnan, picturesque scenery' },
+      { image: COVER_IMAGES[1], title: 'Graduation', desc: 'Farewell to campus, starting a new journey' },
+      { image: COVER_IMAGES[2], title: 'First Job', desc: 'Became a frontend developer' },
     ]
   },
   {
     year: '2024',
     items: [
-      { image: COVER_IMAGES[3], title: '学会Vue', desc: '深入学习Vue3生态系统' },
-      { image: COVER_IMAGES[4], title: '寒假旅行', desc: '和朋友一起去了北海道' },
-      { image: COVER_IMAGES[5], title: '参加黑客马拉松', desc: '48小时不眠不休，收获满满' },
+      { image: COVER_IMAGES[3], title: 'Learned Vue', desc: 'Deep dive into Vue 3 ecosystem' },
+      { image: COVER_IMAGES[4], title: 'Winter Trip', desc: 'Visited Hokkaido with friends' },
+      { image: COVER_IMAGES[5], title: 'Hackathon', desc: '48 hours of coding, so rewarding' },
     ]
   },
   {
     year: '2023',
     items: [
-      { image: COVER_IMAGES[6], title: '开始写博客', desc: '记录学习和生活的点滴' },
-      { image: COVER_IMAGES[0], title: '养了一只猫', desc: '给它取名叫"代码"' },
+      { image: COVER_IMAGES[6], title: 'Started Blogging', desc: 'Recording learning and life moments' },
+      { image: COVER_IMAGES[0], title: 'Got a Cat', desc: 'Named it "Code"' },
     ]
   }
 ]
@@ -77,8 +77,8 @@ const memories = [
       
       <div class="relative text-center text-white z-10">
         <Icon icon="lucide:images" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
-        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">相册</h1>
-        <p class="mt-3 text-white/80 text-lg">时光机器，记录美好瞬间</p>
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">Gallery</h1>
+        <p class="mt-3 text-white/80 text-lg">Time machine, capturing beautiful moments</p>
       </div>
 
       <div class="wave-divider">
@@ -89,7 +89,7 @@ const memories = [
     </header>
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <!-- 年份分组 -->
+      <!-- Year Groups -->
       <div 
         v-for="(group, groupIndex) in memories" 
         :key="group.year" 
@@ -97,7 +97,7 @@ const memories = [
         class="mb-12 last:mb-0 animate-card"
         :class="{ 'animate-in': isCardVisible(`group-${groupIndex}`) }"
       >
-        <!-- 年份标题 -->
+        <!-- Year Title -->
         <div class="flex items-center mb-6">
           <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#7CB342] to-[#8BC34A] flex items-center justify-center text-white font-bold text-lg shadow-lg">
             {{ group.year }}
@@ -105,7 +105,7 @@ const memories = [
           <div class="h-0.5 flex-1 ml-4 bg-gradient-to-r from-[#7CB342]/50 to-transparent"></div>
         </div>
 
-        <!-- 照片网格 -->
+        <!-- Photo Grid -->
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div 
             v-for="(item, index) in group.items"
@@ -123,12 +123,12 @@ const memories = [
                 loading="lazy"
                 decoding="async"
               />
-              <!-- 悬浮遮罩 -->
+              <!-- Hover Overlay -->
               <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
                 <h3 class="font-bold text-lg">{{ item.title }}</h3>
                 <p class="text-sm text-white/80 mt-1">{{ item.desc }}</p>
               </div>
-              <!-- 角落图标 -->
+              <!-- Corner Icon -->
               <div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
                 <Icon icon="lucide:expand" class="w-4 h-4" />
               </div>
@@ -137,7 +137,7 @@ const memories = [
         </div>
       </div>
 
-      <!-- 底部统计 -->
+      <!-- Bottom Stats -->
       <div 
         :ref="(el) => setCardRef(el, 'stats')"
         class="card p-6 text-center mt-8 bg-gradient-to-r from-purple-500/10 to-pink-500/10 animate-card"
@@ -149,19 +149,19 @@ const memories = [
             <div class="text-2xl font-bold text-gray-800 dark:text-white">
               {{ memories.reduce((acc, g) => acc + g.items.length, 0) }}
             </div>
-            <div class="text-sm text-gray-500">照片数量</div>
+            <div class="text-sm text-gray-500">Photos</div>
           </div>
           <div>
             <Icon icon="lucide:calendar" class="w-8 h-8 text-pink-500 mx-auto mb-1" />
             <div class="text-2xl font-bold text-gray-800 dark:text-white">
               {{ memories.length }}
             </div>
-            <div class="text-sm text-gray-500">记录年份</div>
+            <div class="text-sm text-gray-500">Years</div>
           </div>
           <div>
             <Icon icon="lucide:heart" class="w-8 h-8 text-red-500 mx-auto mb-1" />
             <div class="text-2xl font-bold text-gray-800 dark:text-white">∞</div>
-            <div class="text-sm text-gray-500">美好回忆</div>
+            <div class="text-sm text-gray-500">Memories</div>
           </div>
         </div>
       </div>

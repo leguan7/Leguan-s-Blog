@@ -4,13 +4,13 @@ import type { Post, PostMeta } from '@/types'
 import { parseMarkdown, extractExcerpt } from '@/utils/markdown'
 
 export const useBlogStore = defineStore('blog', () => {
-  // 状态
+  // State
   const posts = ref<Post[]>([])
   const isLoading = ref(false)
   const isDark = ref(false)
   const searchQuery = ref('')
 
-  // 计算属性
+  // Computed properties
   const sortedPosts = computed(() => {
     return [...posts.value].sort((a, b) => 
       new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -65,15 +65,15 @@ export const useBlogStore = defineStore('blog', () => {
       .sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
   })
 
-  // 方法
+  // Methods
   async function loadPosts() {
     isLoading.value = true
     try {
-      // 加载文章列表元数据
+      // Load post list metadata
       const response = await fetch(`${import.meta.env.BASE_URL}posts/index.json`)
       const postMetas: PostMeta[] = await response.json()
 
-      // 加载每篇文章的内容
+      // Load each post's content
       const loadedPosts = await Promise.all(
         postMetas.map(async (meta) => {
           try {
@@ -97,7 +97,7 @@ export const useBlogStore = defineStore('blog', () => {
       posts.value = loadedPosts.filter((post): post is Post => post !== null)
     } catch (error) {
       console.error('Failed to load posts:', error)
-      // 使用内置的默认文章
+      // Use built-in default posts
       posts.value = getDefaultPosts()
     } finally {
       isLoading.value = false
@@ -140,18 +140,18 @@ export const useBlogStore = defineStore('blog', () => {
   }
 
   return {
-    // 状态
+    // State
     posts,
     isLoading,
     isDark,
     searchQuery,
-    // 计算属性
+    // Computed
     sortedPosts,
     filteredPosts,
     allTags,
     allCategories,
     archivesByYear,
-    // 方法
+    // Methods
     loadPosts,
     getPostBySlug,
     getPostsByTag,
@@ -162,19 +162,19 @@ export const useBlogStore = defineStore('blog', () => {
   }
 })
 
-// 默认文章（当无法加载时使用）
+// Default posts (used when loading fails)
 function getDefaultPosts(): Post[] {
   return [
     {
       slug: 'welcome',
-      title: '欢迎来到 Leguan\'s Blog',
+      title: 'Welcome to Leguan\'s Blog',
       date: '2026-02-04',
-      tags: ['博客', '生活'],
-      categories: ['随笔'],
+      tags: ['Blog', 'Life'],
+      categories: ['Essays'],
       cover: '',
-      excerpt: '这是我的第一篇博客文章。Digest your emotions - 消化你的情绪。',
-      content: '# 欢迎！\n\n这是我的第一篇博客文章。\n\n## 关于这个博客\n\n**Digest your emotions** - 消化你的情绪。\n\n我是 Leguan，一个想要看看世界的人。',
-      html: '<h1>欢迎！</h1><p>这是我的第一篇博客文章。</p><h2>关于这个博客</h2><p><strong>Digest your emotions</strong> - 消化你的情绪。</p><p>我是 Leguan，一个想要看看世界的人。</p>'
+      excerpt: 'This is my first blog post. Digest your emotions.',
+      content: '# Welcome!\n\nThis is my first blog post.\n\n## About this blog\n\n**Digest your emotions**\n\nI am Leguan, someone who wants to see the world.',
+      html: '<h1>Welcome!</h1><p>This is my first blog post.</p><h2>About this blog</h2><p><strong>Digest your emotions</strong></p><p>I am Leguan, someone who wants to see the world.</p>'
     }
   ]
 }

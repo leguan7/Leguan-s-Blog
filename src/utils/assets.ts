@@ -1,20 +1,20 @@
-// 获取正确的资源路径，考虑 base URL
+// Get correct asset path with base URL
 const BASE_URL = import.meta.env.BASE_URL || '/'
 
 export function getAssetUrl(path: string): string {
-  // 如果已经是完整 URL 或者 data URL，直接返回
+  // If already a full URL or data URL, return directly
   if (path.startsWith('http') || path.startsWith('data:')) {
     return path
   }
   
-  // 移除开头的斜杠
+  // Remove leading slash
   const cleanPath = path.startsWith('/') ? path.slice(1) : path
   
-  // 拼接 base URL
+  // Concatenate base URL
   return `${BASE_URL}${cleanPath}`
 }
 
-// 图片路径常量
+// Image path constants
 export const IMAGES = {
   background: getAssetUrl('/img/background.jpg'),
   avatar: getAssetUrl('/img/avatar.jpg'),
@@ -31,7 +31,7 @@ export const IMAGES = {
   qqQrCode: getAssetUrl('/img/QQ.png'),
 }
 
-// 封面图片池
+// Cover image pool
 export const COVER_IMAGES = [
   IMAGES.animeRainbowLandscape,
   IMAGES.fantasyAnimeScene,
@@ -42,7 +42,7 @@ export const COVER_IMAGES = [
   IMAGES.animeCharacterTraveling,
 ]
 
-// 根据字符串哈希获取封面图
+// Get cover image by string hash
 export function getCoverImage(seed: string): string {
   const hash = seed.split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0)
   const index = Math.abs(hash) % COVER_IMAGES.length

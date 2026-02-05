@@ -73,10 +73,10 @@ function selectCategory(category: string) {
 }
 
 const categoryStyles: Record<string, { icon: string, gradient: string }> = {
-  '技术': { icon: 'lucide:code-2', gradient: 'from-blue-500 to-cyan-500' },
-  '生活': { icon: 'lucide:heart', gradient: 'from-pink-500 to-rose-500' },
-  '随笔': { icon: 'lucide:pen-tool', gradient: 'from-purple-500 to-violet-500' },
-  '学习': { icon: 'lucide:graduation-cap', gradient: 'from-green-500 to-emerald-500' },
+  'Tech': { icon: 'lucide:code-2', gradient: 'from-blue-500 to-cyan-500' },
+  'Life': { icon: 'lucide:heart', gradient: 'from-pink-500 to-rose-500' },
+  'Essays': { icon: 'lucide:pen-tool', gradient: 'from-purple-500 to-violet-500' },
+  'Learning': { icon: 'lucide:graduation-cap', gradient: 'from-green-500 to-emerald-500' },
 }
 
 function getCategoryStyle(name: string) {
@@ -100,8 +100,8 @@ function getCategoryStyle(name: string) {
             <Icon icon="lucide:folder-open" class="w-10 h-10 drop-shadow-lg" />
           </div>
         </div>
-        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">分类</h1>
-        <p class="mt-3 text-white/80 text-lg">共 {{ blogStore.allCategories.length }} 个分类</p>
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">Categories</h1>
+        <p class="mt-3 text-white/80 text-lg">{{ blogStore.allCategories.length }} categories in total</p>
       </div>
 
       <div class="wave-divider">
@@ -117,7 +117,7 @@ function getCategoryStyle(name: string) {
           <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#7CB342]/20 to-[#8BC34A]/20 flex items-center justify-center mb-4">
             <div class="animate-spin rounded-full h-8 w-8 border-4 border-[#7CB342] border-t-transparent"></div>
           </div>
-          <p class="text-gray-500">加载中...</p>
+          <p class="text-gray-500">Loading...</p>
         </div>
       </div>
 
@@ -149,7 +149,7 @@ function getCategoryStyle(name: string) {
                 </h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 flex items-center mt-1">
                   <Icon icon="lucide:file-text" class="w-3.5 h-3.5 mr-1.5" />
-                  {{ category.count }} 篇文章
+                  {{ category.count }} posts
                 </p>
               </div>
               <Icon 
@@ -175,14 +175,14 @@ function getCategoryStyle(name: string) {
                 <Icon :icon="getCategoryStyle(selectedCategory).icon" class="w-4 h-4 text-white" />
               </div>
               {{ selectedCategory }}
-              <span class="text-base font-normal text-gray-400 ml-2">({{ filteredPosts.length }} 篇)</span>
+              <span class="text-base font-normal text-gray-400 ml-2">({{ filteredPosts.length }} posts)</span>
             </h2>
             <button 
               @click="selectCategory(selectedCategory!)"
               class="px-3 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-red-500 rounded-lg transition-all flex items-center"
             >
               <Icon icon="lucide:x" class="w-4 h-4 mr-1" />
-              清除筛选
+              Clear Filter
             </button>
           </div>
 
@@ -206,8 +206,8 @@ function getCategoryStyle(name: string) {
           <div class="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center">
             <Icon icon="lucide:pointer" class="w-12 h-12 text-gray-400 dark:text-gray-500" />
           </div>
-          <p class="text-gray-500 dark:text-gray-400 mb-2">点击上方分类查看相关文章</p>
-          <p class="text-sm text-gray-400 dark:text-gray-500">共有 {{ blogStore.allCategories.length }} 个分类等你探索</p>
+          <p class="text-gray-500 dark:text-gray-400 mb-2">Click a category above to view related posts</p>
+          <p class="text-sm text-gray-400 dark:text-gray-500">{{ blogStore.allCategories.length }} categories waiting to be explored</p>
         </div>
       </div>
     </div>

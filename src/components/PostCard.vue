@@ -20,7 +20,7 @@ onMounted(() => {
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting && !isVisible.value) {
-          // 根据 index 添加延迟，实现错落动画
+          // Add delay based on index for staggered animation
           const delay = (props.index || 0) * 150
           setTimeout(() => {
             isVisible.value = true
@@ -49,7 +49,7 @@ const coverImage = computed(() => {
   return getCoverImage(props.post.slug)
 })
 
-// 随机渐变色
+// Gradient colors
 const gradientColors = [
   'from-[#7CB342] to-[#8BC34A]',
   'from-pink-500 to-rose-500',
@@ -74,7 +74,7 @@ const categoryGradient = computed(() => {
       { 'animate-in': isVisible }
     ]"
   >
-    <!-- 封面图 -->
+    <!-- Cover Image -->
     <router-link 
       :to="`/post/${post.slug}`"
       class="block md:w-[45%] relative overflow-hidden"
@@ -88,11 +88,11 @@ const categoryGradient = computed(() => {
           decoding="async"
           fetchpriority="low"
         />
-        <!-- 遮罩层 -->
+        <!-- Overlay -->
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
         <div class="absolute inset-0 bg-[#7CB342]/0 group-hover:bg-[#7CB342]/20 transition-colors duration-500"></div>
         
-        <!-- 日期角标 -->
+        <!-- Date Badge -->
         <div 
           class="absolute top-4 left-4 text-white flex flex-col items-center justify-center w-14 h-14 rounded-xl shadow-lg"
           :class="`bg-gradient-to-br ${categoryGradient}`"
@@ -101,28 +101,28 @@ const categoryGradient = computed(() => {
           <span class="text-xs opacity-90">{{ new Date(post.date).toLocaleDateString('zh-CN', { month: 'short' }) }}</span>
         </div>
 
-        <!-- 置顶标记 -->
+        <!-- Sticky Badge -->
         <div 
           v-if="post.sticky"
           class="absolute top-4 right-4 bg-gradient-to-br from-orange-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg flex items-center"
         >
           <Icon icon="lucide:pin" class="w-3 h-3 mr-1" />
-          置顶
+          Pinned
         </div>
 
-        <!-- 悬浮显示阅读按钮 -->
+        <!-- Hover Read Button -->
         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
           <span class="px-4 py-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full text-sm font-medium text-gray-800 dark:text-white shadow-lg flex items-center">
             <Icon icon="lucide:book-open" class="w-4 h-4 mr-2 text-[#7CB342]" />
-            阅读全文
+            Read More
           </span>
         </div>
       </div>
     </router-link>
 
-    <!-- 内容 -->
+    <!-- Content -->
     <div class="md:w-[55%] p-5 md:p-6 flex flex-col justify-center relative">
-      <!-- 分类 -->
+      <!-- Categories -->
       <div class="flex flex-wrap gap-2 mb-3">
         <router-link
           v-for="category in post.categories"
@@ -136,21 +136,21 @@ const categoryGradient = computed(() => {
         </router-link>
       </div>
 
-      <!-- 标题 -->
+      <!-- Title -->
       <router-link :to="`/post/${post.slug}`" class="group/title">
         <h2 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white group-hover/title:text-[#7CB342] transition-colors duration-300 line-clamp-2">
           {{ post.title }}
         </h2>
       </router-link>
 
-      <!-- 摘要 -->
+      <!-- Excerpt -->
       <p class="mt-3 text-gray-700 dark:text-gray-300 line-clamp-3 leading-relaxed text-sm md:text-base">
         {{ post.excerpt }}
       </p>
 
-      <!-- 底部信息 -->
+      <!-- Footer Info -->
       <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700/50 flex items-center justify-between">
-        <!-- 标签 -->
+        <!-- Tags -->
         <div class="flex flex-wrap gap-1.5">
           <router-link
             v-for="tag in post.tags.slice(0, 3)"
@@ -166,16 +166,16 @@ const categoryGradient = computed(() => {
           </span>
         </div>
 
-        <!-- 阅读信息 -->
+        <!-- Reading Info -->
         <div class="flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400">
           <span class="flex items-center">
             <Icon icon="lucide:clock" class="w-3.5 h-3.5 mr-1 text-[#7CB342]" />
-            {{ readingTime }} 分钟
+            {{ readingTime }} min
           </span>
         </div>
       </div>
 
-      <!-- 装饰元素 -->
+      <!-- Decorative Element -->
       <div 
         class="absolute -bottom-10 -right-10 w-32 h-32 rounded-full opacity-5 dark:opacity-10"
         :class="`bg-gradient-to-br ${categoryGradient}`"

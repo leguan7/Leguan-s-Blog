@@ -72,7 +72,7 @@ function selectTag(tag: string) {
   }
 }
 
-// 彩虹色标签
+// Rainbow colored tags
 const tagColors = [
   'from-red-400 to-pink-500', 'from-orange-400 to-red-500', 'from-amber-400 to-orange-500',
   'from-yellow-400 to-amber-500', 'from-lime-400 to-green-500', 'from-green-400 to-emerald-500',
@@ -109,8 +109,8 @@ function getTagSize(count: number): string {
             <Icon icon="lucide:tags" class="w-10 h-10 drop-shadow-lg" />
           </div>
         </div>
-        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">标签</h1>
-        <p class="mt-3 text-white/80 text-lg">共 {{ blogStore.allTags.length }} 个标签</p>
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">Tags</h1>
+        <p class="mt-3 text-white/80 text-lg">{{ blogStore.allTags.length }} tags in total</p>
       </div>
 
       <div class="wave-divider">
@@ -126,12 +126,12 @@ function getTagSize(count: number): string {
           <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#7CB342]/20 to-[#8BC34A]/20 flex items-center justify-center mb-4">
             <div class="animate-spin rounded-full h-8 w-8 border-4 border-[#7CB342] border-t-transparent"></div>
           </div>
-          <p class="text-gray-500">加载中...</p>
+          <p class="text-gray-500">Loading...</p>
         </div>
       </div>
 
       <div v-else>
-        <!-- Tag Cloud - 彩虹色 -->
+        <!-- Tag Cloud - Rainbow Colors -->
         <div 
           :ref="(el) => setSectionRef(el, 'tag-cloud')"
           class="card p-8 mb-8 tag-cloud"
@@ -141,7 +141,7 @@ function getTagSize(count: number): string {
             <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7CB342] to-[#8BC34A] flex items-center justify-center mr-3">
               <Icon icon="lucide:cloud" class="w-5 h-5 text-white" />
             </div>
-            <h3 class="text-lg font-bold text-gray-800 dark:text-white">标签云</h3>
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white">Tag Cloud</h3>
           </div>
           <div class="flex flex-wrap items-center justify-center gap-3">
             <button
@@ -176,14 +176,14 @@ function getTagSize(count: number): string {
                 <Icon icon="lucide:hash" class="w-4 h-4 text-white" />
               </div>
               {{ selectedTag }}
-              <span class="text-base font-normal text-gray-400 ml-2">({{ filteredPosts.length }} 篇)</span>
+              <span class="text-base font-normal text-gray-400 ml-2">({{ filteredPosts.length }} posts)</span>
             </h2>
             <button 
               @click="selectTag(selectedTag!)"
               class="px-3 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-red-500 rounded-lg transition-all flex items-center"
             >
               <Icon icon="lucide:x" class="w-4 h-4 mr-1" />
-              清除筛选
+              Clear Filter
             </button>
           </div>
 
@@ -207,8 +207,8 @@ function getTagSize(count: number): string {
           <div class="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center">
             <Icon icon="lucide:pointer" class="w-12 h-12 text-gray-400 dark:text-gray-500" />
           </div>
-          <p class="text-gray-500 dark:text-gray-400 mb-2">点击上方标签查看相关文章</p>
-          <p class="text-sm text-gray-400 dark:text-gray-500">共有 {{ blogStore.allTags.length }} 个标签等你探索</p>
+          <p class="text-gray-500 dark:text-gray-400 mb-2">Click a tag above to view related posts</p>
+          <p class="text-sm text-gray-400 dark:text-gray-500">{{ blogStore.allTags.length }} tags waiting to be explored</p>
         </div>
       </div>
     </div>

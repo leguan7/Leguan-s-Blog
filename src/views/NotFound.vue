@@ -45,7 +45,7 @@ onUnmounted(() => {
 <template>
   <div class="min-h-[80vh] flex items-center justify-center px-4">
     <div class="text-center">
-      <!-- 404 动画数字 -->
+      <!-- 404 Animated Number -->
       <div class="relative mb-8">
         <div class="text-[150px] md:text-[200px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#7CB342] to-[#8BC34A] leading-none select-none opacity-20">
           404
@@ -55,28 +55,28 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- 信息 -->
+      <!-- Info -->
       <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-3">
-        哎呀，页面走丢了
+        Oops, page not found
       </h1>
       <p class="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
-        你访问的页面可能已被删除、移动或从未存在过。<br>
-        不要担心，让我们帮你找到回家的路！
+        The page you're looking for may have been deleted, moved, or never existed.<br>
+        Don't worry, let us help you find your way back!
       </p>
 
-      <!-- 操作按钮 -->
+      <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row gap-3 justify-center">
         <router-link to="/" class="btn btn-primary">
           <Icon icon="lucide:home" class="w-4 h-4 mr-2" />
-          返回首页
+          Back to Home
         </router-link>
         <button @click="$router.back()" class="btn border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-[#7CB342] hover:text-[#7CB342]">
           <Icon icon="lucide:arrow-left" class="w-4 h-4 mr-2" />
-          返回上一页
+          Go Back
         </button>
       </div>
 
-      <!-- 热门页面推荐 -->
+      <!-- Popular Page Recommendations -->
       <div 
         :ref="(el) => setCardRef(el, 0)"
         class="mt-12 text-left max-w-md mx-auto card p-5 animate-card"
@@ -84,7 +84,7 @@ onUnmounted(() => {
       >
         <h3 class="font-bold text-gray-800 dark:text-white mb-3 flex items-center text-sm">
           <Icon icon="lucide:compass" class="w-4 h-4 mr-2 text-[#7CB342]" />
-          你可能想去的页面
+          Pages you might want to visit
         </h3>
         <div class="space-y-2">
           <router-link 
@@ -92,28 +92,28 @@ onUnmounted(() => {
             class="flex items-center text-gray-600 dark:text-gray-400 hover:text-[#7CB342] transition-colors text-sm py-1"
           >
             <Icon icon="lucide:archive" class="w-4 h-4 mr-2" />
-            归档 - 查看所有文章
+            Archives - View all posts
           </router-link>
           <router-link 
             to="/categories"
             class="flex items-center text-gray-600 dark:text-gray-400 hover:text-[#7CB342] transition-colors text-sm py-1"
           >
             <Icon icon="lucide:folder-open" class="w-4 h-4 mr-2" />
-            分类 - 按分类浏览
+            Categories - Browse by category
           </router-link>
           <router-link 
             to="/tags"
             class="flex items-center text-gray-600 dark:text-gray-400 hover:text-[#7CB342] transition-colors text-sm py-1"
           >
             <Icon icon="lucide:tags" class="w-4 h-4 mr-2" />
-            标签 - 按标签浏览
+            Tags - Browse by tag
           </router-link>
           <router-link 
             to="/about"
             class="flex items-center text-gray-600 dark:text-gray-400 hover:text-[#7CB342] transition-colors text-sm py-1"
           >
             <Icon icon="lucide:user" class="w-4 h-4 mr-2" />
-            关于 - 了解博主
+            About - Learn about the author
           </router-link>
         </div>
       </div>

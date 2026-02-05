@@ -9,7 +9,7 @@ const nickname = ref('')
 const email = ref('')
 
 function submitComment() {
-  alert('评论功能正在开发中...')
+  alert('Comment feature is under development...')
 }
 
 // Intersection Observer for animations
@@ -64,8 +64,8 @@ onUnmounted(() => {
       
       <div class="relative text-center text-white z-10">
         <Icon icon="lucide:message-circle" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
-        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">留言板</h1>
-        <p class="mt-3 text-white/80 text-lg">有什么想说的？留下你的足迹吧！</p>
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">Guestbook</h1>
+        <p class="mt-3 text-white/80 text-lg">Got something to say? Leave your mark!</p>
       </div>
 
       <div class="wave-divider">
@@ -76,7 +76,7 @@ onUnmounted(() => {
     </header>
 
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <!-- 留言表单 -->
+      <!-- Message Form -->
       <div 
         :ref="(el) => setCardRef(el, 0)"
         class="card p-6 md:p-8 mb-8 animate-card"
@@ -84,7 +84,7 @@ onUnmounted(() => {
       >
         <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-5 flex items-center">
           <Icon icon="lucide:pen-line" class="w-5 h-5 mr-2 text-[#7CB342]" />
-          发表留言
+          Leave a Message
         </h2>
         
         <form @submit.prevent="submitComment" class="space-y-4">
@@ -92,25 +92,25 @@ onUnmounted(() => {
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 <Icon icon="lucide:user" class="w-3.5 h-3.5 inline mr-1" />
-                昵称
+                Nickname
               </label>
               <input 
                 v-model="nickname"
                 type="text" 
                 required
-                placeholder="你的昵称"
+                placeholder="Your nickname"
                 class="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:border-[#7CB342] focus:ring-2 focus:ring-[#7CB342]/20 transition-all outline-none"
               />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 <Icon icon="lucide:mail" class="w-3.5 h-3.5 inline mr-1" />
-                邮箱
+                Email
               </label>
               <input 
                 v-model="email"
                 type="email" 
-                placeholder="选填，用于获取头像"
+                placeholder="Optional, for avatar"
                 class="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:border-[#7CB342] focus:ring-2 focus:ring-[#7CB342]/20 transition-all outline-none"
               />
             </div>
@@ -119,25 +119,25 @@ onUnmounted(() => {
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
               <Icon icon="lucide:message-square" class="w-3.5 h-3.5 inline mr-1" />
-              留言内容
+              Message
             </label>
             <textarea 
               v-model="comment"
               rows="4"
               required
-              placeholder="说点什么吧..."
+              placeholder="Say something..."
               class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:border-[#7CB342] focus:ring-2 focus:ring-[#7CB342]/20 transition-all outline-none resize-none"
             ></textarea>
           </div>
 
           <button type="submit" class="btn btn-primary w-full md:w-auto">
             <Icon icon="lucide:send" class="w-4 h-4 mr-2" />
-            发表留言
+            Submit
           </button>
         </form>
       </div>
 
-      <!-- 提示信息 -->
+      <!-- Notice -->
       <div 
         :ref="(el) => setCardRef(el, 1)"
         class="card p-6 text-center animate-card"
@@ -145,8 +145,8 @@ onUnmounted(() => {
       >
         <Icon icon="lucide:heart" class="w-12 h-12 text-pink-400 mx-auto mb-3" />
         <p class="text-gray-600 dark:text-gray-400">
-          评论功能正在开发中，敬请期待！<br/>
-          <span class="text-sm text-gray-400">你也可以通过以下方式联系我</span>
+          Comment feature is under development, stay tuned!<br/>
+          <span class="text-sm text-gray-400">You can also reach me through</span>
         </p>
         <div class="flex flex-wrap justify-center gap-2 mt-4">
           <a href="https://github.com/leguan7" target="_blank" class="btn bg-gray-800 text-white hover:bg-gray-900 text-sm">

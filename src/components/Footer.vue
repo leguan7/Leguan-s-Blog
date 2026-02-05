@@ -10,7 +10,7 @@ const showQQModal = ref(false)
 const footerRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-  // 观察 footer 进入视图
+  // Observe footer entering viewport
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -32,13 +32,13 @@ const socialLinks = [
   { icon: 'ri:github-fill', href: 'https://github.com/leguan7', label: 'GitHub', color: 'hover:bg-[#333]' },
   { icon: 'lucide:mail', href: 'mailto:leguan701@gmail.com', label: 'leguan701@gmail.com', color: 'hover:bg-gradient-to-br hover:from-orange-500 hover:to-pink-500' },
   { icon: 'ri:qq-fill', href: '#', label: 'QQ', isModal: true, color: 'hover:bg-[#12B7F5]' },
-  { icon: 'lucide:message-circle', href: '/messageboard', label: '留言板', isRouter: true, color: 'hover:bg-[#7CB342]' },
+  { icon: 'lucide:message-circle', href: '/messageboard', label: 'Guestbook', isRouter: true, color: 'hover:bg-[#7CB342]' },
 ]
 </script>
 
 <template>
   <footer ref="footerRef" class="relative mt-8">
-    <!-- 半透明遮罩 -->
+    <!-- Semi-transparent Overlay -->
     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/40 backdrop-blur-sm"></div>
     
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-white/90">
@@ -74,7 +74,7 @@ const socialLinks = [
           :style="{ animationDelay: '100ms' }"
         >
           <template v-for="(link, index) in socialLinks" :key="index">
-            <!-- QQ弹窗按钮 -->
+            <!-- QQ Modal Button -->
             <div v-if="link.isModal" class="relative">
               <button
                 @click.stop="showQQModal = !showQQModal"
@@ -85,7 +85,7 @@ const socialLinks = [
               </button>
               <QQModal :visible="showQQModal" @close="showQQModal = false" />
             </div>
-            <!-- 路由链接 -->
+            <!-- Router Link -->
             <router-link
               v-else-if="link.isRouter"
               :to="link.href"
@@ -98,7 +98,7 @@ const socialLinks = [
                 <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></span>
               </span>
             </router-link>
-            <!-- 外部链接 -->
+            <!-- External Link -->
             <a
               v-else
               :href="link.href"
@@ -124,23 +124,23 @@ const socialLinks = [
         >
           <router-link to="/" class="text-white/70 hover:text-[#7CB342] transition-colors flex items-center">
             <Icon icon="lucide:home" class="w-3.5 h-3.5 mr-1.5" />
-            首页
+            Home
           </router-link>
           <router-link to="/archives" class="text-white/70 hover:text-[#7CB342] transition-colors flex items-center">
             <Icon icon="lucide:archive" class="w-3.5 h-3.5 mr-1.5" />
-            归档
+            Archives
           </router-link>
           <router-link to="/tags" class="text-white/70 hover:text-[#7CB342] transition-colors flex items-center">
             <Icon icon="lucide:tags" class="w-3.5 h-3.5 mr-1.5" />
-            标签
+            Tags
           </router-link>
           <router-link to="/categories" class="text-white/70 hover:text-[#7CB342] transition-colors flex items-center">
             <Icon icon="lucide:folder" class="w-3.5 h-3.5 mr-1.5" />
-            分类
+            Categories
           </router-link>
           <router-link to="/about" class="text-white/70 hover:text-[#7CB342] transition-colors flex items-center">
             <Icon icon="lucide:user" class="w-3.5 h-3.5 mr-1.5" />
-            关于
+            About
           </router-link>
         </div>
 
@@ -169,7 +169,7 @@ const socialLinks = [
           </p>
           <p class="flex items-center justify-center text-xs text-white/40 mt-2">
             <Icon icon="lucide:heart" class="w-3 h-3 mr-1 text-red-500 animate-pulse" />
-            感谢访问
+            Thanks for visiting
           </p>
         </div>
       </div>

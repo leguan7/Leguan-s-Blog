@@ -59,9 +59,9 @@ const skills = [
 ]
 
 const timeline = [
-  { year: '2026', event: '开始写博客，分享技术与生活', icon: 'lucide:pen-line' },
-  { year: '2025', event: '探索新技术，不断学习成长', icon: 'lucide:rocket' },
-  { year: '2024', event: '在编程的道路上持续前行', icon: 'lucide:code-2' },
+  { year: '2026', event: 'Started blogging, sharing tech and life', icon: 'lucide:pen-line' },
+  { year: '2025', event: 'Exploring new technologies, continuously learning', icon: 'lucide:rocket' },
+  { year: '2024', event: 'Progressing on the path of programming', icon: 'lucide:code-2' },
 ]
 </script>
 
@@ -80,7 +80,7 @@ const timeline = [
             onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Leguan'"
           />
         </div>
-        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">关于我</h1>
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">About Me</h1>
         <p class="mt-3 text-white/80 text-xl">Leguan</p>
       </div>
 
@@ -92,7 +92,7 @@ const timeline = [
     </header>
 
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <!-- 个人介绍 -->
+      <!-- Personal Introduction -->
       <div 
         :ref="(el) => setCardRef(el, 0)"
         class="card p-6 md:p-8 mb-6 animate-card"
@@ -100,39 +100,39 @@ const timeline = [
       >
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-5 flex items-center">
           <Icon icon="lucide:user" class="w-6 h-6 mr-2 text-[#7CB342]" />
-          个人简介
+          About
         </h2>
         <div class="text-gray-600 dark:text-gray-400 space-y-4 leading-relaxed">
           <p>
-            你好！我是 <strong class="text-[#7CB342]">Leguan</strong>，一个想要看看世界的人。
+            Hello! I'm <strong class="text-[#7CB342]">Leguan</strong>, someone who wants to explore the world.
           </p>
           <blockquote class="border-l-4 border-[#7CB342] pl-4 py-3 bg-gradient-to-r from-[#7CB342]/10 to-transparent rounded-r-lg">
             <p class="italic text-[#7CB342]">"Digest your emotions"</p>
-            <p class="text-sm text-gray-500 mt-1">— 消化你的情绪</p>
+            <p class="text-sm text-gray-500 mt-1">— Process what you feel</p>
           </blockquote>
-          <p>这个博客是我记录生活、分享技术、沉淀思考的地方。</p>
+          <p>This blog is my space to record life, share technology, and reflect on thoughts.</p>
           <ul class="space-y-2">
             <li class="flex items-center">
               <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-500 mr-2" />
-              技术分享与学习笔记
+              Tech sharing & learning notes
             </li>
             <li class="flex items-center">
               <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-500 mr-2" />
-              生活随笔与感悟
+              Life essays & reflections
             </li>
             <li class="flex items-center">
               <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-500 mr-2" />
-              追番记录与动漫推荐
+              Anime tracking & recommendations
             </li>
             <li class="flex items-center">
               <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-500 mr-2" />
-              健身日志与自我提升
+              Fitness logs & self-improvement
             </li>
           </ul>
         </div>
       </div>
 
-      <!-- 技术栈 -->
+      <!-- Tech Stack -->
       <div 
         :ref="(el) => setCardRef(el, 1)"
         class="card p-6 md:p-8 mb-6 animate-card"
@@ -140,7 +140,7 @@ const timeline = [
       >
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
           <Icon icon="lucide:code-2" class="w-6 h-6 mr-2 text-[#7CB342]" />
-          技术栈
+          Tech Stack
         </h2>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div 
@@ -154,7 +154,7 @@ const timeline = [
         </div>
       </div>
 
-      <!-- 时间线 -->
+      <!-- Timeline -->
       <div 
         :ref="(el) => setCardRef(el, 2)"
         class="card p-6 md:p-8 mb-6 animate-card"
@@ -162,7 +162,7 @@ const timeline = [
       >
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
           <Icon icon="lucide:history" class="w-6 h-6 mr-2 text-[#7CB342]" />
-          时间线
+          Timeline
         </h2>
         <div class="relative pl-8">
           <div class="absolute left-3 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#7CB342] to-transparent"></div>
@@ -185,7 +185,7 @@ const timeline = [
         </div>
       </div>
 
-      <!-- 联系方式 -->
+      <!-- Contact -->
       <div 
         :ref="(el) => setCardRef(el, 3)"
         class="card p-6 md:p-8 animate-card"
@@ -193,7 +193,7 @@ const timeline = [
       >
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
           <Icon icon="lucide:mail" class="w-6 h-6 mr-2 text-[#7CB342]" />
-          联系我
+          Contact Me
         </h2>
         <div class="flex flex-wrap gap-3">
           <a 
@@ -226,7 +226,7 @@ const timeline = [
           </div>
           <router-link to="/messageboard" class="btn btn-primary">
             <Icon icon="lucide:message-circle" class="w-5 h-5 mr-2" />
-            留言板
+            Guestbook
           </router-link>
         </div>
       </div>

@@ -6,11 +6,11 @@ import { formatDate } from '@/utils/markdown'
 
 const blogStore = useBlogStore()
 
-// Banner 可见性
+// Banner visibility
 const bannerRef = ref<HTMLElement | null>(null)
 const bannerVisible = ref(false)
 
-// 年份区块可见性
+// Year section visibility
 const visibleSections = ref<Set<string>>(new Set())
 const sectionRefs = ref<Map<string, HTMLElement>>(new Map())
 
@@ -41,19 +41,19 @@ onMounted(() => {
     { threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
   )
 
-  // 观察 banner
+  // Observe banner
   if (bannerRef.value) {
     ;(bannerRef.value as any).__sectionKey = 'banner'
     observer.observe(bannerRef.value)
   }
 
-  // 观察已有的年份区块
+  // Observe existing year sections
   sectionRefs.value.forEach((el, key) => {
     ;(el as any).__sectionKey = key
     observer?.observe(el)
   })
 
-  // Banner 立即可见
+  // Banner visible immediately
   setTimeout(() => {
     bannerVisible.value = true
   }, 100)
@@ -80,8 +80,8 @@ onUnmounted(() => {
             <Icon icon="lucide:archive" class="w-10 h-10 drop-shadow-lg" />
           </div>
         </div>
-        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">归档</h1>
-        <p class="mt-3 text-white/80 text-lg">共 {{ blogStore.posts.length }} 篇文章</p>
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">Archives</h1>
+        <p class="mt-3 text-white/80 text-lg">{{ blogStore.posts.length }} posts in total</p>
       </div>
 
       <div class="wave-divider">
@@ -98,7 +98,7 @@ onUnmounted(() => {
           <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#7CB342]/20 to-[#8BC34A]/20 flex items-center justify-center mb-4">
             <div class="animate-spin rounded-full h-8 w-8 border-4 border-[#7CB342] border-t-transparent"></div>
           </div>
-          <p class="text-gray-500">加载中...</p>
+          <p class="text-gray-500">Loading...</p>
         </div>
       </div>
 
@@ -118,7 +118,7 @@ onUnmounted(() => {
               <Icon icon="lucide:calendar" class="w-5 h-5" />
             </div>
             <span class="ml-4 text-2xl font-bold text-gray-800 dark:text-white">{{ year }}</span>
-            <span class="ml-2 px-2 py-0.5 text-xs bg-[#7CB342]/10 text-[#7CB342] rounded-full">({{ posts.length }}篇)</span>
+            <span class="ml-2 px-2 py-0.5 text-xs bg-[#7CB342]/10 text-[#7CB342] rounded-full">({{ posts.length }} posts)</span>
           </div>
 
           <!-- Posts -->

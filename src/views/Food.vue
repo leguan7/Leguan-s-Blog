@@ -46,69 +46,69 @@ onUnmounted(() => {
 
 const foodList = [
   { 
-    name: '重庆小面', 
-    type: '面食', 
+    name: 'Chongqing Noodles', 
+    type: 'Noodles', 
     rating: '9.5', 
     cover: COVER_IMAGES[0], 
-    tags: ['麻辣', '地道', '早餐'], 
-    location: '重庆',
-    description: '麻辣鲜香，一碗下肚，元气满满'
+    tags: ['Spicy', 'Authentic', 'Breakfast'], 
+    location: 'Chongqing',
+    description: 'Spicy and flavorful, one bowl fills you with energy'
   },
   { 
-    name: '广式早茶', 
-    type: '点心', 
+    name: 'Cantonese Dim Sum', 
+    type: 'Dim Sum', 
     rating: '9.3', 
     cover: COVER_IMAGES[1], 
-    tags: ['精致', '粤菜', '传统'], 
-    location: '广东',
-    description: '虾饺、烧卖、凤爪，饮茶必点'
+    tags: ['Delicate', 'Cantonese', 'Traditional'], 
+    location: 'Guangdong',
+    description: 'Shrimp dumplings, siu mai, chicken feet - tea time essentials'
   },
   { 
-    name: '成都火锅', 
-    type: '火锅', 
+    name: 'Chengdu Hot Pot', 
+    type: 'Hot Pot', 
     rating: '9.8', 
     cover: COVER_IMAGES[2], 
-    tags: ['麻辣', '社交', '夜宵'], 
-    location: '四川',
-    description: '牛油锅底配毛肚，人间至味'
+    tags: ['Spicy', 'Social', 'Late Night'], 
+    location: 'Sichuan',
+    description: 'Butter broth with beef tripe, pure heaven'
   },
   { 
-    name: '日式拉面', 
-    type: '面食', 
+    name: 'Japanese Ramen', 
+    type: 'Noodles', 
     rating: '9.0', 
     cover: COVER_IMAGES[3], 
-    tags: ['浓郁', '日料', '治愈'], 
-    location: '日本',
-    description: '豚骨汤底，叉烧溏心蛋，暖心暖胃'
+    tags: ['Rich', 'Japanese', 'Comforting'], 
+    location: 'Japan',
+    description: 'Tonkotsu broth with chashu and soft-boiled egg, soul food'
   },
   { 
-    name: '西安肉夹馍', 
-    type: '小吃', 
+    name: "Xi'an Roujiamo", 
+    type: 'Snacks', 
     rating: '9.2', 
     cover: COVER_IMAGES[4], 
-    tags: ['肉食', '传统', '便携'], 
-    location: '陕西',
-    description: '外酥里嫩，肉香四溢'
+    tags: ['Meaty', 'Traditional', 'Portable'], 
+    location: 'Shaanxi',
+    description: 'Crispy outside, tender inside, aromatic meat'
   },
   { 
-    name: '潮汕牛肉丸', 
-    type: '小吃', 
+    name: 'Chaoshan Beef Balls', 
+    type: 'Snacks', 
     rating: '9.4', 
     cover: COVER_IMAGES[5], 
-    tags: ['弹牙', '鲜美', '手打'], 
-    location: '广东',
-    description: '手打牛肉丸，Q弹爽口'
+    tags: ['Bouncy', 'Fresh', 'Handmade'], 
+    location: 'Guangdong',
+    description: 'Handmade beef balls, springy and delicious'
   },
 ]
 
-const foodTypes = ['全部', '面食', '火锅', '点心', '小吃']
-const selectedType = ref('全部')
+const foodTypes = ['All', 'Noodles', 'Hot Pot', 'Dim Sum', 'Snacks']
+const selectedType = ref('All')
 
 const filteredFood = ref(foodList)
 
 function filterByType(type: string) {
   selectedType.value = type
-  if (type === '全部') {
+  if (type === 'All') {
     filteredFood.value = foodList
   } else {
     filteredFood.value = foodList.filter(f => f.type === type)
@@ -117,10 +117,10 @@ function filterByType(type: string) {
 
 function getTypeColor(type: string) {
   const colors: Record<string, string> = {
-    '面食': 'bg-orange-500',
-    '火锅': 'bg-red-500',
-    '点心': 'bg-pink-500',
-    '小吃': 'bg-yellow-500',
+    'Noodles': 'bg-orange-500',
+    'Hot Pot': 'bg-red-500',
+    'Dim Sum': 'bg-pink-500',
+    'Snacks': 'bg-yellow-500',
   }
   return colors[type] || 'bg-gray-500'
 }
@@ -134,8 +134,8 @@ function getTypeColor(type: string) {
       
       <div class="relative text-center text-white z-10">
         <Icon icon="lucide:utensils" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
-        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">美食</h1>
-        <p class="mt-3 text-white/80 text-lg">唯有美食不可辜负</p>
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">Food</h1>
+        <p class="mt-3 text-white/80 text-lg">Life is too short for bad food</p>
       </div>
 
       <div class="wave-divider">
@@ -146,7 +146,7 @@ function getTypeColor(type: string) {
     </header>
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <!-- 筛选标签 -->
+      <!-- Filter Tags -->
       <div 
         :ref="(el) => setCardRef(el, 0)"
         class="card p-4 mb-8 animate-card"
@@ -167,7 +167,7 @@ function getTypeColor(type: string) {
         </div>
       </div>
 
-      <!-- 美食网格 -->
+      <!-- Food Grid -->
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <div 
           v-for="(food, index) in filteredFood"
@@ -176,7 +176,7 @@ function getTypeColor(type: string) {
           class="card overflow-hidden group animate-card"
           :class="{ 'animate-in': isCardVisible(index + 1) }"
         >
-          <!-- 封面 -->
+          <!-- Cover -->
           <div class="aspect-[4/3] relative overflow-hidden">
             <img 
               :src="food.cover" 
@@ -185,28 +185,28 @@ function getTypeColor(type: string) {
               loading="lazy"
               decoding="async"
             />
-            <!-- 类型角标 -->
+            <!-- Type Badge -->
             <span 
               class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-white text-xs font-medium"
               :class="getTypeColor(food.type)"
             >
               {{ food.type }}
             </span>
-            <!-- 评分 -->
+            <!-- Rating -->
             <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center text-yellow-400 text-sm">
               <Icon icon="lucide:star" class="w-3.5 h-3.5 mr-1" />
               {{ food.rating }}
             </div>
-            <!-- 地点 -->
+            <!-- Location -->
             <div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center text-white/90 text-xs">
               <Icon icon="lucide:map-pin" class="w-3 h-3 mr-1" />
               {{ food.location }}
             </div>
-            <!-- 遮罩 -->
+            <!-- Overlay -->
             <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </div>
 
-          <!-- 信息 -->
+          <!-- Info -->
           <div class="p-4">
             <h3 class="font-bold text-lg text-gray-800 dark:text-white group-hover:text-[#7CB342] transition-colors">
               {{ food.name }}
@@ -227,7 +227,7 @@ function getTypeColor(type: string) {
         </div>
       </div>
 
-      <!-- 统计 -->
+      <!-- Stats -->
       <div 
         :ref="(el) => setCardRef(el, filteredFood.length + 1)"
         class="card p-6 mt-8 animate-card"
@@ -236,19 +236,19 @@ function getTypeColor(type: string) {
         <div class="flex justify-around text-center">
           <div>
             <div class="text-3xl font-bold text-[#7CB342]">{{ foodList.length }}</div>
-            <div class="text-sm text-gray-500 mt-1">美食收藏</div>
+            <div class="text-sm text-gray-500 mt-1">Food Collection</div>
           </div>
           <div>
-            <div class="text-3xl font-bold text-orange-500">{{ foodList.filter(f => f.type === '面食').length }}</div>
-            <div class="text-sm text-gray-500 mt-1">面食</div>
+            <div class="text-3xl font-bold text-orange-500">{{ foodList.filter(f => f.type === 'Noodles').length }}</div>
+            <div class="text-sm text-gray-500 mt-1">Noodles</div>
           </div>
           <div>
-            <div class="text-3xl font-bold text-red-500">{{ foodList.filter(f => f.type === '火锅').length }}</div>
-            <div class="text-sm text-gray-500 mt-1">火锅</div>
+            <div class="text-3xl font-bold text-red-500">{{ foodList.filter(f => f.type === 'Hot Pot').length }}</div>
+            <div class="text-sm text-gray-500 mt-1">Hot Pot</div>
           </div>
           <div>
-            <div class="text-3xl font-bold text-yellow-500">{{ foodList.filter(f => f.type === '小吃').length }}</div>
-            <div class="text-sm text-gray-500 mt-1">小吃</div>
+            <div class="text-3xl font-bold text-yellow-500">{{ foodList.filter(f => f.type === 'Snacks').length }}</div>
+            <div class="text-sm text-gray-500 mt-1">Snacks</div>
           </div>
         </div>
       </div>

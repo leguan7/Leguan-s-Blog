@@ -13,17 +13,17 @@ const showScrollTop = ref(false)
 const scrollPercent = ref(0)
 const isLoading = ref(true)
 
-// 判断是否在首页
+// Check if on homepage
 const isHome = computed(() => route.path === '/')
 
-// 使用 requestAnimationFrame 优化滚动性能
+// Use requestAnimationFrame to optimize scroll performance
 let ticking = false
 function handleScroll() {
   if (!ticking) {
     window.requestAnimationFrame(() => {
       showScrollTop.value = window.scrollY > 300
       
-      // 计算滚动百分比
+      // Calculate scroll percentage
       const scrollTop = window.scrollY
       const docHeight = document.documentElement.scrollHeight - window.innerHeight
       scrollPercent.value = Math.round((scrollTop / docHeight) * 100) || 0
@@ -34,7 +34,7 @@ function handleScroll() {
   }
 }
 
-// 点击烟花效果
+// Click firework effect
 function createClickEffect(e: MouseEvent) {
   const colors = ['#D4A04D', '#7CB342', '#ffc107', '#e91e63', '#4caf50']
   const particles = 6
@@ -56,7 +56,7 @@ function createClickEffect(e: MouseEvent) {
     `
     document.body.appendChild(particle)
     
-    // 动态创建动画
+    // Dynamically create animation
     const angle = (i / particles) * 360
     const distance = 30 + Math.random() * 20
     const style = document.createElement('style')
@@ -81,13 +81,13 @@ onMounted(() => {
   blogStore.initTheme()
   blogStore.loadPosts()
 
-  // 使用 passive 选项优化滚动监听
+  // Use passive option to optimize scroll listener
   window.addEventListener('scroll', handleScroll, { passive: true })
   
-  // 点击效果
+  // Click effect
   document.addEventListener('click', createClickEffect)
   
-  // 模拟加载完成
+  // Simulate loading complete
   setTimeout(() => {
     isLoading.value = false
   }, 500)
@@ -104,13 +104,13 @@ function scrollToTop() {
 </script>
 
 <template>
-  <!-- 页面加载进度条 -->
+  <!-- Page loading progress bar -->
   <div 
     v-if="isLoading"
     class="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7CB342] via-[#D4A04D] to-[#7CB342] z-[9999] loading-bar"
   ></div>
 
-  <!-- 固定背景图 -->
+  <!-- Fixed background image -->
   <div 
     class="fixed inset-0 -z-10 fixed-bg"
     :style="{ backgroundImage: `url(${IMAGES.background})` }"
@@ -131,12 +131,12 @@ function scrollToTop() {
     
     <Footer />
 
-    <!-- 右侧固定按钮组 - Kyle's Blog 风格 -->
+    <!-- Right side fixed button group -->
     <div class="rightside-buttons">
-      <!-- 深色模式切换 -->
+      <!-- Dark mode toggle -->
       <button 
         @click.stop="blogStore.toggleTheme"
-        :title="blogStore.isDark ? '浅色模式' : '深色模式'"
+        :title="blogStore.isDark ? 'Light Mode' : 'Dark Mode'"
         class="group"
       >
         <Icon 
@@ -145,12 +145,12 @@ function scrollToTop() {
         />
       </button>
       
-      <!-- 返回顶部 + 百分比 -->
+      <!-- Back to top + percentage -->
       <transition name="slide-up">
         <button 
           v-if="showScrollTop"
           @click.stop="scrollToTop"
-          title="返回顶部"
+          title="Back to Top"
           class="relative group"
         >
           <Icon icon="lucide:arrow-up" class="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
@@ -164,7 +164,7 @@ function scrollToTop() {
 </template>
 
 <style scoped>
-/* 加载进度条动画 */
+/* Loading progress bar animation */
 .loading-bar {
   background-size: 200% 100%;
   animation: loading-gradient 1s ease infinite;
@@ -176,7 +176,7 @@ function scrollToTop() {
   100% { background-position: 0% 50%; }
 }
 
-/* 页面切换动画 */
+/* Page transition animation */
 .page-enter-active {
   animation: page-in 0.4s ease-out;
 }
@@ -207,7 +207,7 @@ function scrollToTop() {
   }
 }
 
-/* 按钮滑入动画 */
+/* Button slide-in animation */
 .slide-up-enter-active {
   animation: slide-up-in 0.3s ease-out;
 }

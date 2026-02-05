@@ -6,14 +6,14 @@ const props = defineProps<{
   visible: boolean
 }>()
 
-// 获取正确的图片路径
+// Get correct image path
 const qqImageUrl = IMAGES.qqQrCode
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-// 点击外部关闭
+// Click outside to close
 const handleClickOutside = (e: MouseEvent) => {
   if (props.visible) {
     emit('close')
@@ -52,11 +52,11 @@ onUnmounted(() => {
       <div class="w-[256px] h-[256px] rounded-xl overflow-hidden">
         <img 
           :src="qqImageUrl" 
-          alt="QQ二维码" 
+          alt="QQ QR Code" 
           class="w-full h-full object-contain"
         />
       </div>
-      <!-- 小箭头 -->
+      <!-- Arrow -->
       <div class="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-white/75 dark:border-t-gray-800/75"></div>
     </div>
   </Transition>

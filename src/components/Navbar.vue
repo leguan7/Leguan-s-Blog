@@ -16,44 +16,44 @@ const isScrollingDown = ref(false)
 const searchInputRef = ref<HTMLInputElement | null>(null)
 let lastScrollY = 0
 
-// 导航菜单 - Kyle's Blog 一致的结构
+// Navigation menu
 const navItems = [
-  { name: '首页', path: '/', icon: 'lucide:home' },
+  { name: 'Home', path: '/', icon: 'lucide:home' },
   { 
-    name: '文章', 
+    name: 'Posts', 
     icon: 'lucide:book-open',
     children: [
-      { name: '归档', path: '/archives', icon: 'lucide:archive' },
-      { name: '标签', path: '/tags', icon: 'lucide:tags' },
-      { name: '分类', path: '/categories', icon: 'lucide:folder-open' }
+      { name: 'Archives', path: '/archives', icon: 'lucide:archive' },
+      { name: 'Tags', path: '/tags', icon: 'lucide:tags' },
+      { name: 'Categories', path: '/categories', icon: 'lucide:folder-open' }
     ]
   },
   { 
-    name: '休闲', 
+    name: 'Life', 
     icon: 'lucide:coffee',
     children: [
-      { name: '健身日记', path: '/fitness', icon: 'lucide:dumbbell' },
-      { name: '番剧', path: '/bangumi', icon: 'lucide:clapperboard' },
-      { name: '追剧', path: '/tvseries', icon: 'lucide:tv' },
-      { name: '电影', path: '/movies', icon: 'lucide:film' },
-      { name: '美食', path: '/food', icon: 'lucide:utensils' },
-      { name: '记忆胶囊', path: '/memory', icon: 'lucide:camera' }
+      { name: 'Fitness', path: '/fitness', icon: 'lucide:dumbbell' },
+      { name: 'Anime', path: '/bangumi', icon: 'lucide:clapperboard' },
+      { name: 'TV Series', path: '/tvseries', icon: 'lucide:tv' },
+      { name: 'Movies', path: '/movies', icon: 'lucide:film' },
+      { name: 'Food', path: '/food', icon: 'lucide:utensils' },
+      { name: 'Memories', path: '/memory', icon: 'lucide:camera' }
     ]
   },
   { 
-    name: '社交', 
+    name: 'Social', 
     icon: 'lucide:users',
     children: [
-      { name: '留言板', path: '/messageboard', icon: 'lucide:message-circle' },
-      { name: '友人帐', path: '/links', icon: 'lucide:user-plus' }
+      { name: 'Guestbook', path: '/messageboard', icon: 'lucide:message-circle' },
+      { name: 'Friends', path: '/links', icon: 'lucide:user-plus' }
     ]
   },
   { 
-    name: '个人', 
+    name: 'Me', 
     icon: 'lucide:user',
     children: [
-      { name: '闲言碎语', path: '/shuoshuo', icon: 'lucide:message-square' },
-      { name: '关于我', path: '/about', icon: 'lucide:heart' }
+      { name: 'Thoughts', path: '/shuoshuo', icon: 'lucide:message-square' },
+      { name: 'About', path: '/about', icon: 'lucide:heart' }
     ]
   }
 ]
@@ -73,7 +73,7 @@ function handleSearch() {
   }
 }
 
-// 打开搜索框时自动聚焦
+// Auto focus when search box opens
 watch(isSearchOpen, (val) => {
   if (val) {
     nextTick(() => {
@@ -82,20 +82,20 @@ watch(isSearchOpen, (val) => {
   }
 })
 
-// ESC 关闭弹框
+// ESC to close modal
 function handleKeydown(e: KeyboardEvent) {
   if (e.key === 'Escape') {
     isSearchOpen.value = false
     isMenuOpen.value = false
   }
-  // Ctrl/Cmd + K 打开搜索
+  // Ctrl/Cmd + K to open search
   if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
     e.preventDefault()
     isSearchOpen.value = true
   }
 }
 
-// 使用 requestAnimationFrame 优化滚动监听
+// Use requestAnimationFrame to optimize scroll listener
 let ticking = false
 function handleScroll() {
   if (!ticking) {
@@ -103,7 +103,7 @@ function handleScroll() {
       const currentScrollY = window.scrollY
       isScrolled.value = currentScrollY > 50
       
-      // 检测滚动方向
+      // Detect scroll direction
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
         isScrollingDown.value = true
       } else {
@@ -134,7 +134,7 @@ onUnmounted(() => {
     :class="isScrolled ? 'bg-white/70 dark:bg-gray-900/70 backdrop-blur-md' : 'bg-transparent'"
   >
     <nav class="w-full px-6 lg:px-12">
-      <!-- 下滑时：只显示居中标题 -->
+      <!-- Scrolling down: show centered title only -->
       <div 
         v-if="isScrollingDown" 
         class="flex justify-center items-center h-14"
@@ -149,7 +149,7 @@ onUnmounted(() => {
         </router-link>
       </div>
       
-      <!-- 上滑或顶部：标题左侧，按钮右侧 -->
+      <!-- Scrolling up or at top: title left, buttons right -->
       <div 
         v-else
         class="flex justify-between items-center h-14"
@@ -167,7 +167,7 @@ onUnmounted(() => {
         <!-- Desktop Navigation -->
         <div class="hidden md:flex items-center space-x-1">
           <template v-for="item in navItems" :key="item.name">
-            <!-- 有子菜单 -->
+            <!-- Has submenu -->
             <div v-if="item.children" class="relative group">
               <button 
                 class="nav-item flex items-center space-x-1.5 group/btn hover:text-[#7CB342]"
@@ -178,7 +178,7 @@ onUnmounted(() => {
                 <Icon icon="lucide:chevron-down" class="w-3 h-3 transition-transform duration-300 group-hover:rotate-180" />
               </button>
               
-              <!-- 下拉菜单 - 优化样式 -->
+              <!-- Dropdown menu -->
               <div class="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2">
                 <div class="dropdown-menu w-48 py-2 rounded-2xl shadow-2xl overflow-hidden border border-white/20">
                   <router-link
@@ -198,7 +198,7 @@ onUnmounted(() => {
               </div>
             </div>
 
-            <!-- 无子菜单 -->
+            <!-- No submenu -->
             <router-link 
               v-else
               :to="item.path!"
@@ -213,12 +213,12 @@ onUnmounted(() => {
             </router-link>
           </template>
 
-          <!-- 搜索按钮 -->
+          <!-- Search Button -->
           <button 
             @click="isSearchOpen = true"
             class="nav-item group/search flex items-center space-x-2"
             :class="isScrolled ? 'text-gray-700 dark:text-gray-200 hover:text-[#7CB342]' : 'text-white/90 hover:text-white'"
-            title="搜索 (Ctrl+K)"
+            title="Search (Ctrl+K)"
           >
             <Icon icon="lucide:search" class="w-4 h-4 transition-transform group-hover/search:scale-110" />
             <kbd class="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] rounded bg-white/20 text-current">
@@ -250,7 +250,7 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- Mobile Navigation - 优化样式 -->
+      <!-- Mobile Navigation -->
       <transition
         enter-active-class="transition ease-out duration-300"
         enter-from-class="opacity-0 -translate-y-4 scale-95"
@@ -264,14 +264,14 @@ onUnmounted(() => {
           class="md:hidden absolute left-4 right-4 top-full mt-2 rounded-2xl shadow-2xl overflow-hidden border border-white/10 mobile-menu"
         >
           <div class="py-4 max-h-[70vh] overflow-y-auto">
-            <!-- 搜索框 -->
+            <!-- Search Box -->
             <div class="px-4 mb-4">
               <div class="relative">
                 <Icon icon="lucide:search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                 <input 
                   v-model="searchInput"
                   type="text"
-                  placeholder="搜索文章..."
+                  placeholder="Search posts..."
                   class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 border-none outline-none text-sm focus:ring-2 focus:ring-[#7CB342]/50 transition-all"
                   @keyup.enter="handleSearch(); isMenuOpen = false"
                 />
@@ -344,7 +344,7 @@ onUnmounted(() => {
       </transition>
     </nav>
 
-    <!-- Search Modal - 全新设计 -->
+    <!-- Search Modal -->
     <teleport to="body">
       <transition
         enter-active-class="transition ease-out duration-300"
@@ -355,10 +355,10 @@ onUnmounted(() => {
         leave-to-class="opacity-0"
       >
         <div v-if="isSearchOpen" class="fixed inset-0 z-[100]" @click.self="isSearchOpen = false">
-          <!-- 背景模糊层 -->
+          <!-- Background blur layer -->
           <div class="absolute inset-0 bg-black/60 backdrop-blur-md"></div>
           
-          <!-- 搜索框容器 -->
+          <!-- Search Box Container -->
           <div class="relative flex items-start justify-center pt-[15vh] px-4">
             <transition
               enter-active-class="transition ease-out duration-300 delay-100"
@@ -372,7 +372,7 @@ onUnmounted(() => {
                 v-if="isSearchOpen"
                 class="w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden search-modal"
               >
-                <!-- 搜索头部 -->
+                <!-- Search Header -->
                 <div class="flex items-center px-6 py-5 border-b border-gray-200/50 dark:border-gray-700/50">
                   <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7CB342] to-[#8BC34A] flex items-center justify-center mr-4">
                     <Icon icon="lucide:search" class="w-5 h-5 text-white" />
@@ -381,7 +381,7 @@ onUnmounted(() => {
                     ref="searchInputRef"
                     v-model="searchInput"
                     type="text"
-                    placeholder="输入关键词搜索文章..."
+                    placeholder="Enter keywords to search..."
                     class="flex-1 bg-transparent border-none outline-none text-lg text-gray-800 dark:text-gray-100 placeholder-gray-400"
                     @keyup.enter="handleSearch"
                   />
@@ -393,18 +393,18 @@ onUnmounted(() => {
                   </button>
                 </div>
                 
-                <!-- 搜索提示 -->
+                <!-- Search Tips -->
                 <div class="p-8 text-center">
                   <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#7CB342]/10 to-[#8BC34A]/10 flex items-center justify-center">
                     <Icon icon="lucide:lightbulb" class="w-10 h-10 text-[#7CB342] animate-pulse" />
                   </div>
-                  <p class="text-gray-500 dark:text-gray-400 mb-2">输入关键词后按 Enter 搜索</p>
+                  <p class="text-gray-500 dark:text-gray-400 mb-2">Press Enter to search</p>
                   <div class="flex items-center justify-center space-x-2 text-xs text-gray-400">
                     <kbd class="px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 font-mono">Enter</kbd>
-                    <span>搜索</span>
+                    <span>Search</span>
                     <span class="mx-2">·</span>
                     <kbd class="px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 font-mono">Esc</kbd>
-                    <span>关闭</span>
+                    <span>Close</span>
                   </div>
                 </div>
               </div>
@@ -417,13 +417,13 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/* 下拉菜单样式 */
+/* Dropdown menu styles */
 .dropdown-menu {
   background: var(--card-bg);
   backdrop-filter: saturate(180%) blur(20px);
 }
 
-/* 移动端菜单样式 */
+/* Mobile menu styles */
 .mobile-menu {
   background: var(--card-bg);
   backdrop-filter: saturate(180%) blur(20px);
@@ -444,13 +444,13 @@ onUnmounted(() => {
   }
 }
 
-/* 搜索框样式 */
+/* Search Box Styles */
 .search-modal {
   background: var(--card-bg);
   backdrop-filter: saturate(180%) blur(20px);
 }
 
-/* 下拉菜单项动画 */
+/* Dropdown item animation */
 .dropdown-item {
   animation: fadeInUp 0.3s ease-out both;
 }

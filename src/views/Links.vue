@@ -48,35 +48,35 @@ const friends = [
     name: 'Kyle Violet',
     avatar: 'https://cyborg2077.github.io/img/avatar.png',
     link: 'https://cyborg2077.github.io/',
-    description: '技术大佬的博客',
+    description: 'Tech expert blog',
     color: 'from-purple-500 to-violet-500'
   },
   {
-    name: '张洪Heo',
+    name: 'Zhang Hong Heo',
     avatar: 'https://bu.dusays.com/2022/12/28/63ac2812183aa.png',
     link: 'https://blog.zhheo.com/',
-    description: '分享设计与科技生活',
+    description: 'Sharing design and tech life',
     color: 'from-blue-500 to-cyan-500'
   },
   {
     name: "Cheeph's Blog",
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Cheeph',
     link: '#',
-    description: '道阻且长，行则将至',
+    description: 'The road is long, but progress comes with action',
     color: 'from-green-500 to-emerald-500'
   },
   {
     name: "Wzh's Blog",
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Wzh',
     link: '#',
-    description: '薄薄一页，寥寥一生',
+    description: 'One page, one lifetime',
     color: 'from-orange-500 to-red-500'
   },
   {
     name: "liangbm3's blog",
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=liangbm3',
     link: '#',
-    description: '总有人间一两风，填我十万八千梦。',
+    description: 'A gentle breeze fills my ten thousand dreams',
     color: 'from-pink-500 to-rose-500'
   },
 ]
@@ -90,8 +90,8 @@ const friends = [
       
       <div class="relative text-center text-white z-10">
         <Icon icon="lucide:user-plus" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
-        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">友人帐</h1>
-        <p class="mt-3 text-white/80 text-lg">海内存知己，天涯若比邻</p>
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">Friends</h1>
+        <p class="mt-3 text-white/80 text-lg">True friends are never apart, maybe in distance but never in heart</p>
       </div>
 
       <div class="wave-divider">
@@ -102,7 +102,7 @@ const friends = [
     </header>
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <!-- 友链卡片 -->
+      <!-- Friend Cards -->
       <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         <a
           v-for="(friend, index) in friends"
@@ -114,7 +114,7 @@ const friends = [
           class="card p-5 flex items-center space-x-4 group overflow-hidden relative animate-card"
           :class="{ 'animate-in': isCardVisible(index) }"
         >
-          <!-- 悬浮背景 -->
+          <!-- Hover Background -->
           <div 
             class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 bg-gradient-to-br"
             :class="friend.color"
@@ -148,7 +148,7 @@ const friends = [
         </a>
       </div>
 
-      <!-- 申请友链 -->
+      <!-- Apply for Link Exchange -->
       <div 
         :ref="(el) => setCardRef(el, friends.length)"
         class="card p-6 md:p-8 mt-8 animate-card"
@@ -156,25 +156,25 @@ const friends = [
       >
         <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center">
           <Icon icon="lucide:plus-circle" class="w-5 h-5 mr-2 text-[#7CB342]" />
-          申请友链
+          Apply for Link Exchange
         </h2>
         <div class="text-gray-600 dark:text-gray-400 space-y-3">
-          <p>欢迎交换友链！请按以下格式留言：</p>
+          <p>Welcome to exchange links! Please leave a message in the following format:</p>
           <div class="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 font-mono text-sm overflow-x-auto">
             <code>
-              name: 你的网站名称<br/>
-              link: https://你的网址.com<br/>
-              avatar: 头像链接<br/>
-              description: 一句话描述
+              name: Your site name<br/>
+              link: https://yoursite.com<br/>
+              avatar: Avatar URL<br/>
+              description: A short description
             </code>
           </div>
           <p class="text-sm text-gray-500">
             <Icon icon="lucide:info" class="w-4 h-4 inline mr-1" />
-            请确保你的网站可以正常访问，且已添加本站友链
+            Please ensure your site is accessible and has added my link
           </p>
           <router-link to="/messageboard" class="btn btn-primary inline-flex mt-2">
             <Icon icon="lucide:send" class="w-4 h-4 mr-2" />
-            前往留言
+            Leave a Message
           </router-link>
         </div>
       </div>

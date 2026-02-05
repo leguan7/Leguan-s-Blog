@@ -13,41 +13,41 @@ const typedText = ref('')
 const fullText = 'Digest your emotions'
 const cursorVisible = ref(true)
 
-// 打字机效果 - 循环打字和删除
+// Typewriter effect - typing and deleting loop
 onMounted(() => {
   let isTyping = true
   let charIndex = 0
   
   const runTypewriter = () => {
     if (isTyping) {
-      // 打字阶段
+      // Typing phase
       if (charIndex < fullText.length) {
         typedText.value = fullText.substring(0, charIndex + 1)
         charIndex++
         setTimeout(runTypewriter, 100)
       } else {
-        // 打字完成，等待1秒后开始删除
+        // Typing complete, wait 1s then start deleting
         isTyping = false
         setTimeout(runTypewriter, 1000)
       }
     } else {
-      // 删除阶段
+      // Deleting phase
       if (charIndex > 0) {
         charIndex--
         typedText.value = fullText.substring(0, charIndex)
-        setTimeout(runTypewriter, 60) // 删除速度稍快
+        setTimeout(runTypewriter, 60) // Slightly faster deletion
       } else {
-        // 删除完成，等待1秒后重新开始打字
+        // Deletion complete, wait 1s then restart typing
         isTyping = true
         setTimeout(runTypewriter, 1000)
       }
     }
   }
   
-  // 启动打字机效果
+  // Start typewriter effect
   runTypewriter()
 
-  // 光标闪烁
+  // Cursor blinking
   setInterval(() => {
     cursorVisible.value = !cursorVisible.value
   }, 530)
@@ -81,18 +81,18 @@ function scrollDown() {
 
 <template>
   <div>
-    <!-- Hero Banner - Kyle's Blog 风格 -->
+    <!-- Hero Banner -->
     <section class="relative h-screen flex items-center justify-center overflow-hidden">
-      <!-- 半透明遮罩 -->
+      <!-- Semi-transparent Overlay -->
       <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40"></div>
       
-      <!-- 内容 -->
+      <!-- Content -->
       <div class="relative text-center text-white z-10 px-4 hero-content">
         <h1 class="text-5xl md:text-7xl font-bold mb-4 drop-shadow-2xl hero-title">
           Leguan's Blog
         </h1>
         
-        <!-- 打字机效果 -->
+        <!-- Typewriter Effect -->
         <p class="text-xl md:text-2xl text-white/90 mb-2 drop-shadow-lg hero-subtitle">
           <span>{{ typedText }}</span>
           <span 
@@ -102,7 +102,7 @@ function scrollDown() {
         </p>
       </div>
 
-      <!-- 向下滚动箭头 -->
+      <!-- Scroll Down Arrow -->
       <button 
         @click="scrollDown"
         class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white scroll-down-btn group"
@@ -110,7 +110,7 @@ function scrollDown() {
         <Icon icon="lucide:chevrons-down" class="w-8 h-8 drop-shadow-lg group-hover:scale-125 transition-transform" />
       </button>
 
-      <!-- 波浪分隔 -->
+      <!-- Wave Divider -->
       <div class="wave-divider">
         <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
           <path 
@@ -125,7 +125,7 @@ function scrollDown() {
       </div>
     </section>
 
-    <!-- 搜索结果提示 -->
+    <!-- Search Results Tip -->
     <div 
       v-if="blogStore.searchQuery" 
       class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4"
@@ -133,7 +133,7 @@ function scrollDown() {
       <div class="card flex items-center justify-between px-5 py-3">
         <span class="text-[#7CB342] flex items-center">
           <Icon icon="lucide:search" class="w-4 h-4 mr-2" />
-          搜索 "<strong>{{ blogStore.searchQuery }}</strong>" 找到 {{ blogStore.filteredPosts.length }} 篇文章
+          Found {{ blogStore.filteredPosts.length }} posts for "<strong>{{ blogStore.searchQuery }}</strong>"
         </span>
         <button 
           @click="blogStore.setSearchQuery('')"
@@ -144,24 +144,24 @@ function scrollDown() {
       </div>
     </div>
 
-    <!-- 文章列表区域 -->
+    <!-- Posts Section -->
     <section id="posts-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="lg:flex lg:gap-8">
-        <!-- 文章列表 -->
+        <!-- Posts List -->
         <div class="lg:w-2/3 space-y-6">
           <!-- Loading -->
           <div v-if="blogStore.isLoading" class="card p-16 text-center">
             <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#7CB342] border-t-transparent"></div>
-            <p class="mt-4 text-gray-500">加载中...</p>
+            <p class="mt-4 text-gray-500">Loading...</p>
           </div>
 
           <!-- Empty -->
           <div v-else-if="blogStore.filteredPosts.length === 0" class="card p-16 text-center">
             <Icon icon="lucide:inbox" class="w-20 h-20 text-gray-400 dark:text-gray-500 mx-auto" />
-            <p class="mt-4 text-gray-500">暂无文章</p>
+            <p class="mt-4 text-gray-500">No posts yet</p>
           </div>
 
-          <!-- Posts - 交替布局 -->
+          <!-- Posts - Alternating Layout -->
           <template v-else>
             <PostCard 
               v-for="(post, index) in paginatedPosts" 
@@ -172,7 +172,7 @@ function scrollDown() {
             />
           </template>
 
-          <!-- Pagination - Kyle's Blog 风格 -->
+          <!-- Pagination -->
           <nav v-if="totalPages > 1" class="flex justify-center items-center space-x-1 pt-6">
             <button 
               @click="goToPage(currentPage - 1)"
@@ -223,7 +223,7 @@ function scrollDown() {
 </template>
 
 <style scoped>
-/* Hero 动画 */
+/* Hero Animations */
 .hero-title {
   animation: fade-in-up 1.4s cubic-bezier(0.22, 1, 0.36, 1);
   transform-origin: center center;

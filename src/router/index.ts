@@ -7,91 +7,91 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('@/views/Home.vue'),
-      meta: { title: '首页' }
+      meta: { title: 'Home' }
     },
     {
       path: '/post/:slug',
       name: 'post',
       component: () => import('@/views/Post.vue'),
-      meta: { title: '文章' }
+      meta: { title: 'Post' }
     },
     {
       path: '/archives',
       name: 'archives',
       component: () => import('@/views/Archives.vue'),
-      meta: { title: '归档' }
+      meta: { title: 'Archives' }
     },
     {
       path: '/tags',
       name: 'tags',
       component: () => import('@/views/Tags.vue'),
-      meta: { title: '标签' }
+      meta: { title: 'Tags' }
     },
     {
       path: '/categories',
       name: 'categories',
       component: () => import('@/views/Categories.vue'),
-      meta: { title: '分类' }
+      meta: { title: 'Categories' }
     },
     {
       path: '/about',
       name: 'about',
       component: () => import('@/views/About.vue'),
-      meta: { title: '关于我' }
+      meta: { title: 'About Me' }
     },
     {
       path: '/links',
       name: 'links',
       component: () => import('@/views/Links.vue'),
-      meta: { title: '友人帐' }
+      meta: { title: 'Friends' }
     },
     {
       path: '/messageboard',
       name: 'messageboard',
       component: () => import('@/views/MessageBoard.vue'),
-      meta: { title: '留言板' }
+      meta: { title: 'Guestbook' }
     },
     {
       path: '/bangumi',
       name: 'bangumi',
       component: () => import('@/views/Bangumi.vue'),
-      meta: { title: '番剧' }
+      meta: { title: 'Anime' }
     },
     {
       path: '/fitness',
       name: 'fitness',
       component: () => import('@/views/Fitness.vue'),
-      meta: { title: '健身日记' }
+      meta: { title: 'Fitness' }
     },
     {
       path: '/shuoshuo',
       name: 'shuoshuo',
       component: () => import('@/views/Shuoshuo.vue'),
-      meta: { title: '闲言碎语' }
+      meta: { title: 'Thoughts' }
     },
     {
       path: '/memory',
       name: 'memory',
       component: () => import('@/views/Memory.vue'),
-      meta: { title: '记忆胶囊' }
+      meta: { title: 'Memories' }
     },
     {
       path: '/tvseries',
       name: 'tvseries',
       component: () => import('@/views/TVSeries.vue'),
-      meta: { title: '追剧' }
+      meta: { title: 'TV Series' }
     },
     {
       path: '/movies',
       name: 'movies',
       component: () => import('@/views/Movies.vue'),
-      meta: { title: '电影' }
+      meta: { title: 'Movies' }
     },
     {
       path: '/food',
       name: 'food',
       component: () => import('@/views/Food.vue'),
-      meta: { title: '美食' }
+      meta: { title: 'Food' }
     },
     {
       path: '/:pathMatch(.*)*',
@@ -111,7 +111,7 @@ const router = createRouter({
   }
 })
 
-// 路由守卫 - 更新页面标题
+// Route guard - Update page title
 router.beforeEach((to, _from, next) => {
   const title = to.meta.title as string
   document.title = title ? `${title} | Leguan's Blog` : "Leguan's Blog"
