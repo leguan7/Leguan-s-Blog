@@ -56,7 +56,7 @@ const socialLinks = [
               </div>
             </div>
           </div>
-          <h3 class="text-2xl font-bold mb-3 bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+          <h3 class="text-2xl font-bold mb-3 pb-1 leading-[1.4] bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
             Leguan's Blog
           </h3>
           <p class="text-white/60 italic text-sm leading-relaxed max-w-md">

@@ -98,7 +98,7 @@ const categoryGradient = computed(() => {
           :class="`bg-gradient-to-br ${categoryGradient}`"
         >
           <span class="text-2xl font-bold leading-none">{{ new Date(post.date).getDate() }}</span>
-          <span class="text-xs opacity-90">{{ new Date(post.date).toLocaleDateString('zh-CN', { month: 'short' }) }}</span>
+          <span class="text-xs opacity-90">{{ new Date(post.date).toLocaleDateString('en-US', { month: 'short' }) }}</span>
         </div>
 
         <!-- Sticky Badge -->
