@@ -32,8 +32,11 @@ const navItems = [
     name: '休闲', 
     icon: 'lucide:coffee',
     children: [
-      { name: '健身日寄', path: '/fitness', icon: 'lucide:dumbbell' },
+      { name: '健身日记', path: '/fitness', icon: 'lucide:dumbbell' },
       { name: '番剧', path: '/bangumi', icon: 'lucide:clapperboard' },
+      { name: '追剧', path: '/tvseries', icon: 'lucide:tv' },
+      { name: '电影', path: '/movies', icon: 'lucide:film' },
+      { name: '美食', path: '/food', icon: 'lucide:utensils' },
       { name: '记忆胶囊', path: '/memory', icon: 'lucide:camera' }
     ]
   },

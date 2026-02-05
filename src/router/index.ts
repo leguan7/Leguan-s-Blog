@@ -61,7 +61,7 @@ const router = createRouter({
       path: '/fitness',
       name: 'fitness',
       component: () => import('@/views/Fitness.vue'),
-      meta: { title: '健身日寄' }
+      meta: { title: '健身日记' }
     },
     {
       path: '/shuoshuo',
@@ -74,6 +74,24 @@ const router = createRouter({
       name: 'memory',
       component: () => import('@/views/Memory.vue'),
       meta: { title: '记忆胶囊' }
+    },
+    {
+      path: '/tvseries',
+      name: 'tvseries',
+      component: () => import('@/views/TVSeries.vue'),
+      meta: { title: '追剧' }
+    },
+    {
+      path: '/movies',
+      name: 'movies',
+      component: () => import('@/views/Movies.vue'),
+      meta: { title: '电影' }
+    },
+    {
+      path: '/food',
+      name: 'food',
+      component: () => import('@/views/Food.vue'),
+      meta: { title: '美食' }
     },
     {
       path: '/:pathMatch(.*)*',

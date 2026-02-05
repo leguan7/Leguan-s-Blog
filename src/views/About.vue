@@ -2,8 +2,10 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import { IMAGES } from '@/utils/assets'
+import QQModal from '@/components/QQModal.vue'
 
 const avatar = IMAGES.avatar
+const showQQModal = ref(false)
 
 // Intersection Observer for animations
 const visibleCards = ref<Set<number>>(new Set())
@@ -202,27 +204,26 @@ const timeline = [
             <Icon icon="ri:github-fill" class="w-5 h-5 mr-2" />
             GitHub
           </a>
-          <a 
-            href="#"
-            class="btn bg-[#12B7F5] text-white hover:bg-[#0aa3e0]"
-          >
-            <Icon icon="ri:qq-fill" class="w-5 h-5 mr-2" />
-            QQ
-          </a>
-          <a 
-            href="#"
-            class="btn bg-[#07C160] text-white hover:bg-[#06a850]"
-          >
-            <Icon icon="ri:wechat-fill" class="w-5 h-5 mr-2" />
-            WeChat
-          </a>
-          <a 
-            href="mailto:leguan@example.com"
-            class="btn bg-red-500 text-white hover:bg-red-600"
-          >
-            <Icon icon="lucide:mail" class="w-5 h-5 mr-2" />
-            Email
-          </a>
+          <div class="relative">
+            <button 
+              @click.stop="showQQModal = !showQQModal"
+              class="btn bg-[#12B7F5] text-white hover:bg-[#0aa3e0]"
+            >
+              <Icon icon="ri:qq-fill" class="w-5 h-5 mr-2" />
+              QQ
+            </button>
+            <QQModal :visible="showQQModal" @close="showQQModal = false" />
+          </div>
+          <div class="relative group">
+            <a 
+              href="mailto:leguan701@gmail.com"
+              class="btn bg-red-500 text-white hover:bg-red-600"
+            >
+              <Icon icon="lucide:mail" class="w-5 h-5 mr-2" />
+              Email
+            </a>
+            <div class="tooltip">leguan701@gmail.com</div>
+          </div>
           <router-link to="/messageboard" class="btn btn-primary">
             <Icon icon="lucide:message-circle" class="w-5 h-5 mr-2" />
             留言板
@@ -234,6 +235,15 @@ const timeline = [
 </template>
 
 <style scoped>
+.tooltip {
+  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:-translate-y-1 z-10;
+}
+.tooltip::after {
+  content: '';
+  @apply absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900;
+}
+
+
 .animate-card {
   opacity: 0;
   transform: scale(0.85);

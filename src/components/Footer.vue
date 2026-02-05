@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { Icon } from '@iconify/vue'
+import QQModal from '@/components/QQModal.vue'
 
 const currentYear = new Date().getFullYear()
 const isVisible = ref(false)
+const showQQModal = ref(false)
 
 const footerRef = ref<HTMLElement | null>(null)
 
@@ -28,9 +30,8 @@ onMounted(() => {
 
 const socialLinks = [
   { icon: 'ri:github-fill', href: 'https://github.com/leguan7', label: 'GitHub', color: 'hover:bg-[#333]' },
-  { icon: 'lucide:mail', href: 'mailto:leguan@example.com', label: 'Email', color: 'hover:bg-gradient-to-br hover:from-orange-500 hover:to-pink-500' },
-  { icon: 'ri:qq-fill', href: '#', label: 'QQ', color: 'hover:bg-[#12B7F5]' },
-  { icon: 'ri:wechat-fill', href: '#', label: 'WeChat', color: 'hover:bg-[#07C160]' },
+  { icon: 'lucide:mail', href: 'mailto:leguan701@gmail.com', label: 'leguan701@gmail.com', color: 'hover:bg-gradient-to-br hover:from-orange-500 hover:to-pink-500' },
+  { icon: 'ri:qq-fill', href: '#', label: 'QQ', isModal: true, color: 'hover:bg-[#12B7F5]' },
   { icon: 'lucide:message-circle', href: '/messageboard', label: '留言板', isRouter: true, color: 'hover:bg-[#7CB342]' },
 ]
 </script>
@@ -73,22 +74,45 @@ const socialLinks = [
           :style="{ animationDelay: '100ms' }"
         >
           <template v-for="(link, index) in socialLinks" :key="index">
-            <component
-              :is="link.isRouter ? 'router-link' : 'a'"
-              :to="link.isRouter ? link.href : undefined"
-              :href="!link.isRouter ? link.href : undefined"
-              :target="!link.isRouter && link.href !== '#' ? '_blank' : undefined"
-              :rel="!link.isRouter ? 'noopener noreferrer' : undefined"
+            <!-- QQ弹窗按钮 -->
+            <div v-if="link.isModal" class="relative">
+              <button
+                @click.stop="showQQModal = !showQQModal"
+                class="group w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center transition-all duration-300 hover:scale-110"
+                :class="link.color"
+              >
+                <Icon :icon="link.icon" class="w-5 h-5 transition-transform group-hover:scale-110" />
+              </button>
+              <QQModal :visible="showQQModal" @close="showQQModal = false" />
+            </div>
+            <!-- 路由链接 -->
+            <router-link
+              v-else-if="link.isRouter"
+              :to="link.href"
               class="group relative w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center transition-all duration-300 hover:scale-110"
               :class="link.color"
             >
               <Icon :icon="link.icon" class="w-5 h-5 transition-transform group-hover:scale-110" />
-              <!-- Tooltip -->
               <span class="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                 {{ link.label }}
                 <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></span>
               </span>
-            </component>
+            </router-link>
+            <!-- 外部链接 -->
+            <a
+              v-else
+              :href="link.href"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group relative w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center transition-all duration-300 hover:scale-110"
+              :class="link.color"
+            >
+              <Icon :icon="link.icon" class="w-5 h-5 transition-transform group-hover:scale-110" />
+              <span class="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                {{ link.label }}
+                <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></span>
+              </span>
+            </a>
           </template>
         </div>
 
@@ -151,6 +175,7 @@ const socialLinks = [
       </div>
     </div>
   </footer>
+
 </template>
 
 <style scoped>

@@ -88,7 +88,7 @@ const stats = {
       
       <div class="relative text-center text-white z-10">
         <Icon icon="lucide:dumbbell" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
-        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">健身日寄</h1>
+        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">健身日记</h1>
         <p class="mt-3 text-white/80 text-lg">自律给我自由</p>
       </div>
 

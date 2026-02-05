@@ -28,6 +28,7 @@ export const IMAGES = {
   fantasyMagicLandscape: getAssetUrl('/img/fantasy-magic-landscape.jpg'),
   animeLandscapeTraveling: getAssetUrl('/img/anime-landscape-person-traveling.jpg'),
   animeCharacterTraveling: getAssetUrl('/img/anime-character-traveling.jpg'),
+  qqQrCode: getAssetUrl('/img/QQ.png'),
 }
 
 // 封面图片池

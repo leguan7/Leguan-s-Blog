@@ -4,8 +4,10 @@ import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useBlogStore } from '@/stores/blog'
 import { IMAGES, COVER_IMAGES } from '@/utils/assets'
+import QQModal from '@/components/QQModal.vue'
 
 const router = useRouter()
+const showQQModal = ref(false)
 const blogStore = useBlogStore()
 
 // 为每个侧边栏卡片使用独立的可见状态
@@ -154,35 +156,34 @@ function getTagColor(index: number) {
 
         <!-- 社交按钮 -->
         <div class="flex justify-center space-x-3 mt-4">
-          <a 
-            href="https://github.com/leguan7" 
-            target="_blank"
-            class="w-10 h-10 rounded-xl bg-gray-800 text-white flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all duration-300"
-            title="GitHub"
-          >
-            <Icon icon="ri:github-fill" class="w-5 h-5" />
-          </a>
-          <a 
-            href="#"
-            class="w-10 h-10 rounded-xl bg-[#12B7F5] text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-[#12B7F5]/30 transition-all duration-300"
-            title="QQ"
-          >
-            <Icon icon="ri:qq-fill" class="w-5 h-5" />
-          </a>
-          <a 
-            href="#"
-            class="w-10 h-10 rounded-xl bg-[#07C160] text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-[#07C160]/30 transition-all duration-300"
-            title="WeChat"
-          >
-            <Icon icon="ri:wechat-fill" class="w-5 h-5" />
-          </a>
-          <a 
-            href="mailto:leguan@example.com"
-            class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7CB342] to-[#8BC34A] text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-[#7CB342]/30 transition-all duration-300"
-            title="Email"
-          >
-            <Icon icon="lucide:mail" class="w-5 h-5" />
-          </a>
+          <div class="relative group">
+            <a 
+              href="https://github.com/leguan7" 
+              target="_blank"
+              class="w-10 h-10 rounded-xl bg-gray-800 text-white flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all duration-300"
+            >
+              <Icon icon="ri:github-fill" class="w-5 h-5" />
+            </a>
+            <div class="social-tooltip">GitHub</div>
+          </div>
+          <div class="relative">
+            <button 
+              @click.stop="showQQModal = !showQQModal"
+              class="w-10 h-10 rounded-xl bg-[#12B7F5] text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-[#12B7F5]/30 transition-all duration-300"
+            >
+              <Icon icon="ri:qq-fill" class="w-5 h-5" />
+            </button>
+            <QQModal :visible="showQQModal" @close="showQQModal = false" />
+          </div>
+          <div class="relative group">
+            <a 
+              href="mailto:leguan701@gmail.com"
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7CB342] to-[#8BC34A] text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-[#7CB342]/30 transition-all duration-300"
+            >
+              <Icon icon="lucide:mail" class="w-5 h-5" />
+            </a>
+            <div class="social-tooltip">leguan701@gmail.com</div>
+          </div>
         </div>
       </div>
     </div>
@@ -356,9 +357,19 @@ function getTagColor(index: number) {
       </div>
     </div>
   </aside>
+
 </template>
 
 <style scoped>
+.social-tooltip {
+  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:-translate-y-1 z-10 pointer-events-none;
+}
+.social-tooltip::after {
+  content: '';
+  @apply absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900;
+}
+
+
 .sidebar-card {
   opacity: 0;
   transform: scale(0.85);

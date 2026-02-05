@@ -149,7 +149,7 @@ function getMoodColor(mood: string) {
               />
             </div>
             <div class="ml-3">
-              <div class="font-bold text-gray-800 dark:text-white">乐官</div>
+              <div class="font-bold text-gray-800 dark:text-white">Leguan</div>
               <div class="text-xs text-gray-500 flex items-center">
                 <Icon icon="lucide:clock" class="w-3 h-3 mr-1" />
                 {{ shuoshuo.time }}
