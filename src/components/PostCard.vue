@@ -83,8 +83,10 @@ const categoryGradient = computed(() => {
         <img 
           :src="coverImage" 
           :alt="post.title"
-          class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           loading="lazy"
+          decoding="async"
+          fetchpriority="low"
         />
         <!-- 遮罩层 -->
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>

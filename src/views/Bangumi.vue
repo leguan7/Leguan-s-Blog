@@ -99,6 +99,7 @@ function getStatusColor(status: string) {
               :alt="bangumi.name"
               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               loading="lazy"
+              decoding="async"
             />
             <!-- 状态角标 -->
             <span 

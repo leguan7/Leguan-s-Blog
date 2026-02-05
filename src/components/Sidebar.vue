@@ -234,6 +234,8 @@ function getTagColor(index: number) {
               :src="getPostCover(post, index)"
               :alt="post.title"
               class="w-16 h-12 object-cover transition-transform duration-500 group-hover:scale-110"
+              loading="lazy"
+              decoding="async"
             />
             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
           </div>

@@ -130,6 +130,7 @@ const friends = [
                 :alt="friend.name"
                 class="w-full h-full rounded-full object-cover bg-white"
                 loading="lazy"
+                decoding="async"
                 onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=' + encodeURIComponent(this.alt)"
               />
             </div>

@@ -183,6 +183,7 @@ function getMoodColor(mood: string) {
                 :src="img"
                 class="w-full aspect-square object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
                 loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
