@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
-import { IMAGES, COVER_IMAGES } from '@/utils/assets'
+import { IMAGES } from '@/utils/assets'
 
 // Intersection Observer for animations
 const visibleCards = ref<Set<number>>(new Set())
@@ -47,42 +47,10 @@ onUnmounted(() => {
 const shuoshuoList = [
   {
     id: 1,
-    content: 'Beautiful weather today, perfect for coding! ☀️',
-    time: '2026-02-05 14:30',
-    likes: 12,
-    mood: 'happy',
-    images: [],
-  },
-  {
-    id: 2,
-    content: 'Finally finished refactoring this Vue blog. Took quite some time, but the result is satisfying. Thanks to my own persistence!',
-    time: '2026-02-04 22:15',
-    likes: 28,
+    content: 'This blog is now deployed and live! Welcome to Leguan\'s Blog — a space to document life, thoughts, and everything in between.',
+    time: '2026-02-06 14:30',
+    likes: 0,
     mood: 'proud',
-    images: [COVER_IMAGES[0]],
-  },
-  {
-    id: 3,
-    content: 'Read a great book "Clean Code", learned a lot. Good code is like good writing - it needs constant polishing.',
-    time: '2026-02-03 10:00',
-    likes: 45,
-    mood: 'thoughtful',
-    images: [],
-  },
-  {
-    id: 4,
-    content: 'Went hiking this weekend, the view from the top was absolutely stunning! 🏔️',
-    time: '2026-02-01 18:30',
-    likes: 67,
-    mood: 'excited',
-    images: [COVER_IMAGES[4], COVER_IMAGES[5]],
-  },
-  {
-    id: 5,
-    content: 'Happy New Year! First post of 2026, hoping for a great year ahead! 🎉',
-    time: '2026-01-01 00:01',
-    likes: 128,
-    mood: 'happy',
     images: [],
   },
 ]
@@ -188,31 +156,9 @@ function getMoodColor(mood: string) {
             </div>
           </div>
 
-          <!-- Footer Actions -->
-          <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-gray-700/50">
-            <button class="flex items-center text-gray-500 hover:text-pink-500 transition-colors text-sm group">
-              <Icon icon="lucide:heart" class="w-4 h-4 mr-1.5 group-hover:scale-110 transition-transform" />
-              <span>{{ shuoshuo.likes }}</span>
-            </button>
-            <button class="flex items-center text-gray-500 hover:text-[#7CB342] transition-colors text-sm">
-              <Icon icon="lucide:message-circle" class="w-4 h-4 mr-1.5" />
-              <span>Comment</span>
-            </button>
-            <button class="flex items-center text-gray-500 hover:text-green-500 transition-colors text-sm">
-              <Icon icon="lucide:share-2" class="w-4 h-4 mr-1.5" />
-              <span>Share</span>
-            </button>
-          </div>
         </div>
       </div>
 
-      <!-- Load More -->
-      <div class="text-center mt-8">
-        <button class="btn border border-[#7CB342] text-[#7CB342] hover:bg-[#7CB342] hover:text-white">
-          <Icon icon="lucide:plus" class="w-4 h-4 mr-2" />
-          Load More
-        </button>
-      </div>
     </div>
   </div>
 </template>

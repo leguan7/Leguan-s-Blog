@@ -44,8 +44,7 @@ const navItems = [
     name: 'Social', 
     icon: 'lucide:users',
     children: [
-      { name: 'Guestbook', path: '/messageboard', icon: 'lucide:message-circle' },
-      { name: 'Friends', path: '/links', icon: 'lucide:user-plus' }
+      { name: 'Guestbook', path: '/messageboard', icon: 'lucide:message-circle' }
     ]
   },
   { 
