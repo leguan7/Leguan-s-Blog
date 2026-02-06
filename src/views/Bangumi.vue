@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { Icon } from '@iconify/vue'
 import { IMAGES } from '@/utils/assets'
+
+// Pagination
+const PAGE_SIZE = 10
+const currentPage = ref(1)
 
 // Intersection Observer for animations
 const visibleCards = ref<Set<number>>(new Set())
@@ -16,28 +20,42 @@ const setCardRef = (el: any, index: number) => {
 
 const isCardVisible = (index: number) => visibleCards.value.has(index)
 
-onMounted(() => {
-  observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        const index = (entry.target as any).__cardIndex as number
-        if (entry.isIntersecting && !visibleCards.value.has(index)) {
-          setTimeout(() => {
-            visibleCards.value.add(index)
-            visibleCards.value = new Set(visibleCards.value)
-          }, index * 100)
-          observer?.unobserve(entry.target)
-        }
-      })
-    },
-    { threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
-  )
+function setupObserver() {
+  observer?.disconnect()
+  visibleCards.value = new Set()
+  cardElements.value = new Map()
 
-  // Observe all stored elements
-  cardElements.value.forEach((el, index) => {
-    ;(el as any).__cardIndex = index
-    observer?.observe(el)
+  nextTick(() => {
+    observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const index = (entry.target as any).__cardIndex as number
+          if (entry.isIntersecting && !visibleCards.value.has(index)) {
+            setTimeout(() => {
+              visibleCards.value.add(index)
+              visibleCards.value = new Set(visibleCards.value)
+            }, index * 100)
+            observer?.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
+    )
+
+    cardElements.value.forEach((el, index) => {
+      ;(el as any).__cardIndex = index
+      observer?.observe(el)
+    })
   })
+}
+
+onMounted(() => {
+  setupObserver()
+})
+
+// Re-observe when page changes
+watch(currentPage, () => {
+  setupObserver()
 })
 
 onUnmounted(() => {
@@ -48,16 +66,22 @@ const bangumiList = [
   {
     name: 'One Piece',
     status: 'Watching',
-    rating: '9.9',
     cover: IMAGES.onepiece,
     tags: ['Adventure', 'Battle', 'Shounen'],
     link: 'https://www.yinhuadm.xyz/v/5527.html',
     description: 'Legendary pirate Gold D. Roger left a message about his lifetime treasure "One Piece" before his death, sparking an era where countless pirates compete for this legendary fortune. The world enters a turbulent "Great Pirate Era."',
   },
   {
+    name: 'Attack on Titan: The Final Season',
+    status: 'Completed',
+    cover: IMAGES.jinjidejuren,
+    tags: ['Action', 'Drama', 'Fantasy'],
+    link: 'https://www.yinhuadm.xyz/v/18775.html',
+    description: 'Beyond the island of Paradis where Eren and his friends live, there exists another world inhabited by other humans. A nation called "Marley" wages war against other countries. In their desperate struggle, they decide to invade Paradis to seize the "Founding Titan." Here we witness another group of children fighting to survive...',
+  },
+  {
     name: 'Jujutsu Kaisen',
     status: 'Completed',
-    rating: '9.7',
     cover: IMAGES.zhoushuhuizhan,
     tags: ['Battle', 'Supernatural', 'Shounen'],
     link: 'https://www.bilibili.com/bangumi/media/md28229899',
@@ -66,7 +90,6 @@ const bangumiList = [
   {
     name: 'JoJo\'s Bizarre Adventure: Stone Ocean',
     status: 'Completed',
-    rating: '9.5',
     cover: IMAGES.jojo,
     tags: ['Battle', 'Supernatural', 'Adventure'],
     link: 'https://www.bilibili.com/bangumi/media/md28235123',
@@ -75,7 +98,6 @@ const bangumiList = [
   {
     name: 'That Time I Got Reincarnated as a Slime S3',
     status: 'Completed',
-    rating: '9.3',
     cover: IMAGES.shilaimu,
     tags: ['Fantasy', 'Isekai', 'Adventure'],
     link: 'https://www.bilibili.com/bangumi/media/md23154901',
@@ -84,7 +106,6 @@ const bangumiList = [
   {
     name: 'Bungo Stray Dogs S5',
     status: 'Completed',
-    rating: '9.4',
     cover: IMAGES.wenhaoyequan,
     tags: ['Action', 'Supernatural', 'Mystery'],
     link: 'https://www.bilibili.com/bangumi/media/md20289192',
@@ -93,7 +114,6 @@ const bangumiList = [
   {
     name: 'Spy x Family S3',
     status: 'Completed',
-    rating: '9.6',
     cover: IMAGES.jiandieguojiajia,
     tags: ['Comedy', 'Action', 'Family'],
     link: 'https://www.bilibili.com/bangumi/media/md27709925',
@@ -102,7 +122,6 @@ const bangumiList = [
   {
     name: 'Natsume\'s Book of Friends S7',
     status: 'Completed',
-    rating: '9.5',
     cover: IMAGES.xiamuyourenzhang,
     tags: ['Supernatural', 'Slice of Life', 'Healing'],
     link: 'https://www.bilibili.com/bangumi/media/md23053814',
@@ -111,7 +130,6 @@ const bangumiList = [
   {
     name: 'Tonikaku Kawaii S2',
     status: 'Completed',
-    rating: '9.0',
     cover: IMAGES.feichangkeai,
     tags: ['Romance', 'Comedy', 'Slice of Life'],
     link: 'https://www.bilibili.com/bangumi/media/md20266559',
@@ -120,7 +138,6 @@ const bangumiList = [
   {
     name: 'In/Spectre S2',
     status: 'Completed',
-    rating: '8.8',
     cover: IMAGES.xugoutuili,
     tags: ['Mystery', 'Supernatural', 'Romance'],
     link: 'https://www.bilibili.com/bangumi/media/md28412512',
@@ -129,7 +146,6 @@ const bangumiList = [
   {
     name: 'Kaguya-sama: Love Is War -Ultra Romantic-',
     status: 'Completed',
-    rating: '9.6',
     cover: IMAGES.huiyedaxiaojie,
     tags: ['Romance', 'Comedy', 'School'],
     link: 'https://www.bilibili.com/bangumi/media/md28237120',
@@ -138,7 +154,6 @@ const bangumiList = [
   {
     name: 'Mob Psycho 100 III',
     status: 'Completed',
-    rating: '9.4',
     cover: IMAGES.luren,
     tags: ['Action', 'Comedy', 'Supernatural'],
     link: 'https://www.bilibili.com/bangumi/media/md28339709',
@@ -147,7 +162,6 @@ const bangumiList = [
   {
     name: 'Shikimori\'s Not Just a Cutie',
     status: 'Completed',
-    rating: '8.5',
     cover: IMAGES.shishou,
     tags: ['Romance', 'Comedy', 'School'],
     link: 'https://www.bilibili.com/bangumi/media/md28237125',
@@ -156,7 +170,6 @@ const bangumiList = [
   {
     name: 'Inuyasha',
     status: 'Completed',
-    rating: '9.3',
     cover: IMAGES.quanyecha,
     tags: ['Fantasy', 'Adventure', 'Romance'],
     link: 'https://www.bilibili.com/bangumi/media/md28222083',
@@ -165,7 +178,6 @@ const bangumiList = [
   {
     name: 'The Case Study of Vanitas',
     status: 'Completed',
-    rating: '9.2',
     cover: IMAGES.wanitasi,
     tags: ['Fantasy', 'Supernatural', 'Action'],
     link: 'https://www.bilibili.com/bangumi/media/md28234616',
@@ -174,7 +186,6 @@ const bangumiList = [
   {
     name: 'Lycoris Recoil',
     status: 'Completed',
-    rating: '9.5',
     cover: IMAGES.likelisi,
     tags: ['Action', 'Comedy', 'Slice of Life'],
     link: 'https://www.bilibili.com/bangumi/media/md28338623',
@@ -183,7 +194,6 @@ const bangumiList = [
   {
     name: 'TARI TARI',
     status: 'Completed',
-    rating: '8.8',
     cover: IMAGES.tari,
     tags: ['Music', 'Slice of Life', 'School'],
     link: 'https://www.bilibili.com/bangumi/media/md752',
@@ -192,7 +202,6 @@ const bangumiList = [
   {
     name: 'Anohana: The Flower We Saw That Day',
     status: 'Completed',
-    rating: '9.6',
     cover: IMAGES.weiwenhuaming,
     tags: ['Drama', 'Supernatural', 'Slice of Life'],
     link: 'https://www.bilibili.com/bangumi/media/md835',
@@ -201,7 +210,6 @@ const bangumiList = [
   {
     name: 'Your Lie in April',
     status: 'Completed',
-    rating: '9.7',
     cover: IMAGES.siyue,
     tags: ['Music', 'Romance', 'Drama'],
     link: 'https://www.bilibili.com/bangumi/media/md1699',
@@ -210,7 +218,6 @@ const bangumiList = [
   {
     name: 'Yona of the Dawn',
     status: 'Completed',
-    rating: '9.1',
     cover: IMAGES.chenxi,
     tags: ['Fantasy', 'Adventure', 'Romance'],
     link: 'https://www.bilibili.com/bangumi/media/md3072',
@@ -219,7 +226,6 @@ const bangumiList = [
   {
     name: 'My Teen Romantic Comedy SNAFU Climax',
     status: 'Completed',
-    rating: '9.4',
     cover: IMAGES.chunwu,
     tags: ['Romance', 'Comedy', 'School'],
     link: 'https://www.bilibili.com/bangumi/media/md28228386',
@@ -228,7 +234,6 @@ const bangumiList = [
   {
     name: 'CLANNAD ~After Story~',
     status: 'Completed',
-    rating: '9.8',
     cover: IMAGES.clannad,
     tags: ['Drama', 'Romance', 'Slice of Life'],
     link: 'https://www.bilibili.com/bangumi/media/md1178',
@@ -237,7 +242,6 @@ const bangumiList = [
   {
     name: 'The Pet Girl of Sakurasou',
     status: 'Completed',
-    rating: '9.3',
     cover: IMAGES.yinghuazhuang,
     tags: ['Romance', 'Comedy', 'School'],
     link: 'https://www.bilibili.com/bangumi/media/md687',
@@ -246,7 +250,6 @@ const bangumiList = [
   {
     name: 'DARLING in the FRANXX',
     status: 'Completed',
-    rating: '9.2',
     cover: IMAGES.zeroone,
     tags: ['Mecha', 'Romance', 'Sci-Fi'],
     link: 'https://www.bilibili.com/bangumi/media/md9192',
@@ -255,7 +258,6 @@ const bangumiList = [
   {
     name: 'The "Hentai" Prince and the Stony Cat',
     status: 'Completed',
-    rating: '8.6',
     cover: IMAGES.buxiaomao,
     tags: ['Comedy', 'Romance', 'Supernatural'],
     link: 'https://www.bilibili.com/bangumi/media/md413',
@@ -264,7 +266,6 @@ const bangumiList = [
   {
     name: 'Shirobako',
     status: 'Completed',
-    rating: '9.4',
     cover: IMAGES.baixiang,
     tags: ['Slice of Life', 'Drama', 'Comedy'],
     link: 'https://www.yinhuadm.xyz/v/19304.html',
@@ -273,7 +274,6 @@ const bangumiList = [
   {
     name: 'Hyouka',
     status: 'Completed',
-    rating: '9.5',
     cover: IMAGES.bingguo,
     tags: ['Mystery', 'Slice of Life', 'School'],
     link: 'https://www.yinhuadm.xyz/v/5658.html',
@@ -282,7 +282,6 @@ const bangumiList = [
   {
     name: 'Naruto',
     status: 'Completed',
-    rating: '9.5',
     cover: IMAGES.naruto,
     tags: ['Battle', 'Adventure', 'Shounen'],
     link: 'https://www.yinhuadm.xyz/v/6017.html',
@@ -291,7 +290,6 @@ const bangumiList = [
   {
     name: 'Dragon Ball',
     status: 'Completed',
-    rating: '9.6',
     cover: IMAGES.dragonball,
     tags: ['Battle', 'Adventure', 'Comedy'],
     link: 'https://www.yinhuadm.xyz/v/5897.html',
@@ -300,7 +298,6 @@ const bangumiList = [
   {
     name: 'One Punch Man S1',
     status: 'Completed',
-    rating: '9.5',
     cover: IMAGES.yiquan,
     tags: ['Action', 'Comedy', 'Superhero'],
     link: 'https://www.yinhuadm.xyz/v/17918.html',
@@ -309,7 +306,6 @@ const bangumiList = [
   {
     name: 'Re:ZERO -Starting Life in Another World- S2',
     status: 'Completed',
-    rating: '9.3',
     cover: IMAGES.re,
     tags: ['Fantasy', 'Isekai', 'Drama'],
     link: 'https://www.bilibili.com/bangumi/media/md28232073',
@@ -318,7 +314,6 @@ const bangumiList = [
   {
     name: 'Arcane: League of Legends',
     status: 'Completed',
-    rating: '9.8',
     cover: IMAGES.shuangchengzhizhan,
     tags: ['Action', 'Fantasy', 'Drama'],
     link: 'https://www.yinhuadm.xyz/v/19756.html',
@@ -327,13 +322,27 @@ const bangumiList = [
   {
     name: '86 -Eighty Six-',
     status: 'Completed',
-    rating: '9.4',
     cover: IMAGES.eightysixbu,
     tags: ['Mecha', 'Drama', 'Sci-Fi'],
     link: 'https://www.yinhuadm.xyz/v/17759.html',
     description: 'The "unmanned" drones of the Republic are actually piloted by the 86 — people denied their humanity. Captain Shin fights for a purpose on a hopeless battlefield, while new handler Lena discovers the truth.',
   },
 ]
+
+// Pagination computed
+const totalPages = computed(() => Math.ceil(bangumiList.length / PAGE_SIZE))
+const paginatedList = computed(() => {
+  const start = (currentPage.value - 1) * PAGE_SIZE
+  return bangumiList.slice(start, start + PAGE_SIZE)
+})
+
+function goToPage(page: number) {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+    // Scroll to page top
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
 
 function getStatusColor(status: string) {
   switch (status) {
@@ -355,6 +364,19 @@ function getStatusColor(status: string) {
         <Icon icon="lucide:clapperboard" class="w-16 h-16 mx-auto mb-4 drop-shadow-lg" />
         <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">Anime</h1>
         <p class="mt-3 text-white/80 text-lg">Anime is home for the soul</p>
+
+        <!-- Description Tooltip -->
+        <div class="relative inline-flex justify-center mt-4 group/tip">
+          <div class="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-white/40 hover:scale-110">
+            <Icon icon="lucide:quote" class="w-4 h-4 text-white" />
+          </div>
+          <div class="absolute top-12 left-1/2 -translate-x-1/2 w-[900px] max-w-[95vw] px-10 py-3 rounded-xl bg-white/60 dark:bg-gray-800/60 backdrop-blur-md border border-white/25 dark:border-gray-700/20 shadow-lg opacity-0 invisible group-hover/tip:opacity-100 group-hover/tip:visible translate-y-2 group-hover/tip:translate-y-0 transition-all duration-300 z-20 pointer-events-none">
+            <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rotate-45 bg-white/60 dark:bg-gray-800/60 border-l border-t border-white/25 dark:border-gray-700/20"></div>
+            <p class="text-sm text-gray-600 dark:text-gray-300 text-center leading-relaxed relative z-10">
+              I watched a lot of anime during my school years, but gradually stopped after starting college. Nowadays I rarely watch any — only occasionally catching up on One Piece manga breakdowns. The list here is just the ones I can still remember.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div class="wave-divider">
@@ -364,11 +386,11 @@ function getStatusColor(status: string) {
       </div>
     </header>
 
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 anime-grid-section">
       <!-- Anime Grid -->
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-2">
         <div 
-          v-for="(bangumi, index) in bangumiList"
+          v-for="(bangumi, index) in paginatedList"
           :key="bangumi.name"
           :ref="(el) => setCardRef(el, index)"
           class="card overflow-hidden group animate-card"
@@ -410,10 +432,6 @@ function getStatusColor(status: string) {
                   <h3 v-else class="font-bold text-sm text-gray-800 dark:text-white truncate pb-0.5 leading-[1.4]">
                     {{ bangumi.name }}
                   </h3>
-                  <div class="flex items-center text-yellow-500 text-xs flex-shrink-0 ml-2">
-                    <Icon icon="lucide:star" class="w-3 h-3 mr-0.5" />
-                    {{ bangumi.rating }}
-                  </div>
                 </div>
                 <p v-if="bangumi.description" class="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5 line-clamp-3 leading-relaxed">
                   {{ bangumi.description }}
@@ -433,11 +451,52 @@ function getStatusColor(status: string) {
         </div>
       </div>
 
+      <!-- Pagination -->
+      <div v-if="totalPages > 1" class="flex items-center justify-center gap-2 mt-8">
+        <!-- Previous -->
+        <button
+          @click="goToPage(currentPage - 1)"
+          :disabled="currentPage === 1"
+          class="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300"
+          :class="currentPage === 1 ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed' : 'text-gray-500 dark:text-gray-400 hover:bg-[#7CB342]/10 hover:text-[#7CB342]'"
+        >
+          <Icon icon="lucide:chevron-left" class="w-4 h-4" />
+        </button>
+
+        <!-- Page Numbers -->
+        <template v-for="page in totalPages" :key="page">
+          <button
+            @click="goToPage(page)"
+            class="w-9 h-9 rounded-lg text-sm font-medium transition-all duration-300"
+            :class="page === currentPage
+              ? 'bg-[#7CB342] text-white shadow-md shadow-[#7CB342]/30'
+              : 'text-gray-500 dark:text-gray-400 hover:bg-[#7CB342]/10 hover:text-[#7CB342]'"
+          >
+            {{ page }}
+          </button>
+        </template>
+
+        <!-- Next -->
+        <button
+          @click="goToPage(currentPage + 1)"
+          :disabled="currentPage === totalPages"
+          class="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300"
+          :class="currentPage === totalPages ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed' : 'text-gray-500 dark:text-gray-400 hover:bg-[#7CB342]/10 hover:text-[#7CB342]'"
+        >
+          <Icon icon="lucide:chevron-right" class="w-4 h-4" />
+        </button>
+
+        <!-- Page Info -->
+        <span class="ml-3 text-xs text-gray-400 dark:text-gray-500">
+          {{ (currentPage - 1) * PAGE_SIZE + 1 }}-{{ Math.min(currentPage * PAGE_SIZE, bangumiList.length) }} / {{ bangumiList.length }}
+        </span>
+      </div>
+
       <!-- Stats -->
       <div 
-        :ref="(el) => setCardRef(el, bangumiList.length)"
+        :ref="(el) => setCardRef(el, paginatedList.length)"
         class="card p-6 mt-8 animate-card"
-        :class="{ 'animate-in': isCardVisible(bangumiList.length) }"
+        :class="{ 'animate-in': isCardVisible(paginatedList.length) }"
       >
         <div class="flex justify-around text-center">
           <div>

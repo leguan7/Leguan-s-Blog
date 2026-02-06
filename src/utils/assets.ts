@@ -62,6 +62,7 @@ export const IMAGES = {
   re: getAssetUrl('/img/re.webp'),
   shuangchengzhizhan: getAssetUrl('/img/shuangchengzhizhan.webp'),
   eightysixbu: getAssetUrl('/img/86bu.jpg'),
+  jinjidejuren: getAssetUrl('/img/jinjidejuren.png'),
 }
 
 // Cover image pool
