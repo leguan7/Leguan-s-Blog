@@ -50,18 +50,18 @@ onUnmounted(() => {
 })
 
 const skills = [
-  { name: 'Vue.js', icon: 'fab:vuejs', color: '#42b883' },
-  { name: 'TypeScript', icon: 'devicon-plain:typescript', color: '#3178c6' },
-  { name: 'Node.js', icon: 'fab:node-js', color: '#339933' },
-  { name: 'Python', icon: 'fab:python', color: '#3776ab' },
-  { name: 'Git', icon: 'fab:git-alt', color: '#f05032' },
-  { name: 'Docker', icon: 'fab:docker', color: '#2496ed' },
+  { name: 'Java', icon: 'devicon-plain:java', color: '#e76f00' },
+  { name: 'Spring Boot', icon: 'simple-icons:springboot', color: '#6DB33F' },
+  { name: 'MySQL', icon: 'simple-icons:mysql', color: '#4479A1' },
+  { name: 'Redis', icon: 'simple-icons:redis', color: '#DC382D' },
+  { name: 'Git', icon: 'mdi:git', color: '#f05032' },
+  { name: 'Docker', icon: 'mdi:docker', color: '#2496ed' },
 ]
 
 const timeline = [
-  { year: '2026', event: 'Started blogging, sharing tech and life', icon: 'lucide:pen-line' },
-  { year: '2025', event: 'Exploring new technologies, continuously learning', icon: 'lucide:rocket' },
-  { year: '2024', event: 'Progressing on the path of programming', icon: 'lucide:code-2' },
+  { year: 'Now', event: 'Working as a backend developer in Shenzhen, exploring the world', icon: 'lucide:map-pin' },
+  { year: '2026', event: 'Started this blog to document life and thoughts', icon: 'lucide:pen-line' },
+  { year: 'Before', event: 'First job in Hangzhou, began my backend development career', icon: 'lucide:rocket' },
 ]
 </script>
 
@@ -104,31 +104,37 @@ const timeline = [
         </h2>
         <div class="text-gray-600 dark:text-gray-400 space-y-4 leading-relaxed">
           <p>
-            Hello! I'm <strong class="text-[#7CB342]">Leguan</strong>, someone who wants to explore the world.
+            Hey there! I'm <strong class="text-[#7CB342]">Leguan</strong> — a backend developer who believes the world is meant to be explored.
+          </p>
+          <p>
+            I started my career in Hangzhou and later moved to Shenzhen, where I'm currently working. Outside of writing code, I'm a basketball enthusiast, a fitness lover, and someone who genuinely enjoys traveling and capturing beautiful landscapes through the lens.
           </p>
           <blockquote class="border-l-4 border-[#7CB342] pl-4 py-3 bg-gradient-to-r from-[#7CB342]/10 to-transparent rounded-r-lg">
-            <p class="italic text-[#7CB342]">"Digest your emotions"</p>
-            <p class="text-sm text-gray-500 mt-1">— Process what you feel</p>
+            <p class="italic text-[#7CB342]">"Stay goal-driven, stay optimistic, and never stop exploring."</p>
           </blockquote>
-          <p>This blog is my space to record life, share technology, and reflect on thoughts.</p>
-          <ul class="space-y-2">
-            <li class="flex items-center">
-              <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-500 mr-2" />
-              Tech sharing & learning notes
-            </li>
-            <li class="flex items-center">
-              <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-500 mr-2" />
-              Life essays & reflections
-            </li>
-            <li class="flex items-center">
-              <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-500 mr-2" />
-              Anime tracking & recommendations
-            </li>
-            <li class="flex items-center">
-              <Icon icon="lucide:check-circle" class="w-5 h-5 text-green-500 mr-2" />
-              Fitness logs & self-improvement
-            </li>
-          </ul>
+          <p>
+            This blog is my personal space to document life — the places I've been, the things I've watched, the workouts I've done, and the thoughts worth keeping. It's less about tech and more about living fully.
+          </p>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-[#7CB342]/10 text-[#7CB342] text-sm font-medium">
+              <Icon icon="lucide:dumbbell" class="w-4 h-4 mr-1.5" /> Fitness
+            </span>
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-orange-500/10 text-orange-500 text-sm font-medium">
+              <Icon icon="lucide:dribbble" class="w-4 h-4 mr-1.5" /> Basketball
+            </span>
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-500 text-sm font-medium">
+              <Icon icon="lucide:plane" class="w-4 h-4 mr-1.5" /> Travel
+            </span>
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-500 text-sm font-medium">
+              <Icon icon="lucide:camera" class="w-4 h-4 mr-1.5" /> Photography
+            </span>
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-cyan-500/10 text-cyan-500 text-sm font-medium">
+              <Icon icon="lucide:code-2" class="w-4 h-4 mr-1.5" /> Backend Dev
+            </span>
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-pink-500/10 text-pink-500 text-sm font-medium">
+              <Icon icon="lucide:globe" class="w-4 h-4 mr-1.5" /> Explorer
+            </span>
+          </div>
         </div>
       </div>
 
