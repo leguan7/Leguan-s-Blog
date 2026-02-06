@@ -1,0 +1,55 @@
+/* 修复：隐藏页面头部在背景图加载前的蓝色默认背景 */
+#page-header {
+  background-color: transparent !important;
+}
+
+/* 导航栏：始终透明（含上滑时出现的导航栏） */
+#nav,
+#nav.nav-fixed,
+#nav.nav-visible,
+body.nav-fixed #nav,
+body.nav-visible #nav,
+body.hide-menu #nav,
+body.fixed #nav {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* 首页非全屏时主题会给 #nav 加白底，同样覆盖 */
+#page-header:not(.full_page) ~ #nav,
+#page-header:not(.full_page) ~ * #nav {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 导航下拉菜单：更圆角 + 内容居中 */
+#nav .menus_items .menus_item .menus_item_child {
+  border-radius: 14px !important;
+}
+
+#nav .menus_items .menus_item .menus_item_child li {
+  border-radius: 10px;
+}
+
+#nav .menus_items .menus_item .menus_item_child li:first-child {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+#nav .menus_items .menus_item .menus_item_child li:last-child {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+#nav .menus_items .menus_item .menus_item_child li a {
+  text-align: center;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
