@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
-import { COVER_IMAGES } from '@/utils/assets'
+import { IMAGES } from '@/utils/assets'
 
 // Intersection Observer for animations
 const visibleCards = ref<Set<number>>(new Set())
@@ -45,12 +45,15 @@ onUnmounted(() => {
 })
 
 const bangumiList = [
-  { name: 'Bocchi the Rock!', status: 'Completed', rating: '9.5', cover: COVER_IMAGES[0], tags: ['Slice of Life', 'Music', 'Healing'] },
-  { name: 'Frieren', status: 'Watching', rating: '9.8', cover: COVER_IMAGES[1], tags: ['Fantasy', 'Adventure', 'Healing'] },
-  { name: 'SPY×FAMILY', status: 'Completed', rating: '9.2', cover: COVER_IMAGES[2], tags: ['Comedy', 'Action', 'Family'] },
-  { name: 'Demon Slayer', status: 'Watching', rating: '9.0', cover: COVER_IMAGES[3], tags: ['Battle', 'Shounen', 'Supernatural'] },
-  { name: 'Jujutsu Kaisen', status: 'Completed', rating: '8.8', cover: COVER_IMAGES[4], tags: ['Battle', 'Supernatural', 'Shounen'] },
-  { name: 'Attack on Titan', status: 'Completed', rating: '9.9', cover: COVER_IMAGES[5], tags: ['Battle', 'Drama', 'Epic'] },
+  {
+    name: 'Jujutsu Kaisen',
+    status: 'Completed',
+    rating: '9.7',
+    cover: IMAGES.zhoushuhuizhan,
+    tags: ['Battle', 'Supernatural', 'Shounen'],
+    link: 'https://www.bilibili.com/bangumi/media/md28229899',
+    description: 'The boy fights — "in search of a proper death." Negative emotions born from humans — regret, bitterness, shame — become curses that lurk in everyday life. Curses are a source of disaster spreading throughout the world, and in the worst cases, can lead to death. And curses can only be exorcised with curses. Yuji Itadori, a boy with extraordinary physical abilities, was living an ordinary high school life. One day, to save a friend attacked by a "curse," he swallowed a Special Grade cursed object — "Ryomen Sukuna\'s Finger" — binding the curse to his own soul. Now sharing a body with the curse "Ryomen Sukuna," Yuji is guided by the strongest jujutsu sorcerer Satoru Gojo to enroll in the "Tokyo Prefectural Jujutsu High School"... A boy who became a curse to exorcise curses — an epic story of no return begins.',
+  },
 ]
 
 function getStatusColor(status: string) {
@@ -84,7 +87,7 @@ function getStatusColor(status: string) {
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <!-- Anime Grid -->
-      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-2">
         <div 
           v-for="(bangumi, index) in bangumiList"
           :key="bangumi.name"
@@ -92,44 +95,60 @@ function getStatusColor(status: string) {
           class="card overflow-hidden group animate-card"
           :class="{ 'animate-in': isCardVisible(index) }"
         >
-          <!-- Cover -->
-          <div class="aspect-[16/9] relative overflow-hidden">
-            <img 
-              :src="bangumi.cover" 
-              :alt="bangumi.name"
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              loading="lazy"
-              decoding="async"
-            />
-            <!-- Status Badge -->
-            <span 
-              class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-white text-xs font-medium"
-              :class="getStatusColor(bangumi.status)"
-            >
-              {{ bangumi.status }}
-            </span>
-            <!-- Rating -->
-            <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-full px-2.5 py-1 flex items-center text-yellow-400 text-sm">
-              <Icon icon="lucide:star" class="w-3.5 h-3.5 mr-1" />
-              {{ bangumi.rating }}
-            </div>
-            <!-- Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </div>
-
-          <!-- Info -->
-          <div class="p-4">
-            <h3 class="font-bold text-lg text-gray-800 dark:text-white group-hover:text-[#7CB342] transition-colors">
-              {{ bangumi.name }}
-            </h3>
-            <div class="flex flex-wrap gap-1.5 mt-2">
+          <div class="flex flex-row h-[160px]">
+            <!-- Cover (horizontal, left side) -->
+            <div class="w-[120px] flex-shrink-0 relative overflow-hidden">
+              <img 
+                :src="bangumi.cover" 
+                :alt="bangumi.name"
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                loading="lazy"
+                decoding="async"
+              />
+              <!-- Status Badge -->
               <span 
-                v-for="tag in bangumi.tags"
-                :key="tag"
-                class="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400"
+                class="absolute top-2 left-2 px-1.5 py-0.5 rounded-full text-white text-[10px] font-medium"
+                :class="getStatusColor(bangumi.status)"
               >
-                {{ tag }}
+                {{ bangumi.status }}
               </span>
+            </div>
+
+            <!-- Info (right side) -->
+            <div class="flex-1 p-3.5 flex flex-col justify-between overflow-hidden">
+              <div>
+                <div class="flex items-center justify-between">
+                  <a 
+                    v-if="bangumi.link"
+                    :href="bangumi.link" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="font-bold text-sm text-gray-800 dark:text-white group-hover:text-[#7CB342] transition-colors inline-flex items-center pb-0.5 leading-[1.4] truncate"
+                  >
+                    {{ bangumi.name }}
+                    <Icon icon="lucide:external-link" class="w-3 h-3 ml-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                  <h3 v-else class="font-bold text-sm text-gray-800 dark:text-white truncate pb-0.5 leading-[1.4]">
+                    {{ bangumi.name }}
+                  </h3>
+                  <div class="flex items-center text-yellow-500 text-xs flex-shrink-0 ml-2">
+                    <Icon icon="lucide:star" class="w-3 h-3 mr-0.5" />
+                    {{ bangumi.rating }}
+                  </div>
+                </div>
+                <p v-if="bangumi.description" class="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5 line-clamp-3 leading-relaxed">
+                  {{ bangumi.description }}
+                </p>
+              </div>
+              <div class="flex flex-wrap gap-1 mt-1.5">
+                <span 
+                  v-for="tag in bangumi.tags"
+                  :key="tag"
+                  class="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400"
+                >
+                  {{ tag }}
+                </span>
+              </div>
             </div>
           </div>
         </div>

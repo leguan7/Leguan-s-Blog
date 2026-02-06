@@ -29,6 +29,7 @@ export const IMAGES = {
   animeLandscapeTraveling: getAssetUrl('/img/anime-landscape-person-traveling.jpg'),
   animeCharacterTraveling: getAssetUrl('/img/anime-character-traveling.jpg'),
   qqQrCode: getAssetUrl('/img/QQ.png'),
+  zhoushuhuizhan: getAssetUrl('/img/zhoushuhuizhan.png'),
 }
 
 // Cover image pool
