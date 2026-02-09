@@ -1,20 +1,20 @@
 [
   {
-    "slug": "welcome",
-    "title": "Welcome to Leguan's Blog",
-    "date": "2026-02-04",
-    "tags": ["Blog", "Life"],
-    "categories": ["Essays"],
-    "cover": "",
-    "excerpt": "This is my first blog post. Digest your emotions."
+    "slug": "english-listening-study",
+    "title": "English Listening: A Beginner's Guide",
+    "date": "2026-02-09",
+    "tags": ["English Learning", "Listening", "Study Methods"],
+    "categories": ["English Learning"],
+    "cover": "img/EnglishListening.webp",
+    "excerpt": "Two proven methods for improving English listening — intensive drills with YouTube and learning through Peppa Pig cartoons on Bilibili. A practical guide with recommended resources and step-by-step techniques."
   },
   {
-    "slug": "hello-world",
-    "title": "Hello World",
-    "date": "2026-02-04",
-    "tags": ["Hexo", "Blog"],
-    "categories": ["Tech"],
-    "cover": "",
-    "excerpt": "Welcome to Hexo! This is your very first post."
+    "slug": "photography-sea-bridge",
+    "title": "Photography Notes: How to Photograph a Sea Bridge",
+    "date": "2026-02-07",
+    "tags": ["Photography", "Composition", "Mobile Photography", "Landscape"],
+    "categories": ["Photography Learning"],
+    "cover": "img/sea05.jpeg",
+    "excerpt": "Three composition techniques for shooting a sea bridge — half-split, negative space, and frame composition with trees. Includes example shots and practical tips on zoom and post-processing."
   }
 ]

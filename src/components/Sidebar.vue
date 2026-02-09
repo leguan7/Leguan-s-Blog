@@ -3,11 +3,9 @@ import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useBlogStore } from '@/stores/blog'
-import { IMAGES, COVER_IMAGES } from '@/utils/assets'
-import QQModal from '@/components/QQModal.vue'
+import { COVER_IMAGES } from '@/utils/assets'
 
 const router = useRouter()
-const showQQModal = ref(false)
 const blogStore = useBlogStore()
 
 // Animation visibility
@@ -61,130 +59,11 @@ function getTagColor(index: number) {
 
 <template>
   <aside class="space-y-5 lg:sticky lg:top-20">
-    <!-- Profile Card -->
-    <div 
-      :ref="(el) => setCardRef(el, 0)"
-      class="card overflow-hidden sidebar-card"
-      :class="{ 'animate-in': isCardVisible(0) }"
-    >
-      <!-- Cover Background -->
-      <div 
-        class="h-32 bg-cover bg-center relative overflow-hidden group"
-        :style="{ backgroundImage: `url(${IMAGES.fantasyMagicLandscape})` }"
-      >
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50"></div>
-        <!-- Hover Effect -->
-        <div class="absolute inset-0 bg-[#7CB342]/0 group-hover:bg-[#7CB342]/10 transition-colors duration-500"></div>
-      </div>
-      
-      <!-- Avatar and Info -->
-      <div class="px-5 pb-5 -mt-16 text-center relative">
-        <div class="avatar-ring inline-block mb-3 group cursor-pointer">
-          <img 
-            :src="IMAGES.avatar" 
-            alt="Leguan" 
-            class="w-28 h-28 rounded-full border-4 border-white dark:border-gray-800 shadow-xl transition-transform duration-500 group-hover:scale-105"
-            onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Leguan'"
-          />
-        </div>
-        <h3 class="text-xl font-bold text-gray-800 dark:text-white">Leguan</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 italic">A person who wants to see the world</p>
-        
-        <!-- Stats -->
-        <div class="flex justify-around mt-5 py-4 border-t border-b border-gray-100 dark:border-gray-700/50">
-          <router-link to="/archives" class="text-center group cursor-pointer flex-1">
-            <div class="text-2xl font-bold text-gray-800 dark:text-white group-hover:text-[#7CB342] transition-all duration-300 group-hover:scale-110">
-              {{ stats.posts }}
-            </div>
-            <div class="text-xs text-gray-600 dark:text-gray-400 mt-0.5 flex items-center justify-center">
-              <Icon icon="lucide:file-text" class="w-3 h-3 mr-1" />
-              Posts
-            </div>
-          </router-link>
-          <div class="w-px bg-gray-100 dark:bg-gray-700/50"></div>
-          <router-link to="/tags" class="text-center group cursor-pointer flex-1">
-            <div class="text-2xl font-bold text-gray-800 dark:text-white group-hover:text-[#7CB342] transition-all duration-300 group-hover:scale-110">
-              {{ stats.tags }}
-            </div>
-            <div class="text-xs text-gray-600 dark:text-gray-400 mt-0.5 flex items-center justify-center">
-              <Icon icon="lucide:tags" class="w-3 h-3 mr-1" />
-              Tags
-            </div>
-          </router-link>
-          <div class="w-px bg-gray-100 dark:bg-gray-700/50"></div>
-          <router-link to="/categories" class="text-center group cursor-pointer flex-1">
-            <div class="text-2xl font-bold text-gray-800 dark:text-white group-hover:text-[#7CB342] transition-all duration-300 group-hover:scale-110">
-              {{ stats.categories }}
-            </div>
-            <div class="text-xs text-gray-600 dark:text-gray-400 mt-0.5 flex items-center justify-center">
-              <Icon icon="lucide:folder" class="w-3 h-3 mr-1" />
-              Categories
-            </div>
-          </router-link>
-        </div>
-
-        <!-- Social Buttons -->
-        <div class="flex justify-center space-x-3 mt-4">
-          <div class="relative group">
-            <a 
-              href="https://github.com/leguan7" 
-              target="_blank"
-              class="w-10 h-10 rounded-xl bg-gray-800 text-white flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all duration-300"
-            >
-              <Icon icon="ri:github-fill" class="w-5 h-5" />
-            </a>
-            <div class="social-tooltip">GitHub</div>
-          </div>
-          <div class="relative">
-            <button 
-              @click.stop="showQQModal = !showQQModal"
-              class="w-10 h-10 rounded-xl bg-[#12B7F5] text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-[#12B7F5]/30 transition-all duration-300"
-            >
-              <Icon icon="ri:qq-fill" class="w-5 h-5" />
-            </button>
-            <QQModal :visible="showQQModal" @close="showQQModal = false" />
-          </div>
-          <div class="relative group">
-            <a 
-              href="mailto:leguan701@gmail.com"
-              class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7CB342] to-[#8BC34A] text-white flex items-center justify-center hover:scale-110 hover:shadow-lg hover:shadow-[#7CB342]/30 transition-all duration-300"
-            >
-              <Icon icon="lucide:mail" class="w-5 h-5" />
-            </a>
-            <div class="social-tooltip">leguan701@gmail.com</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Announcements -->
-    <div 
-      :ref="(el) => setCardRef(el, 1)"
-      class="card p-5 sidebar-card"
-      :class="{ 'animate-in': isCardVisible(1) }"
-    >
-      <div class="flex items-center space-x-2 mb-3 pb-3 border-b border-gray-100 dark:border-gray-700/50">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center">
-          <Icon icon="lucide:megaphone" class="w-4 h-4 text-white" />
-        </div>
-        <h4 class="font-bold text-gray-800 dark:text-white">Announcements</h4>
-      </div>
-      <div class="p-3 rounded-xl bg-gradient-to-br from-[#7CB342]/5 to-[#8BC34A]/5 border border-[#7CB342]/10">
-        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-          Welcome to <span class="text-[#7CB342] font-medium">Leguan's Blog</span>!
-        </p>
-        <p class="text-sm text-[#7CB342] mt-2 italic flex items-center">
-          <Icon icon="lucide:quote" class="w-3 h-3 mr-1 text-[#7CB342]/60" />
-          Digest your emotions.
-        </p>
-      </div>
-    </div>
-
     <!-- Recent Posts -->
     <div 
-      :ref="(el) => setCardRef(el, 2)"
+      :ref="(el) => setCardRef(el, 0)"
       class="card p-5 sidebar-card"
-      :class="{ 'animate-in': isCardVisible(2) }"
+      :class="{ 'animate-in': isCardVisible(0) }"
     >
       <div class="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-700/50">
         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
@@ -210,7 +89,7 @@ function getTagColor(index: number) {
             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
           </div>
           <div class="flex-1 min-w-0">
-            <h5 class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-[#7CB342] transition-colors line-clamp-2 leading-tight font-medium">
+            <h5 class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-[#7CB342] transition-colors line-clamp-2 leading-normal font-medium pb-0.5">
               {{ post.title }}
             </h5>
             <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center">
@@ -224,9 +103,9 @@ function getTagColor(index: number) {
 
     <!-- Tag Cloud -->
     <div 
-      :ref="(el) => setCardRef(el, 3)"
+      :ref="(el) => setCardRef(el, 1)"
       class="card p-5 sidebar-card"
-      :class="{ 'animate-in': isCardVisible(3) }"
+      :class="{ 'animate-in': isCardVisible(1) }"
     >
       <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100 dark:border-gray-700/50">
         <div class="flex items-center space-x-2">
@@ -261,9 +140,9 @@ function getTagColor(index: number) {
 
     <!-- Categories -->
     <div 
-      :ref="(el) => setCardRef(el, 4)"
+      :ref="(el) => setCardRef(el, 2)"
       class="card p-5 sidebar-card"
-      :class="{ 'animate-in': isCardVisible(4) }"
+      :class="{ 'animate-in': isCardVisible(2) }"
     >
       <div class="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-700/50">
         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
@@ -291,9 +170,9 @@ function getTagColor(index: number) {
 
     <!-- Site Info -->
     <div 
-      :ref="(el) => setCardRef(el, 5)"
+      :ref="(el) => setCardRef(el, 3)"
       class="card p-5 sidebar-card"
-      :class="{ 'animate-in': isCardVisible(5) }"
+      :class="{ 'animate-in': isCardVisible(3) }"
     >
       <div class="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-100 dark:border-gray-700/50">
         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
@@ -330,15 +209,6 @@ function getTagColor(index: number) {
 </template>
 
 <style scoped>
-.social-tooltip {
-  @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:-translate-y-1 z-10 pointer-events-none;
-}
-.social-tooltip::after {
-  content: '';
-  @apply absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900;
-}
-
-
 .sidebar-card {
   opacity: 0;
   transform: scale(0.6);

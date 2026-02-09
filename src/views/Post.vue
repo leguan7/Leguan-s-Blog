@@ -4,8 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useBlogStore } from '@/stores/blog'
 import { formatDate, estimateReadingTime } from '@/utils/markdown'
-import Sidebar from '@/components/Sidebar.vue'
-import { COVER_IMAGES, getCoverImage } from '@/utils/assets'
+import { COVER_IMAGES, getCoverImage, getAssetUrl } from '@/utils/assets'
 
 const route = useRoute()
 const router = useRouter()
@@ -20,7 +19,7 @@ const wordCount = computed(() => post.value ? post.value.content.length : 0)
 
 // Cover image - deterministic selection
 const coverImage = computed(() => {
-  if (post.value?.cover) return post.value.cover
+  if (post.value?.cover) return getAssetUrl(post.value.cover)
   if (!post.value) return COVER_IMAGES[0]
   return getCoverImage(post.value.slug)
 })
@@ -120,7 +119,7 @@ const showReward = ref(false)
     <!-- Post Content -->
     <article v-else-if="post">
       <!-- Banner -->
-      <header class="relative h-[55vh] min-h-[380px] flex items-center justify-center overflow-hidden">
+      <header class="relative h-[45vh] min-h-[320px] flex items-center justify-center overflow-hidden">
         <!-- Semi-transparent overlay -->
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/20"></div>
         
@@ -373,7 +372,6 @@ const showReward = ref(false)
               </nav>
             </div>
 
-            <Sidebar />
           </div>
         </div>
       </div>

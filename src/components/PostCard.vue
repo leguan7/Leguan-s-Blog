@@ -3,7 +3,7 @@ import { computed, ref, onMounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import type { Post } from '@/types'
 import { formatDate, estimateReadingTime } from '@/utils/markdown'
-import { getCoverImage } from '@/utils/assets'
+import { getCoverImage, getAssetUrl } from '@/utils/assets'
 
 const props = defineProps<{
   post: Post
@@ -24,7 +24,7 @@ const readingTime = computed(() => estimateReadingTime(props.post.content))
 const formattedDate = computed(() => formatDate(props.post.date))
 
 const coverImage = computed(() => {
-  if (props.post.cover) return props.post.cover
+  if (props.post.cover) return getAssetUrl(props.post.cover)
   return getCoverImage(props.post.slug)
 })
 

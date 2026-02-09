@@ -19,6 +19,34 @@ const md = new MarkdownIt({
   }
 })
 
+// Custom image renderer to prepend base URL for relative paths
+const defaultImageRender = md.renderer.rules.image || function(tokens: any[], idx: number, options: any, _env: any, self: any) {
+  return self.renderToken(tokens, idx, options)
+}
+
+md.renderer.rules.image = function(tokens: any[], idx: number, options: any, env: any, self: any) {
+  const token = tokens[idx]
+  const srcIndex = token.attrIndex('src')
+  if (srcIndex >= 0) {
+    const src = token.attrs![srcIndex][1]
+    // Prepend base URL for relative paths (not http/https/data URLs)
+    if (src && !src.startsWith('http') && !src.startsWith('data:') && !src.startsWith('/')) {
+      const BASE_URL = import.meta.env.BASE_URL || '/'
+      token.attrs![srcIndex][1] = `${BASE_URL}${src}`
+    }
+  }
+  return defaultImageRender(tokens, idx, options, env, self)
+}
+
+// Fix relative image src paths in raw HTML (for <img> tags written directly in markdown)
+function fixHtmlImagePaths(html: string): string {
+  const BASE_URL = import.meta.env.BASE_URL || '/'
+  return html.replace(
+    /<img\s([^>]*?)src="(?!http|data:|\/)(.*?)"([^>]*?)>/g,
+    (match, before, src, after) => `<img ${before}src="${BASE_URL}${src}"${after}>`
+  )
+}
+
 // Parse Markdown file (with front-matter)
 export function parseMarkdown(rawContent: string): { 
   attributes: Record<string, any>
@@ -26,7 +54,8 @@ export function parseMarkdown(rawContent: string): {
   html: string 
 } {
   const { attributes, body } = fm(rawContent)
-  const html = md.render(body)
+  let html = md.render(body)
+  html = fixHtmlImagePaths(html)
   
   return {
     attributes: attributes as Record<string, any>,

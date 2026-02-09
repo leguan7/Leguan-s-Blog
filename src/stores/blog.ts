@@ -166,15 +166,26 @@ export const useBlogStore = defineStore('blog', () => {
 function getDefaultPosts(): Post[] {
   return [
     {
-      slug: 'welcome',
-      title: 'Welcome to Leguan\'s Blog',
-      date: '2026-02-04',
-      tags: ['Blog', 'Life'],
-      categories: ['Essays'],
-      cover: '',
-      excerpt: 'This is my first blog post. Digest your emotions.',
-      content: '# Welcome!\n\nThis is my first blog post.\n\n## About this blog\n\n**Digest your emotions**\n\nI am Leguan, someone who wants to see the world.',
-      html: '<h1>Welcome!</h1><p>This is my first blog post.</p><h2>About this blog</h2><p><strong>Digest your emotions</strong></p><p>I am Leguan, someone who wants to see the world.</p>'
+      slug: 'english-listening-study',
+      title: "English Listening: A Beginner's Guide",
+      date: '2026-02-09',
+      tags: ['English Learning', 'Listening', 'Study Methods'],
+      categories: ['English Learning'],
+      cover: 'img/EnglishListening.webp',
+      excerpt: 'Two proven methods for improving English listening — intensive drills with YouTube and learning through Peppa Pig cartoons on Bilibili.',
+      content: "# A Beginner's Guide to Improving English Listening\n\nTwo effective approaches — intensive listening drills and learning through cartoons.",
+      html: "<h1>A Beginner's Guide to Improving English Listening</h1><p>Two effective approaches — intensive listening drills and learning through cartoons.</p>"
+    },
+    {
+      slug: 'photography-sea-bridge',
+      title: 'Photography Notes: How to Photograph a Sea Bridge',
+      date: '2026-02-07',
+      tags: ['Photography', 'Composition', 'Mobile Photography', 'Landscape'],
+      categories: ['Photography Learning'],
+      cover: 'img/sea05.jpeg',
+      excerpt: 'Three composition techniques for shooting a sea bridge — half-split, negative space, and frame composition with trees.',
+      content: '# Photography Notes: Shooting a Sea Bridge\n\nThree composition techniques for photographing a sea bridge with a smartphone.',
+      html: '<h1>Photography Notes: Shooting a Sea Bridge</h1><p>Three composition techniques for photographing a sea bridge with a smartphone.</p>'
     }
   ]
 }
