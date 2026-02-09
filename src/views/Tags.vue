@@ -3,30 +3,17 @@ import { computed, ref, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useBlogStore } from '@/stores/blog'
-import PostCard from '@/components/PostCard.vue'
+import PostCardCompact from '@/components/PostCardCompact.vue'
 
 const route = useRoute()
 const router = useRouter()
 const blogStore = useBlogStore()
 
 const selectedTag = ref<string | null>(null)
-
-// Animation visibility
-const visibleSections = ref<Set<string>>(new Set())
-
-const setSectionRef = (el: any, key: string) => {}
-
-const isSectionVisible = (key: string) => visibleSections.value.has(key)
+const contentVisible = ref(false)
 
 onMounted(() => {
-  // Immediately mark all sections visible with staggered animation
-  const keys = ['banner', 'tag-cloud', 'selection-header', 'empty-state']
-  keys.forEach((key, i) => {
-    setTimeout(() => {
-      visibleSections.value.add(key)
-      visibleSections.value = new Set(visibleSections.value)
-    }, i * 150)
-  })
+  setTimeout(() => { contentVisible.value = true }, 200)
 })
 
 watch(
@@ -50,23 +37,11 @@ function selectTag(tag: string) {
   }
 }
 
-// Rainbow colored tags
-const tagColors = [
-  'from-red-400 to-pink-500', 'from-orange-400 to-red-500', 'from-amber-400 to-orange-500',
-  'from-yellow-400 to-amber-500', 'from-lime-400 to-green-500', 'from-green-400 to-emerald-500',
-  'from-emerald-400 to-teal-500', 'from-teal-400 to-cyan-500', 'from-cyan-400 to-blue-500',
-  'from-blue-400 to-indigo-500', 'from-indigo-400 to-purple-500', 'from-purple-400 to-pink-500'
-]
-
-function getTagColor(index: number): string {
-  return tagColors[index % tagColors.length]
-}
-
 function getTagSize(count: number): string {
-  const max = Math.max(...blogStore.allTags.map(t => t.count))
+  const max = Math.max(...blogStore.allTags.map(t => t.count), 1)
   const ratio = count / max
-  if (ratio > 0.7) return 'text-lg px-4 py-2'
-  if (ratio > 0.4) return 'text-base px-3 py-1.5'
+  if (ratio > 0.7) return 'text-base px-4 py-2'
+  if (ratio > 0.4) return 'text-sm px-3 py-1.5'
   return 'text-sm px-3 py-1'
 }
 </script>
@@ -76,21 +51,16 @@ function getTagSize(count: number): string {
     <!-- Banner -->
     <header class="relative h-[45vh] min-h-[320px] flex items-center justify-center overflow-hidden">
       <div class="absolute inset-0 bg-black/30"></div>
-      
-      <div 
-        :ref="(el) => setSectionRef(el, 'banner')"
+      <div
         class="relative text-center text-white z-10 banner-content"
-        :class="{ 'animate-in': isSectionVisible('banner') }"
+        :class="{ 'animate-in': contentVisible }"
       >
-        <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#7CB342] to-[#8BC34A] p-[2px] shadow-lg shadow-[#7CB342]/30">
-          <div class="w-full h-full rounded-2xl bg-black/30 backdrop-blur flex items-center justify-center">
-            <Icon icon="lucide:tags" class="w-10 h-10 drop-shadow-lg" />
-          </div>
+        <div class="w-14 h-14 mx-auto mb-3 rounded-xl bg-[#7CB342]/90 backdrop-blur flex items-center justify-center shadow-lg">
+          <Icon icon="lucide:tags" class="w-7 h-7 drop-shadow" />
         </div>
-        <h1 class="text-4xl md:text-5xl font-bold drop-shadow-lg">Tags</h1>
-        <p class="mt-3 text-white/80 text-lg">{{ blogStore.allTags.length }} tags in total</p>
+        <h1 class="text-3xl md:text-4xl font-bold drop-shadow-lg">Tags</h1>
+        <p class="mt-2 text-white/80 text-sm">{{ blogStore.allTags.length }} tags in total</p>
       </div>
-
       <div class="wave-divider">
         <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
           <path d="M0,50 C150,100 350,0 600,50 C850,100 1050,0 1200,50 C1350,100 1440,50 1440,50 L1440,100 L0,100 Z" fill="rgba(255,255,255,0.1)"/>
@@ -98,136 +68,110 @@ function getTagSize(count: number): string {
       </div>
     </header>
 
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div v-if="blogStore.isLoading" class="card p-16 text-center">
         <div class="inline-flex flex-col items-center">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#7CB342]/20 to-[#8BC34A]/20 flex items-center justify-center mb-4">
-            <div class="animate-spin rounded-full h-8 w-8 border-4 border-[#7CB342] border-t-transparent"></div>
+          <div class="w-12 h-12 rounded-xl bg-[#7CB342]/20 flex items-center justify-center mb-3">
+            <div class="animate-spin rounded-full h-6 w-6 border-2 border-[#7CB342] border-t-transparent"></div>
           </div>
-          <p class="text-gray-500">Loading...</p>
+          <p class="text-gray-500 text-sm">Loading...</p>
         </div>
       </div>
 
-      <div v-else>
-        <!-- Tag Cloud - Rainbow Colors -->
-        <div 
-          :ref="(el) => setSectionRef(el, 'tag-cloud')"
-          class="card p-8 mb-8 tag-cloud"
-          :class="{ 'animate-in': isSectionVisible('tag-cloud') }"
+      <template v-else>
+        <!-- Tag cloud - glass pills -->
+        <div
+          class="card p-6 mb-8 content-block border border-white/20 dark:border-gray-600/30"
+          :class="{ 'animate-in': contentVisible }"
         >
-          <div class="flex items-center justify-center mb-6">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7CB342] to-[#8BC34A] flex items-center justify-center mr-3">
-              <Icon icon="lucide:cloud" class="w-5 h-5 text-white" />
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-[#7CB342]/20 flex items-center justify-center">
+              <Icon icon="lucide:cloud" class="w-4 h-4 text-[#7CB342]" />
             </div>
-            <h3 class="text-lg font-bold text-gray-800 dark:text-white">Tag Cloud</h3>
+            <h3 class="text-sm font-bold text-gray-800 dark:text-white">Tag Cloud</h3>
           </div>
-          <div class="flex flex-wrap items-center justify-center gap-3">
+          <div class="flex flex-wrap gap-2">
             <button
-              v-for="(tag, index) in blogStore.allTags"
+              v-for="tag in blogStore.allTags"
               :key="tag.name"
               @click="selectTag(tag.name)"
-              class="tag-item rounded-full text-white font-medium transition-all duration-300 hover:scale-110 hover:shadow-lg bg-gradient-to-r"
+              class="rounded-full font-medium transition-all duration-300 border"
               :class="[
                 getTagSize(tag.count),
-                getTagColor(index),
-                selectedTag === tag.name ? 'ring-2 ring-offset-2 ring-white dark:ring-offset-gray-900 shadow-xl scale-110' : '',
-                { 'tag-animate': isSectionVisible('tag-cloud') }
+                selectedTag === tag.name
+                  ? 'bg-[#7CB342] text-white border-[#7CB342] shadow-md'
+                  : 'bg-white/70 dark:bg-gray-800/70 text-gray-700 dark:text-gray-300 border-white/30 dark:border-gray-600/50 hover:bg-[#7CB342] hover:text-white hover:border-[#7CB342]'
               ]"
-              :style="{ animationDelay: `${200 + index * 50}ms` }"
             >
               <Icon icon="lucide:hash" class="w-3 h-3 inline mr-0.5" />
               {{ tag.name }}
-              <span class="text-xs ml-1 opacity-70">({{ tag.count }})</span>
+              <span class="opacity-80 ml-0.5">({{ tag.count }})</span>
             </button>
           </div>
         </div>
 
-        <!-- Selected Tag Posts -->
-        <div v-if="selectedTag">
-          <div 
-            :ref="(el) => setSectionRef(el, 'selection-header')"
-            class="flex items-center justify-between mb-6 selection-header"
-            :class="{ 'animate-in': isSectionVisible('selection-header') }"
-          >
-            <h2 class="text-xl font-bold text-gray-800 dark:text-white flex items-center">
-              <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7CB342] to-[#8BC34A] flex items-center justify-center mr-2">
-                <Icon icon="lucide:hash" class="w-4 h-4 text-white" />
-              </div>
+        <!-- Selected tag posts -->
+        <div v-if="selectedTag" class="content-block" :class="{ 'animate-in': contentVisible }">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-bold text-gray-800 dark:text-white flex items-center">
+              <span class="w-7 h-7 rounded-lg bg-[#7CB342]/20 flex items-center justify-center mr-2">
+                <Icon icon="lucide:hash" class="w-3.5 h-3.5 text-[#7CB342]" />
+              </span>
               {{ selectedTag }}
-              <span class="text-base font-normal text-gray-400 ml-2">({{ filteredPosts.length }} posts)</span>
+              <span class="text-sm font-normal text-gray-400 ml-2">({{ filteredPosts.length }} posts)</span>
             </h2>
-            <button 
-              @click="selectTag(selectedTag!)"
-              class="px-3 py-1.5 text-sm text-gray-400 hover:text-white hover:bg-red-500 rounded-lg transition-all flex items-center"
+            <button
+              @click="selectTag(selectedTag)"
+              class="px-3 py-1.5 text-sm text-gray-500 hover:text-white hover:bg-red-500 rounded-lg transition-all flex items-center"
             >
               <Icon icon="lucide:x" class="w-4 h-4 mr-1" />
-              Clear Filter
+              Clear
             </button>
           </div>
-
-          <div class="space-y-5">
-            <PostCard 
+          <div class="grid sm:grid-cols-2 gap-4">
+            <PostCardCompact
               v-for="(post, index) in filteredPosts"
               :key="post.slug"
               :post="post"
-              :layout="index % 2 === 0 ? 'left' : 'right'"
               :index="index"
             />
           </div>
         </div>
 
-        <div 
-          v-else 
-          :ref="(el) => setSectionRef(el, 'empty-state')"
-          class="card p-16 text-center empty-state"
-          :class="{ 'animate-in': isSectionVisible('empty-state') }"
+        <!-- Empty state -->
+        <div
+          v-else
+          class="card p-12 text-center content-block text-gray-500 dark:text-gray-400"
+          :class="{ 'animate-in': contentVisible }"
         >
-          <div class="w-24 h-24 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center">
-            <Icon icon="lucide:pointer" class="w-12 h-12 text-gray-400 dark:text-gray-500" />
-          </div>
-          <p class="text-gray-500 dark:text-gray-400 mb-2">Click a tag above to view related posts</p>
-          <p class="text-sm text-gray-400 dark:text-gray-500">{{ blogStore.allTags.length }} tags waiting to be explored</p>
+          <Icon icon="lucide:pointer" class="w-10 h-10 mx-auto mb-3 opacity-60" />
+          <p class="text-sm">Click a tag to view related posts</p>
         </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
 
 <style scoped>
 .banner-content,
-.tag-cloud,
-.selection-header,
-.empty-state {
+.content-block {
   opacity: 0;
-  transform: scale(0.6);
-  transform-origin: center center;
+  transform: translateY(20px);
 }
 
 .banner-content.animate-in,
-.tag-cloud.animate-in,
-.selection-header.animate-in,
-.empty-state.animate-in {
-  animation: scaleUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+.content-block.animate-in {
+  animation: fadeSlideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.tag-item {
-  opacity: 0;
-  transform: scale(0.6);
-  transform-origin: center center;
-}
-
-.tag-item.tag-animate {
-  animation: scaleUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-@keyframes scaleUp {
-  0% {
+@keyframes fadeSlideUp {
+  from {
     opacity: 0;
-    transform: scale(0.6);
+    transform: translateY(20px);
   }
-  100% {
+  to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 </style>
