@@ -178,6 +178,9 @@ export const IMAGES = {
   guailiehuangye: getAssetUrl('/img/guailiehuangye.jpeg'),
   bodezhimen3: getAssetUrl('/img/bodezhimen3.webp'),
   valorant: getAssetUrl('/img/valorant.webp'),
+  // Celebrity images
+  davidTao: getAssetUrl('/img/Tao.avif'),
+  harden: getAssetUrl('/img/Harden.webp'),
 }
 
 // Cover image pool

@@ -52,6 +52,7 @@ const navItems = [
     icon: 'lucide:user',
     children: [
       { name: 'Thoughts', path: '/shuoshuo', icon: 'lucide:message-square' },
+      { name: 'Celebrities', path: '/celebrities', icon: 'lucide:sparkles' },
       { name: 'About', path: '/about', icon: 'lucide:heart' }
     ]
   }

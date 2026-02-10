@@ -94,6 +94,12 @@ const router = createRouter({
       meta: { title: 'Games' }
     },
     {
+      path: '/celebrities',
+      name: 'celebrities',
+      component: () => import('@/views/Celebrities.vue'),
+      meta: { title: 'Celebrities' }
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('@/views/NotFound.vue'),
