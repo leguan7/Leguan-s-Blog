@@ -327,14 +327,13 @@ const hardenHonors = [
               <div
                 v-for="(song, index) in taoTopSongs"
                 :key="song.en"
-                class="playlist-row group"
+                class="playlist-row"
               >
                 <div class="playlist-idx">
-                  <span class="group-hover:hidden text-gray-400 dark:text-gray-500 text-sm font-mono leading-normal">{{ String(index + 1).padStart(2, '0') }}</span>
-                  <Icon icon="lucide:play" class="w-4 h-4 text-[#7CB342] hidden group-hover:block" />
+                  <Icon icon="lucide:music" class="w-3.5 h-3.5 text-[#7CB342]" />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <div class="text-gray-800 dark:text-gray-100 text-sm font-medium leading-relaxed group-hover:text-[#7CB342] transition-colors">
+                  <div class="text-gray-800 dark:text-gray-100 text-sm font-medium leading-relaxed">
                     {{ song.en }}
                     <span class="text-gray-400 dark:text-gray-500 font-normal text-xs ml-1.5">({{ song.cn }})</span>
                   </div>
@@ -660,17 +659,11 @@ const hardenHonors = [
   gap: 14px;
   padding: 12px 14px 14px;
   border-bottom: 1px solid rgba(124, 179, 66, 0.06);
-  transition: background 0.2s;
-  cursor: default;
   border-radius: 8px;
 }
 
 .playlist-row:last-child {
   border-bottom: none;
-}
-
-.playlist-row:hover {
-  background: rgba(124, 179, 66, 0.06);
 }
 
 .playlist-idx {
