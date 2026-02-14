@@ -226,6 +226,7 @@ const currentPhoto = computed(() =>
 
 function openLightbox(floatIdx: number) {
   const p = photos[floatIdx]
+  imageLoaded.value = false
   lightboxAlbumIdx.value = p.albumIdx
   lightboxPhotoIdx.value = p.photoIdx
 }
@@ -237,18 +238,28 @@ function closeLightbox() {
 
 function prevPhoto() {
   if (!currentAlbum.value) return
+  imageLoaded.value = false
   lightboxPhotoIdx.value =
     (lightboxPhotoIdx.value - 1 + currentAlbum.value.photos.length) % currentAlbum.value.photos.length
 }
 
 function nextPhoto() {
   if (!currentAlbum.value) return
+  imageLoaded.value = false
   lightboxPhotoIdx.value =
     (lightboxPhotoIdx.value + 1) % currentAlbum.value.photos.length
 }
 
 function goToThumbnail(idx: number) {
+  imageLoaded.value = false
   lightboxPhotoIdx.value = idx
+}
+
+/* ── Image load state (prevent alt text flash) ──── */
+const imageLoaded = ref(false)
+
+function onLightboxImgLoad() {
+  imageLoaded.value = true
 }
 
 function handleKey(e: KeyboardEvent) {
@@ -359,24 +370,26 @@ onBeforeUnmount(() => {
                 :src="currentPhoto.src"
                 :alt="currentPhoto.title"
                 class="lightbox-img"
+                :class="{ 'is-loaded': imageLoaded }"
                 :key="currentPhoto.src"
+                @load="onLightboxImgLoad"
               />
 
               <button class="lightbox-nav lightbox-nav-right" @click.stop="nextPhoto">
                 <Icon icon="lucide:chevron-right" class="w-6 h-6" />
               </button>
 
-              <button class="lightbox-close" @click="closeLightbox">&times;</button>
+              <button class="lightbox-close" v-show="imageLoaded" @click="closeLightbox">&times;</button>
 
-              <!-- Album info -->
-              <div class="lightbox-info">
+              <!-- Album info (hidden until image loads to prevent position flash) -->
+              <div class="lightbox-info" v-show="imageLoaded">
                 <span class="text-white font-medium text-sm">{{ currentAlbum.label }}</span>
                 <span class="text-white/60 text-xs">{{ lightboxPhotoIdx + 1 }} / {{ currentAlbum.photos.length }}</span>
               </div>
             </div>
 
             <!-- Thumbnail strip: browse all photos from same album -->
-            <div class="lightbox-thumbnails">
+            <div class="lightbox-thumbnails" v-show="imageLoaded">
               <button
                 v-for="(photo, pIdx) in currentAlbum.photos"
                 :key="pIdx"
@@ -531,12 +544,14 @@ onBeforeUnmount(() => {
   border-radius: 8px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   user-select: none;
-  animation: lbImgFade 0.25s ease;
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-@keyframes lbImgFade {
-  from { opacity: 0; transform: scale(0.97); }
-  to { opacity: 1; transform: scale(1); }
+.lightbox-img.is-loaded {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .lightbox-nav {
