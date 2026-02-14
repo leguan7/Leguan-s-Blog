@@ -1,0 +1,500 @@
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { Icon } from '@iconify/vue'
+import { useBlogStore } from '@/stores/blog'
+
+const router = useRouter()
+const route = useRoute()
+const blogStore = useBlogStore()
+
+const isMenuOpen = ref(false)
+const isSearchOpen = ref(false)
+const searchInput = ref('')
+const isScrolled = ref(false)
+const isScrollingDown = ref(false)
+const searchInputRef = ref<HTMLInputElement | null>(null)
+let lastScrollY = 0
+
+// Navigation menu
+const navItems = [
+  { name: 'Home', path: '/', icon: 'lucide:home' },
+  { 
+    name: 'Posts', 
+    icon: 'lucide:book-open',
+    children: [
+      { name: 'Archives', path: '/archives', icon: 'lucide:archive' },
+      { name: 'Tags', path: '/tags', icon: 'lucide:tags' },
+      { name: 'Categories', path: '/categories', icon: 'lucide:folder-open' }
+    ]
+  },
+  { 
+    name: 'Life', 
+    icon: 'lucide:coffee',
+    children: [
+      { name: 'Fitness', path: '/fitness', icon: 'lucide:dumbbell' },
+      { name: 'Anime', path: '/bangumi', icon: 'lucide:clapperboard' },
+      { name: 'TV Series', path: '/tvseries', icon: 'lucide:tv' },
+      { name: 'Movies', path: '/movies', icon: 'lucide:film' },
+      { name: 'Games', path: '/games', icon: 'lucide:gamepad-2' },
+      { name: 'Memories', path: '/memory', icon: 'lucide:camera' }
+    ]
+  },
+  { 
+    name: 'Social', 
+    icon: 'lucide:users',
+    children: [
+      { name: 'Guestbook', path: '/messageboard', icon: 'lucide:message-circle' }
+    ]
+  },
+  { 
+    name: 'Me', 
+    icon: 'lucide:user',
+    children: [
+      { name: 'Thoughts', path: '/shuoshuo', icon: 'lucide:message-square' },
+      { name: 'Celebrities', path: '/celebrities', icon: 'lucide:sparkles' },
+      { name: 'About', path: '/about', icon: 'lucide:heart' }
+    ]
+  }
+]
+
+const activeDropdown = ref<string | null>(null)
+
+function isActive(path: string): boolean {
+  return route.path === path
+}
+
+function isParentActive(item: typeof navItems[number]): boolean {
+  if (item.children) {
+    return item.children.some(child => child.path && route.path === child.path)
+  }
+  return false
+}
+
+function handleSearch() {
+  if (searchInput.value.trim()) {
+    blogStore.setSearchQuery(searchInput.value.trim())
+    router.push('/')
+    isSearchOpen.value = false
+    searchInput.value = ''
+  }
+}
+
+// When mobile menu opens, auto-expand the dropdown containing the active route
+watch(isMenuOpen, (val) => {
+  if (val) {
+    const activeParent = navItems.find(item => 
+      item.children?.some(child => child.path && route.path === child.path)
+    )
+    if (activeParent) {
+      activeDropdown.value = activeParent.name
+    }
+  }
+})
+
+// Auto focus when search box opens
+watch(isSearchOpen, (val) => {
+  if (val) {
+    nextTick(() => {
+      searchInputRef.value?.focus()
+    })
+  }
+})
+
+// ESC to close modal
+function handleKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape') {
+    isSearchOpen.value = false
+    isMenuOpen.value = false
+  }
+  // Ctrl/Cmd + K to open search
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault()
+    isSearchOpen.value = true
+  }
+}
+
+// Use requestAnimationFrame to optimize scroll listener
+let ticking = false
+function handleScroll() {
+  if (!ticking) {
+    window.requestAnimationFrame(() => {
+      const currentScrollY = window.scrollY
+      isScrolled.value = currentScrollY > 50
+      
+      // Detect scroll direction
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        isScrollingDown.value = true
+      } else {
+        isScrollingDown.value = false
+      }
+      
+      lastScrollY = currentScrollY
+      ticking = false
+    })
+    ticking = true
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('keydown', handleKeydown)
+})
+</script>
+
+<template>
+  <header 
+    class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-2"
+    :class="isScrolled ? 'bg-white/70 dark:bg-gray-900/70 backdrop-blur-md' : 'bg-transparent'"
+  >
+    <nav class="w-full px-6 lg:px-12">
+      <!-- Scrolling down: show centered title only -->
+      <div 
+        v-if="isScrollingDown" 
+        class="flex justify-center items-center h-14"
+      >
+        <router-link to="/" class="group">
+          <span 
+            class="text-xl font-bold transition-all hover:scale-105"
+            :class="isScrolled ? 'text-gray-800 dark:text-white' : 'text-white drop-shadow-lg'"
+          >
+            Leguan's Blog
+          </span>
+        </router-link>
+      </div>
+      
+      <!-- Scrolling up or at top: title left, buttons right -->
+      <div 
+        v-else
+        class="flex justify-between items-center h-14"
+      >
+        <!-- Logo -->
+        <router-link to="/" class="flex items-center group">
+          <span 
+            class="text-xl font-bold transition-colors"
+            :class="isScrolled ? 'text-gray-800 dark:text-white' : 'text-white drop-shadow-lg'"
+          >
+            Leguan's Blog
+          </span>
+        </router-link>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-1">
+          <template v-for="item in navItems" :key="item.name">
+            <!-- Has submenu -->
+            <div v-if="item.children" class="relative group">
+              <button 
+                class="nav-item flex items-center space-x-1.5 group/btn hover:text-[#7CB342]"
+                :class="[
+                  isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white/90 hover:text-white',
+                  isParentActive(item) ? '!text-[#7CB342]' : ''
+                ]"
+              >
+                <Icon :icon="item.icon" class="w-4 h-4 transition-transform group-hover/btn:scale-110" />
+                <span>{{ item.name }}</span>
+                <Icon icon="lucide:chevron-down" class="w-3 h-3 transition-transform duration-300 group-hover:rotate-180" />
+              </button>
+              
+              <!-- Dropdown menu -->
+              <div class="dropdown-wrapper absolute top-full left-1/2 -translate-x-1/2 pt-3 invisible group-hover:visible">
+                <div class="dropdown-menu w-48 py-2 rounded-2xl shadow-2xl overflow-hidden border border-white/20 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
+                  <router-link
+                    v-for="(child, index) in item.children"
+                    :key="child.name"
+                    :to="child.path!"
+                    class="dropdown-item flex items-center space-x-3 px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gradient-to-r hover:from-[#7CB342] hover:to-[#8BC34A] hover:text-white transition-all duration-300"
+                    :class="{ 'bg-[#7CB342]/10 text-[#7CB342]': isActive(child.path!) }"
+                    :style="{ animationDelay: `${index * 50}ms` }"
+                  >
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7CB342]/20 to-[#8BC34A]/20 flex items-center justify-center">
+                      <Icon :icon="child.icon!" class="w-4 h-4" />
+                    </div>
+                    <span class="font-medium">{{ child.name }}</span>
+                  </router-link>
+                </div>
+              </div>
+            </div>
+
+            <!-- No submenu -->
+            <router-link 
+              v-else
+              :to="item.path!"
+              class="nav-item flex items-center space-x-1.5 group/link"
+              :class="[
+                isScrolled ? 'text-gray-700 dark:text-gray-200 hover:text-[#7CB342]' : 'text-white/90 hover:text-white',
+                isActive(item.path!) ? '!text-[#7CB342]' : ''
+              ]"
+            >
+              <Icon :icon="item.icon" class="w-4 h-4 transition-transform group-hover/link:scale-110" />
+              <span>{{ item.name }}</span>
+            </router-link>
+          </template>
+
+          <!-- Search Button -->
+          <button 
+            @click="isSearchOpen = true"
+            class="nav-item group/search flex items-center space-x-2"
+            :class="isScrolled ? 'text-gray-700 dark:text-gray-200 hover:text-[#7CB342]' : 'text-white/90 hover:text-white'"
+            title="Search (Ctrl+K)"
+          >
+            <Icon icon="lucide:search" class="w-4 h-4 transition-transform group-hover/search:scale-110" />
+            <kbd class="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] rounded bg-white/20 text-current">
+              <span class="text-[8px]">⌘</span>K
+            </kbd>
+          </button>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <div class="md:hidden flex items-center space-x-2">
+          <button 
+            @click="isSearchOpen = true"
+            class="p-2 rounded-full transition-colors"
+            :class="isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'"
+          >
+            <Icon icon="lucide:search" class="w-5 h-5" />
+          </button>
+          <button 
+            @click="isMenuOpen = !isMenuOpen"
+            class="p-2 rounded-full transition-all duration-300"
+            :class="isScrolled ? 'text-gray-700 dark:text-gray-200' : 'text-white'"
+          >
+            <Icon 
+              :icon="isMenuOpen ? 'lucide:x' : 'lucide:menu'" 
+              class="w-5 h-5 transition-transform duration-300"
+              :class="{ 'rotate-90': isMenuOpen }"
+            />
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <transition
+        enter-active-class="transition ease-out duration-300"
+        enter-from-class="opacity-0 -translate-y-4 scale-95"
+        enter-to-class="opacity-100 translate-y-0 scale-100"
+        leave-active-class="transition ease-in duration-200"
+        leave-from-class="opacity-100 translate-y-0 scale-100"
+        leave-to-class="opacity-0 -translate-y-4 scale-95"
+      >
+        <div 
+          v-if="isMenuOpen" 
+          class="md:hidden absolute left-4 right-4 top-full mt-2 rounded-2xl shadow-2xl overflow-hidden border border-white/10 mobile-menu"
+        >
+          <div class="py-4 max-h-[70vh] overflow-y-auto">
+            <!-- Search Box -->
+            <div class="px-4 mb-4">
+              <div class="relative">
+                <Icon icon="lucide:search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <input 
+                  v-model="searchInput"
+                  type="text"
+                  placeholder="Search posts..."
+                  class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 border-none outline-none text-sm focus:ring-2 focus:ring-[#7CB342]/50 transition-all"
+                  @keyup.enter="handleSearch(); isMenuOpen = false"
+                />
+              </div>
+            </div>
+
+            <template v-for="(item, itemIndex) in navItems" :key="item.name">
+              <div v-if="item.children" class="mobile-menu-item" :style="{ animationDelay: `${itemIndex * 50}ms` }">
+                <button 
+                  @click="activeDropdown = activeDropdown === item.name ? null : item.name"
+                  class="w-full flex items-center justify-between px-5 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                  :class="isParentActive(item) ? 'text-[#7CB342]' : 'text-gray-700 dark:text-gray-200'"
+                >
+                  <div class="flex items-center space-x-3">
+                    <div 
+                      class="w-9 h-9 rounded-xl flex items-center justify-center"
+                      :class="isParentActive(item) ? 'bg-[#7CB342] text-white' : 'bg-gradient-to-br from-[#7CB342]/20 to-[#8BC34A]/20 text-[#7CB342]'"
+                    >
+                      <Icon :icon="item.icon" class="w-4 h-4" />
+                    </div>
+                    <span class="font-medium">{{ item.name }}</span>
+                  </div>
+                  <Icon 
+                    icon="lucide:chevron-down" 
+                    class="w-4 h-4 transition-transform duration-300 text-gray-500"
+                    :class="{ 'rotate-180 text-[#7CB342]': activeDropdown === item.name }"
+                  />
+                </button>
+                
+                <transition
+                  enter-active-class="transition ease-out duration-200"
+                  enter-from-class="opacity-0 max-h-0"
+                  enter-to-class="opacity-100 max-h-96"
+                  leave-active-class="transition ease-in duration-150"
+                  leave-from-class="opacity-100 max-h-96"
+                  leave-to-class="opacity-0 max-h-0"
+                >
+                  <div v-if="activeDropdown === item.name" class="overflow-hidden bg-gray-50/50 dark:bg-gray-800/30">
+                    <router-link
+                      v-for="child in item.children"
+                      :key="child.name"
+                      :to="child.path!"
+                      @click="isMenuOpen = false"
+                      class="flex items-center space-x-3 px-5 py-3 ml-12 text-gray-600 dark:text-gray-300 hover:text-[#7CB342] transition-colors border-l-2 border-transparent hover:border-[#7CB342]"
+                      :class="{ 'text-[#7CB342] border-[#7CB342]': isActive(child.path!) }"
+                    >
+                      <Icon :icon="child.icon!" class="w-4 h-4" />
+                      <span>{{ child.name }}</span>
+                    </router-link>
+                  </div>
+                </transition>
+              </div>
+
+              <router-link 
+                v-else
+                :to="item.path!"
+                @click="isMenuOpen = false"
+                class="mobile-menu-item flex items-center space-x-3 px-5 py-3.5 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                :class="{ 'text-[#7CB342] bg-[#7CB342]/5': isActive(item.path!) }"
+                :style="{ animationDelay: `${itemIndex * 50}ms` }"
+              >
+                <div 
+                  class="w-9 h-9 rounded-xl flex items-center justify-center transition-colors"
+                  :class="isActive(item.path!) ? 'bg-[#7CB342] text-white' : 'bg-gradient-to-br from-[#7CB342]/20 to-[#8BC34A]/20 text-[#7CB342]'"
+                >
+                  <Icon :icon="item.icon" class="w-4 h-4" />
+                </div>
+                <span class="font-medium">{{ item.name }}</span>
+                <Icon v-if="isActive(item.path!)" icon="lucide:check" class="w-4 h-4 ml-auto text-[#7CB342]" />
+              </router-link>
+            </template>
+          </div>
+        </div>
+      </transition>
+    </nav>
+
+    <!-- Search Modal -->
+    <teleport to="body">
+      <transition
+        enter-active-class="transition ease-out duration-300"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition ease-in duration-200"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div v-if="isSearchOpen" class="fixed inset-0 z-[100]" @click.self="isSearchOpen = false">
+          <!-- Background blur layer -->
+          <div class="absolute inset-0 bg-black/60 backdrop-blur-md"></div>
+          
+          <!-- Search Box Container -->
+          <div class="relative flex items-start justify-center pt-[15vh] px-4">
+            <transition
+              enter-active-class="transition ease-out duration-300 delay-100"
+              enter-from-class="opacity-0 scale-95 -translate-y-8"
+              enter-to-class="opacity-100 scale-100 translate-y-0"
+              leave-active-class="transition ease-in duration-200"
+              leave-from-class="opacity-100 scale-100 translate-y-0"
+              leave-to-class="opacity-0 scale-95 -translate-y-8"
+            >
+              <div 
+                v-if="isSearchOpen"
+                class="w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden search-modal"
+              >
+                <!-- Search Header -->
+                <div class="flex items-center px-6 py-5 border-b border-gray-200/50 dark:border-gray-700/50">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7CB342] to-[#8BC34A] flex items-center justify-center mr-4">
+                    <Icon icon="lucide:search" class="w-5 h-5 text-white" />
+                  </div>
+                  <input 
+                    ref="searchInputRef"
+                    v-model="searchInput"
+                    type="text"
+                    placeholder="Enter keywords to search..."
+                    class="flex-1 bg-transparent border-none outline-none text-lg text-gray-800 dark:text-gray-100 placeholder-gray-400"
+                    @keyup.enter="handleSearch"
+                  />
+                  <button 
+                    @click="isSearchOpen = false" 
+                    class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+                  >
+                    <Icon icon="lucide:x" class="w-5 h-5" />
+                  </button>
+                </div>
+                
+                <!-- Search Tips -->
+                <div class="p-8 text-center">
+                  <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#7CB342]/10 to-[#8BC34A]/10 flex items-center justify-center">
+                    <Icon icon="lucide:lightbulb" class="w-10 h-10 text-[#7CB342] animate-pulse" />
+                  </div>
+                  <p class="text-gray-500 dark:text-gray-400 mb-2">Press Enter to search</p>
+                  <div class="flex items-center justify-center space-x-2 text-xs text-gray-400">
+                    <kbd class="px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 font-mono">Enter</kbd>
+                    <span>Search</span>
+                    <span class="mx-2">·</span>
+                    <kbd class="px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 font-mono">Esc</kbd>
+                    <span>Close</span>
+                  </div>
+                </div>
+              </div>
+            </transition>
+          </div>
+        </div>
+      </transition>
+    </teleport>
+  </header>
+</template>
+
+<style scoped>
+/* Dropdown wrapper — only handles visibility with delayed hide for exit animation */
+.dropdown-wrapper {
+  transition: visibility 0.3s;
+}
+
+/* Dropdown menu styles — opacity/transform transition lives here to avoid
+   parent-opacity × backdrop-filter compositing flash */
+.dropdown-menu {
+  background: var(--card-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mobile menu styles */
+.mobile-menu {
+  background: var(--card-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+.mobile-menu-item {
+  animation: slideInLeft 0.3s ease-out both;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Search Box Styles */
+.search-modal {
+  background: var(--card-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+/* Dropdown item animation */
+.dropdown-item {
+  animation: fadeInUp 0.3s ease-out both;
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(10px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+</style>
